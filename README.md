@@ -17,6 +17,14 @@ integration:
 reversion:
 -s [obligatoire] : numéro de l'étape
 
+table_creation:
+-m [obligatoire] : fichier de configuration du mcd
+
+## Creation des tables
+~~~
+python3 script/table_creation.py -c conf.json -m mcd.json -T tn -t road_link
+~~~
+
 ## Etape de nettoyage (10)
 ### Extraction des objets autour des frontières d'un pays pour l'étape de nettoyage:
 ~~~
@@ -45,6 +53,15 @@ python3 script/integration.py -c conf.json -T tn -t road_link -s 10
 ~~~
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 0.001 be fr
 ~~~
+
+### Etape de matching
+
+
+### Intégration des modifications dans la table principale et la table d'historique:
+~~~
+python3 script/integration.py -c conf.json -T tn -t road_link -s 20
+~~~
+
 
 
 ## Rollback

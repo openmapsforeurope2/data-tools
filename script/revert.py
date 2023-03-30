@@ -1,7 +1,4 @@
-import sys
-from subprocess import call
 import psycopg2
-
 
 def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName

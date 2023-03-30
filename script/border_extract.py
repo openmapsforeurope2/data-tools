@@ -1,5 +1,3 @@
-import sys
-from subprocess import call
 import psycopg2
 
 
