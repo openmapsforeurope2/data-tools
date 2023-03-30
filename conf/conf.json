@@ -1,0 +1,40 @@
+{
+    "db":{
+        "host":"SMWPERMEGMFT1",
+        "port":"5432",
+        "name":"ome2_v0",
+        "user":"postgres",
+        "pwd":"postgres"
+    },
+    "landmask": {
+        "country_field": "country",
+        "geometry_field": "geom",
+        "schema": "ome2_ib",
+        "table": "national_admin_extent"
+    },
+    "boundary": {
+        "country_field": "country",
+        "geometry_field": "geom",
+        "schema": "ome2_ib",
+        "table": "international_boundary_line"
+    },
+    "data": {
+        "country_field": "country",
+        "geometry_field": "geom",
+        "id_field": "inspireid",
+        "step_field": "w_step",
+        "modification_type_field": "w_modification_type",
+        "themes": {
+            "tn": {
+                "schema": "ome2_tn",
+                "w_schema": "public",
+                "tables": [
+                    "road_link"
+                ]
+            }
+        }
+    },
+    "border_extraction": {
+        "where": "ST_intersects(${data.geometry_field},ST_SetSRID(ST_GeomFromText('POLYGON((3.38928 50.36368,3.38928 50.71280,3.88366 50.71280,3.88366 50.36368,3.38928 50.36368))'),4326))"
+    }
+}
