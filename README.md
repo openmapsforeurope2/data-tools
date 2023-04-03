@@ -28,7 +28,7 @@ python3 script/table_creation.py -c conf.json -m mcd.json -T tn -t road_link
 
 
 ## Etape de nettoyage (10)
-### Extraction des objets autour des frontières d'un pays pour l'étape de nettoyage:
+### 1) Extraction des objets autour des frontières d'un pays pour l'étape de nettoyage:
 ~~~
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 3000 fr
 ~~~
@@ -36,7 +36,7 @@ python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 3000 fr
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 4000 be
 ~~~
 
-### Etape de nettoyage - suppression des objets hors territoire - (se placer dans le répertoire du projet data-cleaner):
+### 2) Etape de nettoyage - suppression des objets hors territoire - (se placer dans le répertoire du projet data-cleaner):
 ~~~
 python3 script/clean.py -c conf.json -T tn -t road_link_w fr
 ~~~
@@ -44,22 +44,22 @@ python3 script/clean.py -c conf.json -T tn -t road_link_w fr
 python3 script/clean.py -c conf.json -T tn -t road_link_w be
 ~~~
 
-### Intégration des modifications dans la table principale et la table d'historique:
+### 3) Intégration des modifications dans la table principale et la table d'historique:
 ~~~
 python3 script/integration.py -c conf.json -T tn -t road_link -s 10
 ~~~
 
 
 ## Etape de matching (20)
-### Extraction des objets autour des frontières d'un couple de pays pour l'étape de matching:
+### 1) Extraction des objets autour des frontières d'un couple de pays pour l'étape de matching:
 ~~~
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 0.001 be fr
+python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 1000 be fr
 ~~~
 
-### Etape de matching
+### 2) Etape de matching
 
 
-### Intégration des modifications dans la table principale et la table d'historique:
+### 3) Intégration des modifications dans la table principale et la table d'historique:
 ~~~
 python3 script/integration.py -c conf.json -T tn -t road_link -s 20
 ~~~

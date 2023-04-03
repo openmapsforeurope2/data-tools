@@ -3,7 +3,7 @@
     "common": {
         "id_field": {
             "inspireid": {
-                "sql_type": "uuid NOT NULL DEFAULT uuid_generate_v4()",
+                "sql_type": "uuid DEFAULT uuid_generate_v4()",
                 "index": "default",
                 "pkey": true
             }
@@ -79,58 +79,6 @@
     "themes": {
         "tn": {
             "tables": {
-                "road_link_test": {
-                    "fields": {
-                        "form_of_way": {
-                            "sql_type": "form_of_way_value",
-                            "rank": 1
-                        },
-                        "functional_road_class": {
-                            "sql_type": "functional_road_class_value",
-                            "rank": 2
-                        },
-                        "number_of_lanes": {
-                            "sql_type": "integer",
-                            "rank": 3
-                        },
-                        "vertical_position": {
-                            "sql_type": "vertical_position_value",
-                            "rank": 4
-                        },
-                        "trans_european_transport_network": {
-                            "sql_type": "ten_t_network_value",
-                            "rank": 5
-                        },
-                        "geographical_name": {
-                            "sql_type": "character varying(255)",
-                            "rank": 6
-                        },
-                        "road_surface_category": {
-                            "sql_type": "road_surface_category_value",
-                            "rank": 7
-                        },
-                        "traffic_flow_direction": {
-                            "sql_type": "link_direction_value",
-                            "rank": 8
-                        },
-                        "access_restriction": {
-                            "sql_type": "access_restriction_value",
-                            "rank": 9
-                        },
-                        "condition_of_facility": {
-                            "sql_type": "condition_of_facility_value",
-                            "rank": 10
-                        },
-                        "national_road_code": {
-                            "sql_type": "character varying(80)",
-                            "rank": 11
-                        },
-                        "european_route_number": {
-                            "sql_type": "character varying(80)",
-                            "rank": 12
-                        }
-                    }
-                },
                 "road_link": {
                     "fields": {
                         "form_of_way": {

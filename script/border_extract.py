@@ -25,20 +25,25 @@ def run(
 
     boundary_statement =  "ST_Union(ARRAY((SELECT "+conf['boundary']['fields']['geometry']+" FROM "+getTableName(conf['boundary']['schema'], conf['boundary']['table'])+" WHERE "+where_statement_boundary+")))"
     
+    
     theme_schema = conf['data']['themes'][theme]['schema']
     working_schema = conf['data']['themes'][theme]['w_schema']
     if not tables:
         tables = conf['data']['themes'][theme]['tables']
         
     for tb in tables:
+        tableName = getTableName(theme_schema, tb)
+        wTableName = getTableName(working_schema, tb)+conf['data']['working']['suffix']
+        wIdsTableName = getTableName(working_schema, tb)+conf['data']['working']['ids_suffix']
+
         # on recupère tous les noms de champs de la table
         q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE table_name = '"+tb+"' "+ ("AND table_schema = '"+theme_schema+"'") if theme_schema else ""
         print(u'query: {}'.format(q), flush=True)
         cursor.execute(q)
         fields = cursor.fetchone()[0]
 
-        query = "DELETE FROM "+getTableName(working_schema, tb)+"_w;"
-        query += "INSERT INTO "+getTableName(working_schema, tb)+"_w ("+fields+") SELECT "+fields+" FROM "+getTableName(theme_schema, tb)
+        query = "DELETE FROM "+workingTableName+";"
+        query += "INSERT INTO "+workingTableName+" ("+fields+") SELECT "+fields+" FROM "+tableName
         query += " WHERE "+where_statement_data
         query += " AND ST_intersects("+conf['data']['common_fields']['geometry']+",(SELECT ST_Buffer("+boundary_statement+","+ str(distance)+")))"
         if 'where' in conf['border_extraction'] and conf['border_extraction']['where']:
@@ -49,7 +54,8 @@ def run(
         conn.commit()
 
         # on enregistre tous les identifiants des objects extraits
-        q2 = "DELETE FROM "+getTableName(working_schema, tb)+"_w_ids; INSERT INTO "+getTableName(working_schema, tb)+"_w_ids ("+conf['data']['common_fields']['id']+") SELECT "+conf['data']['common_fields']['id']+" FROM "+getTableName(working_schema, tb)+"_w"
+        q2 = "DELETE FROM "+wIdsTableName+";"
+        q2 += "INSERT INTO "+wIdsTableName+" ("+conf['data']['common_fields']['id']+") SELECT "+conf['data']['common_fields']['id']+" FROM "+wTableName
         print(u'query: {}'.format(q2), flush=True)
         cursor.execute(q2)
         conn.commit()

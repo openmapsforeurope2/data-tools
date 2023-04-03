@@ -25,20 +25,23 @@ def run(
     modif_step_field = conf['data']['history']['fields']['modification_step']
 
     for tb in tables:
-        # on recupère tout les steps supérieur ou égal au step cible
-        q0 = "SELECT DISTINCT("+step_field+") FROM "+getTableName(theme_schema, tb)+" WHERE "+step_field+">="+step
+        tableName = getTableName(theme_schema, tb)
+        hTableName = getTableName(history_schema, tb)+conf['data']['history']['suffix']
+
+        # on recupère tous les steps supérieur ou égal au step cible
+        q0 = "SELECT DISTINCT("+step_field+") FROM "+tableName+" WHERE "+step_field+">="+step
         cursor.execute(q0)
         steps0 = [ t[0] for t in cursor.fetchall() ]
 
-        q0_bis = "SELECT DISTINCT("+modif_step_field+") FROM "+getTableName(history_schema, tb)+"_wh WHERE "+modif_step_field+">="+step
+        q0_bis = "SELECT DISTINCT("+modif_step_field+") FROM "+hTableName+" WHERE "+modif_step_field+">="+step
         cursor.execute(q0_bis)
         steps0_bis = [ t[0] for t in cursor.fetchall() ]
 
         orderedSteps = sorted(set(steps0+steps0_bis), reverse=True)
 
         for step in orderedSteps:
-            # on supprime tous les objet du step present dans la table
-            q = "DELETE FROM "+getTableName(theme_schema, tb)+" WHERE "+step_field+"="+str(step)
+            # on supprime tous les objets du step present dans la table
+            q = "DELETE FROM "+tableName+" WHERE "+step_field+"="+str(step)
             print(u'query: {}'.format(q), flush=True)
             cursor.execute(q)
             conn.commit()
@@ -49,14 +52,14 @@ def run(
             cursor.execute(q1)
             fields = cursor.fetchone()[0]
 
-            q2 = "INSERT INTO "+getTableName(theme_schema, tb)+" ("+fields+") SELECT "+fields+" FROM "+getTableName(history_schema, tb)+"_wh"
+            q2 = "INSERT INTO "+tableName+" ("+fields+") SELECT "+fields+" FROM "+hTableName
             q2 += " WHERE "+modif_step_field+"="+str(step)
             print(u'query: {}'.format(q2), flush=True)
             cursor.execute(q2)
             conn.commit()
 
             # on supprime tous les objets du step de la table historique
-            q3 = "DELETE FROM "+getTableName(history_schema, tb)+"_wh WHERE "+modif_step_field+"="+str(step)
+            q3 = "DELETE FROM "+hTableName+" WHERE "+modif_step_field+"="+str(step)
             print(u'query: {}'.format(q3), flush=True)
             cursor.execute(q3)
             conn.commit()

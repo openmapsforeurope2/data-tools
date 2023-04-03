@@ -60,14 +60,20 @@ def run(
     modification_type_field = conf['data']['history']['fields']['modification_type']
     modification_step_field = conf['data']['history']['fields']['modification_step']
     step_field = conf['data']['common_fields']['step']
+
     for tb in tables:
+        tableName = getTableName(theme_schema, tb)
+        wIdsTableName = getTableName(working_schema, tb)+conf['data']['working']['ids_suffix']
+        wTableName = getTableName(working_schema, tb)+conf['data']['working']['suffix']
+        hTableName = getTableName(history_schema, tb)+conf['data']['history']['suffix']
+
         # on recupere les noms des champs
         q0 = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE table_name = '"+tb+"' "+ ("AND table_schema = '"+theme_schema+"'") if theme_schema else ""
         cursor.execute(q0)
         _fields = cursor.fetchone()[0]
 
         # on parcourt les identifiants des objets extraits
-        q1 = "SELECT "+id_field+" FROM "+getTableName(working_schema, tb)+"_w_ids"
+        q1 = "SELECT "+id_field+" FROM "+gwIdsTableName
         cursor.execute(q1)
         tuples = cursor.fetchall()
         ids_ = [ "'"+t[0]+"'" for t in tuples ]
@@ -85,7 +91,7 @@ def run(
                 sub_ids = ids[start : end]
 
                 # on recupere les objets dans la table de travail
-                q2 = "SELECT "+_fields+" FROM "+getTableName(working_schema, tb)+"_w"
+                q2 = "SELECT "+_fields+" FROM "+wTableName
                 q2 += " WHERE "+id_field+" IN ("+",".join(sub_ids_)+")"
                 print(q2[:500])
                 cursor.execute(q2)
@@ -99,7 +105,7 @@ def run(
                     w_objects[w_t[w_idRank]] = w_t
 
                 # on recupere les objets dans la table principale
-                q2_bis = "SELECT "+_fields+" FROM "+getTableName(theme_schema, tb)
+                q2_bis = "SELECT "+_fields+" FROM "+tableName
                 q2_bis += " WHERE "+id_field+" IN ("+",".join(sub_ids_)+")"
                 print(q2_bis[:500])
                 cursor.execute(q2_bis)
@@ -136,8 +142,8 @@ def run(
 
 
         # on identifie les objets crees
-        q3 = "SELECT a."+id_field+" FROM "+getTableName(working_schema, tb)+"_w AS a"
-        q3 += " LEFT JOIN "+getTableName(working_schema, tb)+"_w_ids AS b ON a."+id_field+"=b."+id_field
+        q3 = "SELECT a."+id_field+" FROM "+wTableName+" AS a"
+        q3 += " LEFT JOIN "+wIdsTableName+" AS b ON a."+id_field+"=b."+id_field
         q3 += " WHERE b."+id_field+" IS NULL"
         cursor.execute(q3)
         new_tuples = cursor.fetchall()
@@ -149,12 +155,11 @@ def run(
 
         
         # on transfert les objets dans la table historique
-        # TODO ajouter un champ w_step_h dans la table historique
         fields = _fields+","+modification_type_field+","+modification_step_field
 
         if historized_d:
             values_d = fields.replace(modification_step_field, "'"+step+"'").replace(modification_type_field, "'D'")
-            q4 = "INSERT INTO "+getTableName(history_schema, tb)+"_wh ("+fields+") SELECT "+values_d+" FROM "+getTableName(theme_schema, tb)
+            q4 = "INSERT INTO "+hTableName+" ("+fields+") SELECT "+values_d+" FROM "+tableName
             q4 += " WHERE "+id_field+" IN ("+",".join(historized_d)+")"
             print(q4[:500])
             cursor.execute(q4)
@@ -162,7 +167,7 @@ def run(
         
         if historized_m:
             values_m = fields.replace(modification_step_field, "'"+step+"'").replace(modification_type_field, "'M'")
-            q5 = "INSERT INTO "+getTableName(history_schema, tb)+"_wh ("+fields+") SELECT "+values_m+" FROM "+getTableName(theme_schema, tb)
+            q5 = "INSERT INTO "+hTableName+" ("+fields+") SELECT "+values_m+" FROM "+tableName
             q5 += " WHERE "+id_field+" IN ("+",".join(historized_m)+")"
             print(q5[:500])
             cursor.execute(q5)
@@ -170,7 +175,7 @@ def run(
 
         # on supprime les objets de la table
         if deleted:
-            q6 = "DELETE FROM "+getTableName(theme_schema, tb)
+            q6 = "DELETE FROM "+tableName
             q6 += " WHERE "+id_field+" IN ("+",".join(deleted)+")"
             print(q6[:500])
             cursor.execute(q6)
@@ -179,7 +184,7 @@ def run(
         # on transfert les objets de la table de travail vers la table
         if integrated:
             values = _fields.replace(step_field, "'"+step+"'")
-            q7 = "INSERT INTO "+getTableName(theme_schema, tb)+" ("+_fields+") SELECT "+values+" FROM "+getTableName(working_schema, tb)+"_w"
+            q7 = "INSERT INTO "+tableName+" ("+_fields+") SELECT "+values+" FROM "+wTableName
             q7 += " WHERE "+id_field+" IN ("+",".join(integrated)+")"
             print(q7[:500])
             cursor.execute(q7)
