@@ -7,26 +7,43 @@
         "pwd":"postgres"
     },
     "landmask": {
-        "country_field": "country",
-        "geometry_field": "geom",
         "schema": "ome2_ib",
-        "table": "national_admin_extent"
+        "table": "national_admin_extent",
+        "fields":{
+            "country": "country",
+            "geometry": "geom"
+        }
     },
     "boundary": {
-        "country_field": "country",
-        "geometry_field": "geom",
         "schema": "ome2_ib",
-        "table": "international_boundary_line"
+        "table": "international_boundary_line",
+        "fields":{
+            "country": "country",
+            "geometry": "geom"
+        }
     },
     "data": {
-        "country_field": "country",
-        "geometry_field": "geom",
-        "id_field": "inspireid",
-        "step_field": "w_step",
-        "modification_type_field": "w_modification_type",
+        "common_fields": {
+            "country": "country",
+            "geometry": "geom",
+            "id": "inspireid",
+            "step": "w_step"
+        },
+        "history": {
+            "suffix": "_wh",
+            "fields": {
+                "modification_type": "w_modification_type",
+                "modification_step": "w_modification_step"
+            }
+        },
+        "working": {
+            "ids_suffix": "_w_ids",
+            "suffix": "_w"
+        },
         "themes": {
             "tn": {
                 "schema": "ome2_tn",
+                "h_schema": "ome2_tn",
                 "w_schema": "public",
                 "tables": [
                     "road_link"
@@ -35,6 +52,6 @@
         }
     },
     "border_extraction": {
-        "where": "ST_intersects(${data.geometry_field},ST_SetSRID(ST_GeomFromText('POLYGON((3.38928 50.36368,3.38928 50.71280,3.88366 50.71280,3.88366 50.36368,3.38928 50.36368))'),4326))"
+        "where1": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3.38928 50.36368,3.38928 50.71280,3.88366 50.71280,3.88366 50.36368,3.38928 50.36368))'),4326))"
     }
 }

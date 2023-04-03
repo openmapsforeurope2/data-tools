@@ -3,35 +3,37 @@
 ## Paramètrages
 
 paramètres communs:
--c [obligatoire] : fichier de configuration
--T [obligatoire] : thème (on ne peut spécifier qu'un seul thème)
--t [optionnel] : table (on peut spécifier plusieurs tables en ajoutant autant de fois cette option). Les tables doivent appartenir au thème T
+* c [obligatoire] : fichier de configuration
+* T [obligatoire] : thème (on ne peut spécifier qu'un seul thème)
+* t [optionnel] : table (on peut spécifier plusieurs tables en ajoutant autant de fois cette option). Les tables doivent appartenir au thème T
 
 border_extraction:
--d [obligatoire] : rayon du buffer (en degrés)
--arguments : le(s) code(s) pays à extraire (un ou deux)
+* d [obligatoire] : rayon du buffer (en degrés)
+* arguments : le(s) code(s) pays à extraire (un ou deux)
 
 integration:
--s [obligatoire] : numéro de l'étape
+* s [obligatoire] : numéro de l'étape
 
 reversion:
--s [obligatoire] : numéro de l'étape
+* s [obligatoire] : numéro de l'étape
 
 table_creation:
--m [obligatoire] : fichier de configuration du mcd
+* m [obligatoire] : fichier de configuration du mcd
+
 
 ## Creation des tables
 ~~~
 python3 script/table_creation.py -c conf.json -m mcd.json -T tn -t road_link
 ~~~
 
+
 ## Etape de nettoyage (10)
 ### Extraction des objets autour des frontières d'un pays pour l'étape de nettoyage:
 ~~~
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 0.03 fr
+python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 3000 fr
 ~~~
 ~~~
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 0.04 be
+python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 4000 be
 ~~~
 
 ### Etape de nettoyage - suppression des objets hors territoire - (se placer dans le répertoire du projet data-cleaner):

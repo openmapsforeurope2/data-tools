@@ -42,37 +42,30 @@
                 "rank": 1
             },
             "w_step": {
-                "sql_type": "character varying(80)",
+                "sql_type": "integer",
                 "index": "default",
                 "rank": 2
             }
         }
     },
     "working_ids": {
-        "schema": "public",
-        "suffix": "_w_ids",
         "id_field": {
             "inspireid": {
-                "sql_type": "character varying(80)"
+                "sql_type": "uuid"
             }
         }
     },
-    "working": {
-        "schema": "public",
-        "suffix": "_w"
-    },
     "history": {
-        "suffix": "_wh",
         "id_field": {
             "inspireid": {
-                "sql_type": "character varying(80)",
+                "sql_type": "uuid",
                 "index": "default",
                 "pkey": true
             }
         },
         "fields": {
             "w_modification_step": {
-                "sql_type": "character varying(80)",
+                "sql_type": "integer",
                 "index": "default",
                 "pkey": true,
                 "rank": 1
@@ -85,7 +78,6 @@
     },
     "themes": {
         "tn": {
-            "schema": "ome2_tn",
             "tables": {
                 "road_link_test": {
                     "fields": {
