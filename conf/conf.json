@@ -3,8 +3,8 @@
         "host":"SMWPERMEGMFT1",
         "port":"5432",
         "name":"ome2_v0",
-        "user":"postgres",
-        "pwd":"postgres"
+        "user":"ome2_user",
+        "pwd":"ome2_user"
     },
     "landmask": {
         "schema": "ome2_ib",

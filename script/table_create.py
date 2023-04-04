@@ -97,7 +97,7 @@ def getCreateTableStatement( conf, mcd, theme, tableName ):
     fullTableName = getTableName(conf['data']['themes'][theme]['schema'], tableName)
     statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
     statement += " ("+getTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
-    statement += "ALTER TABLE "+fullTableName+" OWNER TO postgres;"
+    statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
     statement += getPkeyConstraintStatement( conf, mcd, theme, tableName )
     return statement
 
@@ -105,7 +105,7 @@ def getCreateWorkingTableStatement( conf, mcd, theme, tableName ):
     fullTableName = getTableName(conf['data']['themes'][theme]['w_schema'], tableName)+conf['data']['working']['suffix']
     statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
     statement += " ("+getWorkingTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
-    statement += "ALTER TABLE "+fullTableName+" OWNER TO postgres;"
+    statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
     statement += getWorkingPkeyConstraintStatement( conf, mcd, theme, tableName )
     return statement
 
@@ -113,7 +113,7 @@ def getCreateWorkingIdsTableStatement( conf, mcd, theme, tableName ):
     fullTableName = getTableName(conf['data']['themes'][theme]['w_schema'], tableName)+conf['data']['working']['ids_suffix']
     statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
     statement += " ("+getWorkingIdsTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
-    statement += "ALTER TABLE "+fullTableName+" OWNER TO postgres;"
+    statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
     statement += getWorkingIdsPkeyConstraintStatement( conf, mcd, theme, tableName )
     return statement
 
@@ -121,7 +121,7 @@ def getCreateHistoryTableStatement( conf, mcd, theme, tableName ):
     fullTableName = getTableName(conf['data']['themes'][theme]['h_schema'], tableName)+conf['data']['history']['suffix']
     statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
     statement += " ("+getHistoryTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
-    statement += "ALTER TABLE "+fullTableName+" OWNER TO postgres;"
+    statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
     statement += getHistoryPkeyConstraintStatement( conf, mcd, theme, tableName )
     return statement
 
