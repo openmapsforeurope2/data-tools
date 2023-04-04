@@ -3,7 +3,7 @@
     "common": {
         "id_field": {
             "inspireid": {
-                "sql_type": "uuid DEFAULT uuid_generate_v4()",
+                "sql_type": "uuid DEFAULT gen_random_uuid()",
                 "index": "default",
                 "pkey": true
             }
