@@ -18,6 +18,7 @@ def createTableAndIndexes(conf, mcd, theme, tables):
         # table
         query = getCreateTableStatement(conf, mcd, theme, tableName)
         query += getCreateIndexesStatement(conf, mcd, theme, tableName)
+        query += getCreateTrigger(conf, theme, tableName)
 
         print(u'query: {}'.format(query), flush=True)
         cursor.execute(query)
@@ -46,6 +47,10 @@ def createTableAndIndexes(conf, mcd, theme, tables):
         print(u'query: {}'.format(query_h), flush=True)
         cursor.execute(query_h)
         conn.commit()
+
+def getCreateTrigger(conf, theme, tableName):
+        fullTableName = getTableName(conf['data']['themes'][theme]['schema'], tableName)
+        return "CREATE TRIGGER ome2_reduce_precision_3d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_3d_trigger_function();"
 
 def getOrderedFields(fields, fieldsToCreate):  
     nbFields = len(fields)

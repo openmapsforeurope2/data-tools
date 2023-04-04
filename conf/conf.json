@@ -42,8 +42,8 @@
         },
         "themes": {
             "tn": {
-                "schema": "ome2_tn",
-                "h_schema": "ome2_tn",
+                "schema": "tn",
+                "h_schema": "tn",
                 "w_schema": "public",
                 "tables": [
                     "road_link"
