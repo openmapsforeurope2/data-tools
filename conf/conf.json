@@ -48,6 +48,21 @@
                 "tables": [
                     "road_link"
                 ]
+            },
+            "au": {
+                "schema": "au",
+                "h_schema": "au",
+                "w_schema": "public",
+                "tables": [
+                    "administrative_boundary",
+                    "administrative_area",
+                    "administrative_unit_1",
+                    "administrative_unit_2",
+                    "administrative_unit_3",
+                    "administrative_unit_4",
+                    "administrative_unit_5",
+                    "administrative_unit_6"
+                ]
             }
         }
     },

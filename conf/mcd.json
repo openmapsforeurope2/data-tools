@@ -9,31 +9,26 @@
             }
         },
         "fields": {
-            "geom": {
-                "sql_type": "geometry(LineStringZ,${srid})",
-                "index": "gist",
-                "rank": 1
-            },
             "country": {
                 "sql_type": "character varying(8)",
                 "index": "default",
-                "rank": 2
+                "rank": 1
             },
             "begin_lifespan_version": {
                 "sql_type": "timestamp without time zone",
-                "rank": 3
+                "rank": 2
             },
             "end_lifespan_version": {
                 "sql_type": "timestamp without time zone",
-                "rank": 4
+                "rank": 3
             },
             "valid_from": {
                 "sql_type": "timestamp without time zone",
-                "rank": 5
+                "rank": 4
             },
             "valid_to": {
                 "sql_type": "timestamp without time zone",
-                "rank": 6
+                "rank": 5
             }
         },
         "working_fields": {
@@ -81,53 +76,358 @@
             "tables": {
                 "road_link": {
                     "fields": {
+                        "geom": {
+                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
                         "form_of_way": {
                             "sql_type": "form_of_way_value",
-                            "rank": 1
+                            "rank": 2
                         },
                         "functional_road_class": {
                             "sql_type": "functional_road_class_value",
-                            "rank": 2
+                            "rank": 3
                         },
                         "number_of_lanes": {
                             "sql_type": "integer",
-                            "rank": 3
+                            "rank": 4
                         },
                         "vertical_position": {
                             "sql_type": "vertical_position_value",
-                            "rank": 4
+                            "rank": 5
+                        },
+                        "vertical_level": {
+                            "sql_type": "vertical_level_value",
+                            "rank": 6
                         },
                         "trans_european_transport_network": {
                             "sql_type": "ten_t_network_value",
-                            "rank": 5
+                            "rank": 7
                         },
                         "geographical_name": {
                             "sql_type": "character varying(255)",
-                            "rank": 6
+                            "rank": 8
                         },
                         "road_surface_category": {
                             "sql_type": "road_surface_category_value",
-                            "rank": 7
+                            "rank": 9
                         },
                         "traffic_flow_direction": {
                             "sql_type": "link_direction_value",
-                            "rank": 8
+                            "rank": 10
                         },
                         "access_restriction": {
                             "sql_type": "access_restriction_value",
-                            "rank": 9
+                            "rank": 11
+                        },
+                        "maximum_height": {
+                            "sql_type": "double",
+                            "rank": 12
+                        },
+                        "maximum_length": {
+                            "sql_type": "double",
+                            "rank": 13
+                        },
+                        "maximum_width": {
+                            "sql_type": "double",
+                            "rank": 14
+                        },
+                        "maximum_total_weight": {
+                            "sql_type": "double",
+                            "rank": 15
+                        },
+                        "maximum_single_axle_weight": {
+                            "sql_type": "double",
+                            "rank": 16
+                        },
+                        "maximum_double_axle_weight": {
+                            "sql_type": "double",
+                            "rank": 17
+                        },
+                        "maximum_triple_axle_weight": {
+                            "sql_type": "double",
+                            "rank": 18
+                        },
+                        "speed_limit": {
+                            "sql_type": "jsonb",
+                            "rank": 19
                         },
                         "condition_of_facility": {
                             "sql_type": "condition_of_facility_value",
-                            "rank": 10
+                            "rank": 20
+                        },                     
+                        "link_to_road": {
+                            "sql_type": "character varying",
+                            "rank": 21
                         },
                         "national_road_code": {
                             "sql_type": "character varying(80)",
-                            "rank": 11
+                            "rank": 22
                         },
                         "european_route_number": {
                             "sql_type": "character varying(80)",
-                            "rank": 12
+                            "rank": 23
+                        }
+                    }
+                }
+            }
+        },
+        "au": {
+            "tables": {
+                "administrative_boundary": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(LineString,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "national_level": {
+                            "sql_type": "administrative_hierarchy_level",
+                            "rank": 2
+                        },
+                        "legal_status": {
+                            "sql_type": "legal_status_value",
+                            "rank": 3
+                        },
+                        "technical_status": {
+                            "sql_type": "technical_status_value",
+                            "rank": 4
+                        }
+                    }
+                },
+                "administrative_unit_area": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygon,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "national_code": {
+                            "sql_type": "character varying(255)",
+                            "rank": 2
+                        },
+                        "land_cover_type": {
+                            "sql_type": "land_cover_type_value",
+                            "rank": 3
+                        }
+                    }
+                },
+                "administrative_unit_1": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygon,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "national_code": {
+                            "sql_type": "character varying(255)",
+                            "rank": 2
+                        },
+                        "shn_code": {
+                            "sql_type": "character varying(255)",
+                            "rank": 3
+                        },
+                        "name": {
+                            "sql_type": "jsonb",
+                            "rank": 4
+                        },
+                        "national_level_code": {
+                            "sql_type": "integer",
+                            "rank": 5
+                        },
+                        "residence_of_authority": {
+                            "sql_type": "character varying(255)",
+                            "rank": 6
+                        },
+                        "land_cover_type": {
+                            "sql_type": "land_cover_type_value",
+                            "rank": 7
+                        }
+                    }
+                },
+                "administrative_unit_2": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygon,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "national_code": {
+                            "sql_type": "character varying(255)",
+                            "rank": 2
+                        },
+                        "shn_code": {
+                            "sql_type": "character varying(255)",
+                            "rank": 3
+                        },
+                        "name": {
+                            "sql_type": "jsonb",
+                            "rank": 4
+                        },
+                        "national_level_code": {
+                            "sql_type": "integer",
+                            "rank": 5
+                        },
+                        "residence_of_authority": {
+                            "sql_type": "character varying(255)",
+                            "rank": 6
+                        },
+                        "land_cover_type": {
+                            "sql_type": "land_cover_type_value",
+                            "rank": 7
+                        }
+                    }
+                },
+                "administrative_unit_3": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygon,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "national_code": {
+                            "sql_type": "character varying(255)",
+                            "rank": 2
+                        },
+                        "shn_code": {
+                            "sql_type": "character varying(255)",
+                            "rank": 3
+                        },
+                        "name": {
+                            "sql_type": "jsonb",
+                            "rank": 4
+                        },
+                        "national_level_code": {
+                            "sql_type": "integer",
+                            "rank": 5
+                        },
+                        "residence_of_authority": {
+                            "sql_type": "character varying(255)",
+                            "rank": 6
+                        },
+                        "land_cover_type": {
+                            "sql_type": "land_cover_type_value",
+                            "rank": 7
+                        }
+                    }
+                },
+                "administrative_unit_4": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygon,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "national_code": {
+                            "sql_type": "character varying(255)",
+                            "rank": 2
+                        },
+                        "shn_code": {
+                            "sql_type": "character varying(255)",
+                            "rank": 3
+                        },
+                        "name": {
+                            "sql_type": "jsonb",
+                            "rank": 4
+                        },
+                        "national_level_code": {
+                            "sql_type": "integer",
+                            "rank": 5
+                        },
+                        "residence_of_authority": {
+                            "sql_type": "character varying(255)",
+                            "rank": 6
+                        },
+                        "land_cover_type": {
+                            "sql_type": "land_cover_type_value",
+                            "rank": 7
+                        }
+                    }
+                },
+                "administrative_unit_5": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygon,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "national_code": {
+                            "sql_type": "character varying(255)",
+                            "rank": 2
+                        },
+                        "shn_code": {
+                            "sql_type": "character varying(255)",
+                            "rank": 3
+                        },
+                        "name": {
+                            "sql_type": "jsonb",
+                            "rank": 4
+                        },
+                        "national_level_code": {
+                            "sql_type": "integer",
+                            "rank": 5
+                        },
+                        "residence_of_authority": {
+                            "sql_type": "character varying(255)",
+                            "rank": 6
+                        },
+                        "land_cover_type": {
+                            "sql_type": "land_cover_type_value",
+                            "rank": 7
+                        }
+                    }
+                },
+                "administrative_unit_6": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygon,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "national_code": {
+                            "sql_type": "character varying(255)",
+                            "rank": 2
+                        },
+                        "shn_code": {
+                            "sql_type": "character varying(255)",
+                            "rank": 3
+                        },
+                        "name": {
+                            "sql_type": "jsonb",
+                            "rank": 4
+                        },
+                        "national_level_code": {
+                            "sql_type": "integer",
+                            "rank": 5
+                        },
+                        "residence_of_authority": {
+                            "sql_type": "character varying(255)",
+                            "rank": 6
+                        },
+                        "land_cover_type": {
+                            "sql_type": "land_cover_type_value",
+                            "rank": 7
+                        }
+                    }
+                },
+                "administrative_hierarchy": {
+                    "fields": {
+                        "national_level": {
+                            "sql_type": "administrative_hierarchy_level",
+                            "rank": 1
+                        },
+                        "national_level_name": {
+                            "sql_type": "jsonb",
+                            "rank": 2
+                        },
+                        "national_level_code": { 
+                            "sql_type": "integer",
+                            "rank": 3
+                        },
+                        "shn_digit": {
+                            "sql_type": "integer",
+                            "rank": 4
                         }
                     }
                 }
