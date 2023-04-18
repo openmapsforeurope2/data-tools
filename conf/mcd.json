@@ -183,7 +183,7 @@
                             "rank": 1
                         },
                         "national_level": {
-                            "sql_type": "administrative_hierarchy_level",
+                            "sql_type": "administrative_hierarchy_level_type_value",
                             "rank": 2
                         },
                         "legal_status": {
@@ -414,7 +414,7 @@
                 "administrative_hierarchy": {
                     "fields": {
                         "national_level": {
-                            "sql_type": "administrative_hierarchy_level",
+                            "sql_type": "administrative_hierarchy_level_type_value",
                             "rank": 1
                         },
                         "national_level_name": {

@@ -2,7 +2,7 @@
     "db":{
         "host":"SMLPOPENMAPS2",
         "port":"5432",
-        "name":"ome2_v0",
+        "name":"ome2_hvlsp_v1",
         "user":"ome2_user",
         "pwd":"ome2_user"
     },
@@ -61,7 +61,8 @@
                     "administrative_unit_3",
                     "administrative_unit_4",
                     "administrative_unit_5",
-                    "administrative_unit_6"
+                    "administrative_unit_6",
+                    "administrative_level"
                 ]
             }
         }
