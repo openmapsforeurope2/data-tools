@@ -207,8 +207,8 @@
                             "sql_type": "character varying(255)",
                             "rank": 2
                         },
-                        "national_level_code": {
-                            "sql_type": "character varying(255)",
+                        "national_level": {
+                            "sql_type": "administrative_hierarchy_level_type_value",
                             "rank": 3
                         },
                         "shn_code": {
