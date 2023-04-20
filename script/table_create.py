@@ -50,7 +50,10 @@ def createTableAndIndexes(conf, mcd, theme, tables):
 
 def getCreateTrigger(conf, theme, tableName):
         fullTableName = getTableName(conf['data']['themes'][theme]['schema'], tableName)
-        return "CREATE TRIGGER ome2_reduce_precision_3d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_3d_trigger_function();"
+        if theme == "au":
+            return "CREATE TRIGGER ome2_reduce_precision_2d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_2d_trigger_function();"
+        else:    
+            return "CREATE TRIGGER ome2_reduce_precision_3d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_3d_trigger_function();"
 
 def getOrderedFields(fields, fieldsToCreate):  
     nbFields = len(fields)
