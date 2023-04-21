@@ -211,13 +211,17 @@
                             "sql_type": "administrative_hierarchy_level_type_value",
                             "rank": 3
                         },
+                        "name": {
+                            "sql_type": "jsonb",
+                            "rank": 4
+                        },
                         "shn_code": {
                             "sql_type": "character varying(255)",
-                            "rank": 4
+                            "rank": 5
                         },
                         "land_cover_type": {
                             "sql_type": "land_cover_type_value",
-                            "rank": 5
+                            "rank": 6
                         }
                     }
                 },
