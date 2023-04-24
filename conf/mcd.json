@@ -173,6 +173,48 @@
                 }
             }
         },
+        "ib": {
+            "tables": {
+                "international_boundary_lines": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(LineString,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "boundary_type": {
+                            "sql_type": "boundary_type_value",
+                            "rank": 2
+                        },
+                        "legal_status": {
+                            "sql_type": "legal_status_value",
+                            "rank": 3
+                        },
+                        "technical_status": {
+                            "sql_type": "technical_status_value",
+                            "rank": 4
+                        }
+                    }
+                },
+                "international_boundary_nodes": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(Point,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "legal_status": {
+                            "sql_type": "legal_status_value",
+                            "rank": 2
+                        },
+                        "technical_status": {
+                            "sql_type": "technical_status_value",
+                            "rank": 3
+                        }
+                    }
+                }
+            }
+        },
         "au": {
             "tables": {
                 "administrative_boundary": {
