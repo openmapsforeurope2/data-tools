@@ -215,6 +215,11 @@
                 },
                 "national_admin_extent": {
                     "fields": {
+                        "geom": {
+                            "sql_type": "geometry(Polygon,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        }
                     }
                 }
             }
