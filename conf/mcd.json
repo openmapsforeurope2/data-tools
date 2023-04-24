@@ -175,7 +175,7 @@
         },
         "ib": {
             "tables": {
-                "international_boundary_lines": {
+                "international_boundary_line": {
                     "fields": {
                         "geom": {
                             "sql_type": "geometry(LineString,${srid})",
@@ -196,7 +196,7 @@
                         }
                     }
                 },
-                "international_boundary_nodes": {
+                "international_boundary_node": {
                     "fields": {
                         "geom": {
                             "sql_type": "geometry(Point,${srid})",
