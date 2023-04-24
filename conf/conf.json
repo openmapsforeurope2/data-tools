@@ -64,6 +64,15 @@
                     "administrative_unit_6",
                     "administrative_level"
                 ]
+            },
+            "ib": {
+                "schema": "ib",
+                "h_schema": "ib",
+                "w_schema": "public",
+                "tables": [
+                    "international_boundary_line",
+                    "international_boundary_node"
+                ]
             }
         }
     },
