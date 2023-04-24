@@ -71,7 +71,8 @@
                 "w_schema": "public",
                 "tables": [
                     "international_boundary_line",
-                    "international_boundary_node"
+                    "international_boundary_node",
+                    "national_admin_extent"
                 ]
             }
         }

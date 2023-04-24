@@ -212,6 +212,10 @@
                             "rank": 3
                         }
                     }
+                },
+                "national_admin_extent": {
+                    "fields": {
+                    }
                 }
             }
         },
