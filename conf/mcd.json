@@ -122,31 +122,31 @@
                             "rank": 11
                         },
                         "maximum_height": {
-                            "sql_type": "double",
+                            "sql_type": "numeric(5,2)",
                             "rank": 12
                         },
                         "maximum_length": {
-                            "sql_type": "double",
+                            "sql_type": "numeric(5,2)",
                             "rank": 13
                         },
                         "maximum_width": {
-                            "sql_type": "double",
+                            "sql_type": "numeric(5,2)",
                             "rank": 14
                         },
                         "maximum_total_weight": {
-                            "sql_type": "double",
+                            "sql_type": "numeric(5,2)",
                             "rank": 15
                         },
                         "maximum_single_axle_weight": {
-                            "sql_type": "double",
+                            "sql_type": "numeric(5,2)",
                             "rank": 16
                         },
                         "maximum_double_axle_weight": {
-                            "sql_type": "double",
+                            "sql_type": "numeric(5,2)",
                             "rank": 17
                         },
                         "maximum_triple_axle_weight": {
-                            "sql_type": "double",
+                            "sql_type": "numeric(5,2)",
                             "rank": 18
                         },
                         "speed_limit": {
