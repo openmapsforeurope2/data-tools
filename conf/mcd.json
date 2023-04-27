@@ -193,6 +193,10 @@
                         "technical_status": {
                             "sql_type": "technical_status_value",
                             "rank": 4
+                        },
+                        "boundary_source": {
+                            "sql_type": "boundary_source_value",
+                            "rank": 5
                         }
                     }
                 },
