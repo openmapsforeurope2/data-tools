@@ -57,6 +57,9 @@ python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 1000 be f
 ~~~
 
 ### 2) Etape de matching
+creation_cn -c conf.json -t road_link
+
+road_link modifiée avec mise à jour du champ modification_type
 
 
 ### 3) Intégration des modifications dans la table principale et la table d'historique:
