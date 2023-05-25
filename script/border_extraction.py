@@ -14,12 +14,14 @@ def run(argv):
     arg_theme = ""
     arg_tables = []
     arg_dist = None
+    arg_bcc = None
+    arg_noreset = False
     arg_verbose = False
     arg_help = "{0} -c <conf> -o <output> -v".format(argv[0])
     
     try:
-        opts, args = getopt.getopt(argv[1:], "hc:T:t:d:v", ["help",
-        "conf=", "theme=", "table=", "distance=", "verbose"])
+        opts, args = getopt.getopt(argv[1:], "hc:T:t:d:b:nv", ["help",
+        "conf=", "theme=", "table=", "distance=", "border_country=", "noreset", "verbose"])
     except:
         print(arg_help)
         sys.exit(2)
@@ -36,6 +38,10 @@ def run(argv):
             arg_tables.append(arg)
         elif opt in ("-d", "--distance"):
             arg_dist = arg
+        elif opt in ("-b", "--border_country"):
+            arg_bcc = arg
+        elif opt in ("-n", "--noreset"):
+            arg_noreset = True
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
@@ -43,6 +49,8 @@ def run(argv):
     print('theme:', arg_theme)
     print('tables:', arg_tables)
     print('distance:', arg_dist)
+    print('border country:', arg_bcc)
+    print('reset:', (not arg_noreset))
     print('verbose:', arg_verbose)
 
     if arg_dist is None:
@@ -61,7 +69,7 @@ def run(argv):
 
     conf = utils.getConf(arg_conf)
 
-    border_extract.run(conf, arg_theme, arg_tables, arg_dist, args, arg_verbose)
+    border_extract.run(conf, arg_theme, arg_tables, arg_dist, args, arg_bcc, (not arg_noreset), arg_verbose)
 
     print("[END EXTRACTION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 

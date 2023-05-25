@@ -7,7 +7,7 @@
         "pwd":"ome2_user"
     },
     "landmask": {
-        "schema": "ome2_ib",
+        "schema": "ib",
         "table": "national_admin_extent",
         "fields":{
             "country": "country",
@@ -15,7 +15,7 @@
         }
     },
     "boundary": {
-        "schema": "ome2_ib",
+        "schema": "ib",
         "table": "international_boundary_line",
         "fields":{
             "country": "country",
