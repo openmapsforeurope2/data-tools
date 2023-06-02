@@ -5,7 +5,7 @@ def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName
 
 def run(
-    conf, theme, tables, distance, countryCodes, verbose
+    conf, theme, tables, distance, countryCodes, borderCountryCode, reset, verbose
 ):
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
@@ -21,6 +21,9 @@ def run(
     for country in  countryCodes:
         where_statement_boundary += (" AND " if where_statement_boundary else "") +conf['data']['common_fields']['country']+" LIKE '%"+country+"%'"
         where_statement_data += ("," if where_statement_data else "") + "'"+country+"'"
+    if borderCountryCode :
+        where_statement_boundary += (" AND " if where_statement_boundary else "") +conf['data']['common_fields']['country']+" LIKE '%"+borderCountryCode+"%'"
+    
     where_statement_data = conf['data']['common_fields']['country']+" IN ("+where_statement_data+")"
 
     boundary_statement =  "ST_Union(ARRAY((SELECT "+conf['boundary']['fields']['geometry']+" FROM "+getTableName(conf['boundary']['schema'], conf['boundary']['table'])+" WHERE "+where_statement_boundary+")))"
@@ -42,12 +45,25 @@ def run(
         cursor.execute(q)
         fields = cursor.fetchone()[0]
 
-        query = "DELETE FROM "+workingTableName+";"
-        query += "INSERT INTO "+workingTableName+" ("+fields+") SELECT "+fields+" FROM "+tableName
+        if not reset :
+            # on recupere tout les ids deja extraits pour ne pas les extraires a nouveau
+            q3 = "SELECT string_agg("+conf['data']['common_fields']['id']+"::character varying,',') FROM "+wIdsTableName
+            print(u'query: {}'.format(q3), flush=True)
+            cursor.execute(q3)
+            ids = cursor.fetchone()[0]
+            ids = ids.split(',')
+            ids = "','".join(ids)
+
+
+        query = ""
+        if reset : query += "DELETE FROM "+wTableName+";"
+        query += "INSERT INTO "+wTableName+" ("+fields+") SELECT "+fields+" FROM "+tableName
         query += " WHERE "+where_statement_data
         query += " AND ST_intersects("+conf['data']['common_fields']['geometry']+",(SELECT ST_Buffer("+boundary_statement+","+ str(distance)+")))"
         if 'where' in conf['border_extraction'] and conf['border_extraction']['where']:
             query += " AND "+conf['border_extraction']['where']
+        if not reset :
+            query += " AND "+conf['data']['common_fields']['id']+" NOT IN ('"+ids+"')"
 
         print(u'query: {}'.format(query), flush=True)
         cursor.execute(query)

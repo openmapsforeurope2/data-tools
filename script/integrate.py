@@ -73,7 +73,7 @@ def run(
         _fields = cursor.fetchone()[0]
 
         # on parcourt les identifiants des objets extraits
-        q1 = "SELECT "+id_field+" FROM "+gwIdsTableName
+        q1 = "SELECT "+id_field+" FROM "+wIdsTableName
         cursor.execute(q1)
         tuples = cursor.fetchall()
         ids_ = [ "'"+t[0]+"'" for t in tuples ]
