@@ -151,7 +151,7 @@ def run(
         for nt in new_tuples:
             integrated.append(nt[0])
         
-        print("Nombre d'objets créés: "+str(len(integrated)))
+        print("Nombre d'objets créés: "+str(len(new_tuples)))
 
         
         # on transfert les objets dans la table historique
