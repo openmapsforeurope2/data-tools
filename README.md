@@ -74,10 +74,10 @@ python3 script/integration.py -c conf.json -T tn -t road_link -s 20
 
 Pour la Belgique:
 ~~~
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area -b nl -d 1000 be
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area -b de -d 1000 be
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area -b lu -d 1000 be
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area -b fr -d 1000 be
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b nl -d 1000 be
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b de -d 1000 -n be
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b lu -d 1000 -n be
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b fr -d 1000 -n be
 ~~~
 
 Pour la france:
@@ -87,14 +87,14 @@ python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 
 
 Exemple pour la france (suite), Exemple d'une extraction sur plusieurs pays frontaliers:
 ~~
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area -b lu -d 1000 fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area -b be -d 1000 -n fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area -b de -d 1000 -n fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area -b ch -d 1000 -n fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area -b it -d 1000 -n fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area -b mc -d 1000 -n fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area -b es -d 1000 -n fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area -b ad -d 1000 -n fr
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b lu -d 1000 fr
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b be -d 1000 -n fr
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b de -d 1000 -n fr
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b ch -d 1000 -n fr
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b it -d 1000 -n fr
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b mc -d 1000 -n fr
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b es -d 1000 -n fr
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b ad -d 1000 -n fr
 ~~~
 
 ### 2) Etape de matching

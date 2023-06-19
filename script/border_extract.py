@@ -45,14 +45,16 @@ def run(
         cursor.execute(q)
         fields = cursor.fetchone()[0]
 
+        ids = None
         if not reset :
             # on recupere tout les ids deja extraits pour ne pas les extraires a nouveau
             q3 = "SELECT string_agg("+conf['data']['common_fields']['id']+"::character varying,',') FROM "+wIdsTableName
             print(u'query: {}'.format(q3), flush=True)
             cursor.execute(q3)
             ids = cursor.fetchone()[0]
-            ids = ids.split(',')
-            ids = "','".join(ids)
+            if ids is not None:
+                ids = ids.split(',')
+                ids = "','".join(ids)
 
 
         query = ""
@@ -62,7 +64,7 @@ def run(
         query += " AND ST_intersects("+conf['data']['common_fields']['geometry']+",(SELECT ST_Buffer("+boundary_statement+","+ str(distance)+")))"
         if 'where' in conf['border_extraction'] and conf['border_extraction']['where']:
             query += " AND "+conf['border_extraction']['where']
-        if not reset :
+        if not reset and ids is not None:
             query += " AND "+conf['data']['common_fields']['id']+" NOT IN ('"+ids+"')"
 
         print(u'query: {}'.format(query), flush=True)
