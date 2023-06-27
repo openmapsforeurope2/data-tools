@@ -72,44 +72,65 @@ python3 script/integration.py -c conf.json -T tn -t road_link -s 20
 ## Etape de matching administratif (30)
 ### 1) Extraction des objets autour des frontières d'un pays matching:
 
-Pour la Belgique:
+#### Belgique:
+Exemple d'extraction autour des frontières avec un seul pays frontalier:
 ~~~
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b nl -d 1000 be
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b de -d 1000 -n be
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b lu -d 1000 -n be
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b fr -d 1000 -n be
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_5 -b nl -d 1000 be
 ~~~
 
-Pour la france:
+Exemple d'extraction autour des frontières avec plusieurs pays frontaliers:
 ~~~
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b be -d 1000 fr
-~~
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_5 -b nl -d 1000 be
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_5 -b de -d 1000 -n be
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_5 -b lu -d 1000 -n be
+~~~
 
-Exemple pour la france (suite), Exemple d'une extraction sur plusieurs pays frontaliers:
-~~
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b lu -d 1000 fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b be -d 1000 -n fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b de -d 1000 -n fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b ch -d 1000 -n fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b it -d 1000 -n fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b mc -d 1000 -n fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b es -d 1000 -n fr
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -b ad -d 1000 -n fr
+Exemple d'extraction autour de toutes les frontières:
+~~~
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_5 -d 1000 be '#'
+~~~
+
+#### Pays-Bas:
+~~~
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_3 -d 1000 nl '#'
+~~~
+
+#### France:
+~~~
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_6 -d 1000 fr '#'
 ~~~
 
 ### 2) Etape de matching
 Copier les tables des frontières et des contours des pays dans le schéma public:
 ~~~
-DROP TABLE IF EXISTS au_administrative_unit_1; CREATE TABLE au_administrative_unit_1 AS TABLE au.administrative_unit_1;
-DROP TABLE IF EXISTS ib_international_boundary_line; CREATE TABLE ib_international_boundary_line AS TABLE ib.international_boundary_line;
+python3 script/table_copy.py -c conf.json au.administrative_unit_1 ib.international_boundary_line
 ~~~
 
 Lancer le traitement:
+#### Belgique:
+~~~
+bin/ome2_au_matching --c data/config/epg_parameters.ini --t administrative_unit_5_w --cc be
+~~~
+
+#### Pays-Bas:
+~~~
+bin/ome2_au_matching --c data/config/epg_parameters.ini --t administrative_unit_3_w --cc nl
+~~~
+
+#### France
 ~~~
 au_matching --c conf.json --t administrative_unit_6_w fr
 ~~~
 
 ### 3) Intégration des modifications dans la table principale et la table d'historique:
+Dans un premier temps, vérifier dans le fichier de log si des polygones non-valides ont été générés au cours de processus de matching, les corriger dans QGIS le cas échéant.
+
+#### Belgique:
+~~~
+python3 script/integration.py -c conf.json -T au -t administrative_unit_5 -s 30
+~~~
+
+#### France:
 ~~~
 python3 script/integration.py -c conf.json -T au -t administrative_unit_6 -s 30
 ~~~
@@ -117,10 +138,10 @@ python3 script/integration.py -c conf.json -T au -t administrative_unit_6 -s 30
 
 ## Etape de merging administratif (30)
 ### Niveau 5)
-#### 1) Extraction des objets autour des frontières d'un pays matching:
-Pour la france:
+#### 1) Extraction des objets autour des frontières d'un pays:
+#### France:
 ~~~
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_5 -b be -d 1000 fr
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_5 -b be -d 1000 fr '#'
 ~~~
 
 #### 2) Etape de merging
@@ -130,6 +151,7 @@ DROP TABLE IF EXISTS au_administrative_unit_6; CREATE TABLE au_administrative_un
 ~~~
 
 Lancer le traitement:
+#### France
 ~~~
 au_merging --c path/to/epg_parameters.ini --s au_administrative_unit_6 --t administrative_unit_5_w --cc fr
 ~~~
@@ -141,79 +163,134 @@ python3 script/integration.py -c conf.json -T au -t administrative_unit_5 -s 30
 
 
 ### Niveau 4)
-#### 1) Extraction des objets autour des frontières d'un pays matching:
-Pour la france:
+#### 1) Extraction des objets autour des frontières d'un pays:
+#### Belgique:
 ~~~
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_4 -b be -d 1000 fr
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_4 -d 1000 be '#'
 ~~~
 
-#### 2) Etape de matching
+#### France:
+~~~
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_4 -d 1000 fr '#'
+~~~
+
+#### 2) Etape de merging
 Copier les tables des surfaces administratives de niveau inférieur dans le schéma public:
+#### Belgique:
+~~~
+DROP TABLE IF EXISTS au_administrative_unit_5; CREATE TABLE au_administrative_unit_5 AS TABLE au.administrative_unit_5;
+~~~
+
+#### France:
 ~~~
 DROP TABLE IF EXISTS au_administrative_unit_6; CREATE TABLE au_administrative_unit_6 AS TABLE au.administrative_unit_6;
 ~~~
 
 Lancer le traitement:
+#### Belgique:
+~~~
+bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_5 --t administrative_unit_4_w --cc be
+~~~
+
+#### France:
 ~~~
 au_matching -c path/to/epg_parameters.ini -s au_administrative_unit_6 -t administrative_unit_4_w --cc fr
 ~~~
 
 #### 3) Intégration des modifications dans la table principale et la table d'historique:
+Dans un premier temps, vérifier dans le fichier de log si des polygones non-valides ont été générés au cours de processus de matching, les corriger dans QGIS le cas échéant.
+
 ~~~
 python3 script/integration.py -c conf.json -T au -t administrative_unit_4 -s 30
 ~~~
 
 ### Niveau 3)
 #### 1) Extraction des objets autour des frontières d'un pays matching:
-Pour la france:
+#### Belgique:
 ~~~
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_3 -b be -d 1000 fr
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_3 -b nl -d 1000 be
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_3 -b de -d 1000 -n be
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_3 -b lu -d 1000 -n be
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_3 -b fr -d 1000 -n be
+~~~
+
+#### France:
+~~~
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_3 -b be -d 1000 fr '#'
 ~~~
 
 #### 2) Etape de matching
 Copier les tables des surfaces administratives de niveau inférieur dans le schéma public:
+Belgique, France:
 ~~~
 DROP TABLE IF EXISTS au_administrative_unit_4; CREATE TABLE au_administrative_unit_4 AS TABLE au.administrative_unit_4;
 ~~~
 
 Lancer le traitement:
+#### Belgique:
+~~~
+bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_4 --t administrative_unit_3_w --cc be
+~~~
+
+#### France
 ~~~
 au_matching -c path/to/epg_parameters.ini -s au_administrative_unit_4 -t administrative_unit_3_w fr
 ~~~
 
 #### 3) Intégration des modifications dans la table principale et la table d'historique:
+Dans un premier temps, vérifier dans le fichier de log si des polygones non-valides ont été générés au cours de processus de matching, les corriger dans QGIS le cas échéant.
+
 ~~~
 python3 script/integration.py -c conf.json -T au -t administrative_unit_3 -s 30
 ~~~
 
 ### Niveau 2)
 #### 1) Extraction des objets autour des frontières d'un pays matching:
-Pour la france:
+#### Belgique:
 ~~~
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_2 -b be -d 1000 fr
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_2 -d 1000 be '#'
+~~~
+
+#### France:
+~~~
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_2 --d 1000 fr '#'
 ~~~
 
 #### 2) Etape de matching
 Copier les tables des surfaces administratives de niveau inférieur dans le schéma public:
+Belgique, France:
 ~~~
 DROP TABLE IF EXISTS au_administrative_unit_3; CREATE TABLE au_administrative_unit_3 AS TABLE au.administrative_unit_3;
 ~~~
 
 Lancer le traitement:
+#### Belgique:
+~~~
+bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_3 --t administrative_unit_2_w --cc be
+~~~
+
+#### France
 ~~~
 au_matching -c path/to/epg_parameters.ini -s au_administrative_unit_3 -t administrative_unit_2_w fr
 ~~~
 
 #### 3) Intégration des modifications dans la table principale et la table d'historique:
+Dans un premier temps, vérifier dans le fichier de log si des polygones non-valides ont été générés au cours de processus de matching, les corriger dans QGIS le cas échéant.
+
 ~~~
 python3 script/integration.py -c conf.json -T au -t administrative_unit_2 -s 30
 ~~~
 
 ### Niveau 1)
 #### 1) Extraction des objets autour des frontières d'un pays matching:
-Pour la france:
+#### Belgique:
 ~~~
-python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_1 -b be -d 1000 fr
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_1 -d 1000 be '#'
+~~~
+
+#### France:
+~~~
+python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_1 -d 1000 fr '#'
 ~~~
 
 #### 2) Etape de matching
@@ -223,6 +300,12 @@ DROP TABLE IF EXISTS au_administrative_unit_2; CREATE TABLE au_administrative_un
 ~~~
 
 Lancer le traitement:
+#### Belgique:
+~~~
+bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_2 --t administrative_unit_1_w --cc be
+~~~
+
+#### France:
 ~~~
 au_matching -c path/to/epg_parameters.ini -s au_administrative_unit_2 -t administrative_unit_1_w fr
 ~~~
