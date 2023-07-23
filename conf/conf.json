@@ -14,14 +14,6 @@
             "geometry": "geom"
         }
     },
-    "boundary": {
-        "schema": "ib",
-        "table": "international_boundary_line",
-        "fields":{
-            "country": "country",
-            "geometry": "geom"
-        }
-    },
     "data": {
         "common_fields": {
             "country": "country",

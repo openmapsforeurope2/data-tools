@@ -5,7 +5,7 @@ def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName
 
 def run(
-    conf, theme, tables, distance, countryCodes, borderCountryCode, reset, verbose
+    conf, theme, tables, distance, countryCodes, borderCountryCode, boundaryType, reset, verbose
 ):
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
@@ -19,10 +19,13 @@ def run(
     where_statement_boundary = ""
     where_statement_data = ""
     for country in  countryCodes:
-        where_statement_boundary += (" AND " if where_statement_boundary else "") +conf['data']['common_fields']['country']+" LIKE '%"+country+"%'"
+        where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['data']['common_fields']['country'] + (" = '"+country+"'" if borderCountryCode == False else " LIKE '%"+country+"%'") 
         where_statement_data += ("," if where_statement_data else "") + "'"+country+"'"
     if borderCountryCode :
-        where_statement_boundary += (" AND " if where_statement_boundary else "") +conf['data']['common_fields']['country']+" LIKE '%"+borderCountryCode+"%'"
+        where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['data']['common_fields']['country'] + " LIKE '%"+borderCountryCode+"%'"
+
+    if boundaryType == "international":
+        where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['boundary']['fields']['type'] + " = '" + conf['boundary']['boundary_type_values']['international'] + "'"
     
     where_statement_data = conf['data']['common_fields']['country']+" IN ("+where_statement_data+")"
 
