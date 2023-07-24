@@ -50,7 +50,18 @@
                 "h_schema": "tn",
                 "w_schema": "public",
                 "tables": [
-                    "road_link"
+                    "road_link",
+                    "road",
+                    "road_node",
+                    "road_service",
+                    "marker_post",
+                    "railway_link",
+                    "railway_line",
+                    "railway_station",
+                    "aerodrome",
+                    "runway",
+                    "ferry_crossing",
+                    "port"
                 ]
             },
             "au": {
