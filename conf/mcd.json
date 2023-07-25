@@ -15,7 +15,7 @@
                 "rank": 1
             },
             "begin_lifespan_version": {
-                "sql_type": "timestamp without time zone",
+                "sql_type": "timestamp without time zone DEFAULT CURRENT_TIMESTAMP",
                 "rank": 2
             },
             "end_lifespan_version": {
@@ -82,71 +82,71 @@
                             "rank": 1
                         },
                         "form_of_way": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "functional_road_class": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
                         "number_of_lanes": {
-                            "sql_type": "integer",
+                            "sql_type": "integer DEFAULT -32768",
                             "rank": 4
                         },
                         "vertical_position": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 5
                         },
                         "vertical_level": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 6
                         },
                         "trans_european_transport_network": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 7
                         },
-                        "name": {
-                            "sql_type": "character varying(255)",
+                        "geographical_name": {
+                            "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 8
                         },
                         "road_surface_category": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 9
                         },
                         "traffic_flow_direction": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 10
                         },
                         "access_restriction": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 11
                         },
                         "maximum_height": {
-                            "sql_type": "numeric(7,2)",
+                            "sql_type": "numeric(7,2) DEFAULT -32768",
                             "rank": 12
                         },
                         "maximum_length": {
-                            "sql_type": "numeric(7,2)",
+                            "sql_type": "numeric(7,2) DEFAULT -32768",
                             "rank": 13
                         },
                         "maximum_width": {
-                            "sql_type": "numeric(7,2)",
+                            "sql_type": "numeric(7,2) DEFAULT -32768",
                             "rank": 14
                         },
                         "maximum_total_weight": {
-                            "sql_type": "numeric(7,2)",
+                            "sql_type": "numeric(7,2) DEFAULT -32768",
                             "rank": 15
                         },
                         "maximum_single_axle_weight": {
-                            "sql_type": "numeric(7,2)",
+                            "sql_type": "numeric(7,2) DEFAULT -32768",
                             "rank": 16
                         },
                         "maximum_double_axle_weight": {
-                            "sql_type": "numeric(7,2)",
+                            "sql_type": "numeric(7,2) DEFAULT -32768",
                             "rank": 17
                         },
                         "maximum_triple_axle_weight": {
-                            "sql_type": "numeric(7,2)",
+                            "sql_type": "numeric(7,2) DEFAULT -32768",
                             "rank": 18
                         },
                         "speed_limit": {
@@ -154,19 +154,19 @@
                             "rank": 19
                         },
                         "condition_of_facility": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 20
                         },                     
                         "link_to_road": {
-                            "sql_type": "character varying",
+                            "sql_type": "character varying DEFAULT 'void'",
                             "rank": 21
                         },
                         "national_road_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 22
                         },
                         "european_route_number": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 23
                         }
                     }
@@ -179,14 +179,14 @@
                             "rank": 1
                         },
                         "national_road_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "european_route_number": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         }
@@ -199,12 +199,12 @@
                             "index": "gist",
                             "rank": 1
                         },
-                        "name": {
-                            "sql_type": "character varying(255)",
+                        "geographical_name": {
+                            "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 2
                         },
                         "form_of_road_node":{
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         }
                     }
@@ -217,11 +217,11 @@
                             "rank": 1
                         },
                         "type":{
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
-                        "name": {
-                            "sql_type": "character varying(255)",
+                        "geographical_name": {
+                            "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 3
                         }
                     }
@@ -234,11 +234,11 @@
                             "rank": 1
                         },
                         "type":{
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
-                        "name": {
-                            "sql_type": "character varying(255)",
+                        "geographical_name": {
+                            "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 3
                         }
                     }
@@ -251,15 +251,15 @@
                             "rank": 1
                         },
                         "link_to_road": {
-                            "sql_type": "character varying(255)",
+                            "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 2
                         },
                         "code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
                         "distance": {
-                            "sql_type": "real",
+                            "sql_type": "real DEFAULT -32768",
                             "rank": 4
                         }
                     }
@@ -272,23 +272,23 @@
                             "rank": 1
                         },
                         "type":{
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "number_of_tracks": {
-                            "sql_type": "integer",
+                            "sql_type": "integer DEFAULT -32768",
                             "rank": 3
                         },
                         "vertical_position": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 4
                         },
                         "trans_european_transport_network": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 5
                         },
                         "electrified": {
-                            "sql_type": "integer",
+                            "sql_type": "integer DEFAULT -32768",
                             "rank": 6
                         }
                     }
@@ -301,7 +301,7 @@
                             "rank": 1
                         },
                         "railway_line_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "name": {
@@ -317,16 +317,16 @@
                             "index": "gist",
                             "rank": 1
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 2
                         },
                         "station_code":{
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
                         "railway_use": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 4
                         }
                     }
@@ -338,16 +338,16 @@
                             "index": "gist",
                             "rank": 1
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 2
                         },
                         "station_code":{
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
                         "railway_use": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 4
                         }
                     }
@@ -360,31 +360,31 @@
                             "rank": 1
                         },
                         "designator_iata": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "location_indicator_icao": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
                         "un_locode": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 4
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 5
                         },
                         "aerodrome_category": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 6
                         },
                         "aerodrome_type": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 7
                         },
                         "restriction": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 8
                         }
                     }
@@ -397,31 +397,31 @@
                             "rank": 1
                         },
                         "designator_iata": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "location_indicator_icao": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
                         "un_locode": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 4
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 5
                         },
                         "aerodrome_category": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 6
                         },
                         "aerodrome_type": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 7
                         },
                         "restriction": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 8
                         }
                     }
@@ -434,7 +434,7 @@
                             "rank": 1
                         },
                         "surface_composition": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         }    
                     }
@@ -446,16 +446,16 @@
                             "index": "gist",
                             "rank": 1
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 2
                         },
                         "ferry_use": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
                         "trans_european_transport_network": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 4
                         }
                     }
@@ -467,16 +467,16 @@
                             "index": "gist",
                             "rank": 1
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 2
                         },
                         "un_locode": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
                         "trans_european_transport_network": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 4
                         }
                     }
@@ -488,16 +488,16 @@
                             "index": "gist",
                             "rank": 1
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 2
                         },
                         "un_locode": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
                         "trans_european_transport_network": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 4
                         }
                     }
@@ -514,19 +514,19 @@
                             "rank": 1
                         },
                         "boundary_type": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "legal_status": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
                         "technical_status": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 4
                         },
                         "boundary_source": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 5
                         }
                     }
@@ -539,11 +539,11 @@
                             "rank": 1
                         },
                         "legal_status": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "technical_status": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         }
                     }
@@ -569,15 +569,15 @@
                             "rank": 1
                         },
                         "national_level": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "legal_status": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
                         "technical_status": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 4
                         }
                     }
@@ -590,23 +590,23 @@
                             "rank": 1
                         },
                         "national_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "national_level": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         },
                         "shn_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 5
                         },
                         "land_cover_type": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 6
                         }
                     }
@@ -619,27 +619,27 @@
                             "rank": 1
                         },
                         "national_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "shn_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         },
                         "national_level_code": {
-                            "sql_type": "integer",
+                            "sql_type": "integer DEFAULT -32768",
                             "rank": 5
                         },
                         "residence_of_authority": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 6
                         },
                         "land_cover_type": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 7
                         }
                     }
@@ -652,27 +652,27 @@
                             "rank": 1
                         },
                         "national_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "shn_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         },
                         "national_level_code": {
-                            "sql_type": "integer",
+                            "sql_type": "integer  DEFAULT -32768",
                             "rank": 5
                         },
                         "residence_of_authority": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 6
                         },
                         "land_cover_type": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 7
                         }
                     }
@@ -685,27 +685,27 @@
                             "rank": 1
                         },
                         "national_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "shn_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         },
                         "national_level_code": {
-                            "sql_type": "integer",
+                            "sql_type": "integer DEFAULT -32768",
                             "rank": 5
                         },
                         "residence_of_authority": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 6
                         },
                         "land_cover_type": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 7
                         }
                     }
@@ -718,27 +718,27 @@
                             "rank": 1
                         },
                         "national_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "shn_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         },
                         "national_level_code": {
-                            "sql_type": "integer",
+                            "sql_type": "integer DEFAULT -32768",
                             "rank": 5
                         },
                         "residence_of_authority": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 6
                         },
                         "land_cover_type": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 7
                         }
                     }
@@ -751,27 +751,27 @@
                             "rank": 1
                         },
                         "national_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "shn_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         },
                         "national_level_code": {
-                            "sql_type": "integer",
+                            "sql_type": "integer DEFAULT -32768",
                             "rank": 5
                         },
                         "residence_of_authority": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 6
                         },
                         "land_cover_type": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 7
                         }
                     }
@@ -784,27 +784,27 @@
                             "rank": 1
                         },
                         "national_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
                         "shn_code": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         },
                         "national_level_code": {
-                            "sql_type": "integer",
+                            "sql_type": "integer DEFAULT -32768",
                             "rank": 5
                         },
                         "residence_of_authority": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 6
                         },
                         "land_cover_type": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 7
                         }
                     }
@@ -812,7 +812,7 @@
                 "administrative_hierarchy": {
                     "fields": {
                         "national_level": {
-                            "sql_type": "character varying(80)",
+                            "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 1
                         },
                         "national_level_name": {
@@ -820,11 +820,11 @@
                             "rank": 2
                         },
                         "national_level_code": { 
-                            "sql_type": "integer",
+                            "sql_type": "integer DEFAULT -32768",
                             "rank": 3
                         },
                         "shn_digit": {
-                            "sql_type": "integer",
+                            "sql_type": "integer DEFAULT -32768",
                             "rank": 4
                         }
                     }
