@@ -229,7 +229,7 @@
                 "road_service_area": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(PolygonZ,${srid})",
+                            "sql_type": "geometry(MultiPolygonZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -250,17 +250,21 @@
                             "index": "gist",
                             "rank": 1
                         },
-                        "link_to_road": {
+                        "link_to_national_road": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 2
                         },
+                        "link_to_road": {
+                            "sql_type": "character varying(255) DEFAULT 'void'",
+                            "rank": 3
+                        },
                         "code": {
                             "sql_type": "character varying(80) DEFAULT 'void'",
-                            "rank": 3
+                            "rank": 4
                         },
                         "distance": {
                             "sql_type": "real DEFAULT -32768",
-                            "rank": 4
+                            "rank": 5
                         }
                     }
                 },
@@ -334,7 +338,7 @@
                 "railway_station_area": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(PolygonZ,${srid})",
+                            "sql_type": "geometry(MultiPolygonZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -392,7 +396,7 @@
                 "aerodrome_area": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(PolygonZ,${srid})",
+                            "sql_type": "geometry(MultiPolygonZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -484,7 +488,7 @@
                 "port_area": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(PointZ,${srid})",
+                            "sql_type": "geometry(MultiPolygonZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
