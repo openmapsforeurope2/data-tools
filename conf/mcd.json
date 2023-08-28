@@ -308,7 +308,7 @@
                             "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 2
                         },
-                        "name": {
+                        "geographical_name": {
                             "sql_type": "jsonb",
                             "rank": 3
                         }
@@ -433,7 +433,7 @@
                 "runway": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "sql_type": "geometry(MultiLineStringZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -446,7 +446,7 @@
                 "ferry_crossing": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(LineString,${srid})",
+                            "sql_type": "geometry(MultiLineStringZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },

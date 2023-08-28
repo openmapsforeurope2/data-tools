@@ -93,6 +93,27 @@
                     "international_boundary_node",
                     "national_admin_extent"
                 ]
+            },
+            "hy": {
+                "schema": "hy",
+                "h_schema": "hy",
+                "w_schema": "public",
+                "tables": [
+                    "watercourse_link",
+                    "watercourse",
+                    "hydro_node",
+                    "watercourse_area",
+                    "standing_water",
+                    "drainage_basin",
+                    "shoreline",
+                    "shore",
+                    "dam_area",
+                    "dam_line",
+                    "lock_area",
+                    "lock_line",
+                    "falls_line",
+                    "falls_point"
+                ]
             }
         }
     },
