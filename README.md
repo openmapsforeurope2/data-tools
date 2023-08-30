@@ -31,6 +31,19 @@ python3 script/table_creation.py -c conf.json -m mcd.json -T tn -t road_link
 
 ## Etape de nettoyage (10)
 ### 1) Extraction des objets autour des frontières d'un pays pour l'étape de nettoyage:
+
+<u>Pays-Bas:</u>
+~~~
+python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 4000 nl '#'
+~~~
+
+<u>Belgique:</u>
+~~~
+python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 4000 be '#'
+~~~
+
+<u>France:</u>
+
 ~~~
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 3000 fr '#'
 
@@ -44,10 +57,6 @@ python3 script/border_extraction.py -c conf.json -T tn -t road_link -b es -d 300
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -b ch -d 3000 -n fr
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -b de -d 3000 -n fr
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -b be -d 3000 -n fr
-~~~
-
-~~~
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 4000 be '#'
 ~~~
 
 ### 2) Etape de nettoyage - suppression des objets hors territoire - (se placer dans le répertoire du projet data-cleaner):
