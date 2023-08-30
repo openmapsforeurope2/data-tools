@@ -38,7 +38,7 @@ def run(
 
     # On revert tout un theme si pas d argument sinon on revert les tables passees en argument
     if not tables :
-        tables = conf['data']['themes'][theme]
+        tables = conf['data']['themes'][theme]["tables"]
 
     # On integre tout un theme si pas d argument sinon on integre les tables passees en argument
     # on recupère tous les objet supprimes ou modifies
