@@ -121,6 +121,6 @@
         "where1": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3.38928 50.36368,3.38928 50.71280,3.88366 50.71280,3.88366 50.36368,3.38928 50.36368))'),4326))",
         "where2": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3808951 3040674,3808951 3101076,3882202 3101076,3882202 3040674,3808951 3040674))'),3035))",
         "where3": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3868601 3040674,3868601 3049417,3882202 3049417,3882202 3040674,3868601 3040674))'),3035))",
-        "where": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3873474.9 3041465.1,3873474.9 3041743.9,3873766.5 3041743.9,3873766.5 3041465.1,3873474.9 3041465.1))'),4326))"
+        "where": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3873474.9 3041465.1,3873474.9 3041743.9,3873766.5 3041743.9,3873766.5 3041465.1,3873474.9 3041465.1))'),3035))"
     }
 }
