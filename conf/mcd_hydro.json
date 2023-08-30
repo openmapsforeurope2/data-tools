@@ -128,6 +128,14 @@
                         "navigable": {
                             "sql_type": "integer DEFAULT -32768",
                             "rank": 13
+                        },
+                        "width_lower_range": {
+                            "sql_type": "integer DEFAULT -32768",
+                            "rank": 13
+                        },
+                        "width_upper_range": {
+                            "sql_type": "integer DEFAULT -32768",
+                            "rank": 13
                         }
                     }
                 },
