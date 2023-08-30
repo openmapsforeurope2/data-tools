@@ -74,7 +74,7 @@
     "themes": {
         "hy": {
             "tables": {
-                "watercrouse_link": {
+                "watercourse_link": {
                     "fields": {
                         "geom": {
                             "sql_type": "geometry(LineStringZ,${srid})",
@@ -131,11 +131,11 @@
                         },
                         "width_lower_range": {
                             "sql_type": "integer DEFAULT -32768",
-                            "rank": 13
+                            "rank": 14
                         },
                         "width_upper_range": {
                             "sql_type": "integer DEFAULT -32768",
-                            "rank": 13
+                            "rank": 15
                         }
                     }
                 },
