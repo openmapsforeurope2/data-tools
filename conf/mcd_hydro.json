@@ -184,7 +184,7 @@
                             "sql_type": "jsonb",
                             "rank": 2
                         },
-                        "persistnce": {
+                        "persistence": {
                             "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },
@@ -209,7 +209,7 @@
                             "sql_type": "jsonb",
                             "rank": 2
                         },
-                        "persistnce": {
+                        "persistence": {
                             "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 3
                         },

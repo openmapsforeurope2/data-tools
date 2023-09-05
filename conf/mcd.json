@@ -90,7 +90,7 @@
                             "rank": 3
                         },
                         "number_of_lanes": {
-                            "sql_type": "integer DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 4
                         },
                         "vertical_position": {
@@ -106,7 +106,7 @@
                             "rank": 7
                         },
                         "geographical_name": {
-                            "sql_type": "character varying(255) DEFAULT 'void'",
+                            "sql_type": "jsonb",
                             "rank": 8
                         },
                         "road_surface_category": {
@@ -122,35 +122,35 @@
                             "rank": 11
                         },
                         "maximum_height": {
-                            "sql_type": "numeric(7,2) DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 12
                         },
                         "maximum_length": {
-                            "sql_type": "numeric(7,2) DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 13
                         },
                         "maximum_width": {
-                            "sql_type": "numeric(7,2) DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 14
                         },
                         "maximum_total_weight": {
-                            "sql_type": "numeric(7,2) DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 15
                         },
                         "maximum_single_axle_weight": {
-                            "sql_type": "numeric(7,2) DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 16
                         },
                         "maximum_double_axle_weight": {
-                            "sql_type": "numeric(7,2) DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 17
                         },
                         "maximum_triple_axle_weight": {
-                            "sql_type": "numeric(7,2) DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 18
                         },
                         "speed_limit": {
-                            "sql_type": "jsonb",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 19
                         },
                         "condition_of_facility": {
@@ -161,13 +161,17 @@
                             "sql_type": "character varying DEFAULT 'void'",
                             "rank": 21
                         },
-                        "national_road_code": {
+                        "road_national_road_code": {
                             "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 22
                         },
-                        "european_route_number": {
+                        "road_european_route_number": {
                             "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 23
+                        },
+                        "road_geographical_name": {
+                            "sql_type": "jsonb",
+                            "rank": 24
                         }
                     }
                 },
@@ -200,7 +204,7 @@
                             "rank": 1
                         },
                         "geographical_name": {
-                            "sql_type": "character varying(255) DEFAULT 'void'",
+                            "sql_type": "jsonb",
                             "rank": 2
                         },
                         "form_of_road_node":{
@@ -221,7 +225,7 @@
                             "rank": 2
                         },
                         "geographical_name": {
-                            "sql_type": "character varying(255) DEFAULT 'void'",
+                            "sql_type": "jsonb",
                             "rank": 3
                         }
                     }
@@ -238,7 +242,7 @@
                             "rank": 2
                         },
                         "geographical_name": {
-                            "sql_type": "character varying(255) DEFAULT 'void'",
+                            "sql_type": "jsonb",
                             "rank": 3
                         }
                     }
@@ -263,7 +267,7 @@
                             "rank": 4
                         },
                         "distance": {
-                            "sql_type": "real DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 5
                         }
                     }
@@ -280,7 +284,7 @@
                             "rank": 2
                         },
                         "number_of_tracks": {
-                            "sql_type": "integer DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 3
                         },
                         "vertical_position": {
@@ -292,8 +296,16 @@
                             "rank": 5
                         },
                         "electrified": {
-                            "sql_type": "integer DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 6
+                        },
+                        "railway_line_code": {
+                            "sql_type": "character varying(80) DEFAULT 'void'",
+                            "rank": 7
+                        },
+                        "railway_line_geographical_name": {
+                            "sql_type": "jsonb",
+                            "rank": 8
                         }
                     }
                 },
@@ -430,7 +442,20 @@
                         }
                     }
                 },
-                "runway": {
+                "runway_line": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiLineStringZ,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "surface_composition": {
+                            "sql_type": "character varying(80) DEFAULT 'void'",
+                            "rank": 2
+                        }    
+                    }
+                },
+                "runway_area": {
                     "fields": {
                         "geom": {
                             "sql_type": "geometry(MultiLineStringZ,${srid})",
