@@ -109,8 +109,10 @@
                     "shore",
                     "dam_area",
                     "dam_line",
+                    "dam_point",
                     "lock_area",
                     "lock_line",
+                    "lock_point",
                     "falls_line",
                     "falls_point"
                 ]

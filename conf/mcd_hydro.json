@@ -90,7 +90,7 @@
                             "rank": 3
                         },
                         "tidal": {
-                            "sql_type": "integer DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 4
                         },
                         "flow": {
@@ -114,7 +114,7 @@
                             "rank": 9
                         },
                         "fictitious": {
-                            "sql_type": "integer DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 10
                         },
                         "trans_european_transport_network": {
@@ -126,15 +126,15 @@
                             "rank": 12
                         },
                         "navigable": {
-                            "sql_type": "integer DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 13
                         },
                         "width_lower_range": {
-                            "sql_type": "integer DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 14
                         },
                         "width_upper_range": {
-                            "sql_type": "integer DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 15
                         }
                     }
@@ -189,7 +189,7 @@
                             "rank": 3
                         },
                         "tidal": {
-                            "sql_type": "integer DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 4
                         },
                         "origin": {
@@ -214,7 +214,7 @@
                             "rank": 3
                         },
                         "tidal": {
-                            "sql_type": "integer DEFAULT -32768",
+                            "sql_type": "character varying(10) DEFAULT '-32768'",
                             "rank": 4
                         },
                         "origin": {
@@ -284,6 +284,10 @@
                         "hydro_identifier": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 2
+                        },
+                        "geographical_name": {
+                            "sql_type": "jsonb",
+                            "rank": 3
                         }
                     }
                 },
@@ -297,6 +301,27 @@
                         "hydro_identifier": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 2
+                        },
+                        "geographical_name": {
+                            "sql_type": "jsonb",
+                            "rank": 3
+                        }
+                    }
+                },
+                "dam_point": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "hydro_identifier": {
+                            "sql_type": "character varying(255) DEFAULT 'void'",
+                            "rank": 2
+                        },
+                        "geographical_name": {
+                            "sql_type": "jsonb",
+                            "rank": 3
                         }
                     }
                 },
@@ -310,6 +335,10 @@
                         "hydro_identifier": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 2
+                        },
+                        "geographical_name": {
+                            "sql_type": "jsonb",
+                            "rank": 3
                         }
                     }
                 },
@@ -323,6 +352,27 @@
                         "hydro_identifier": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 2
+                        },
+                        "geographical_name": {
+                            "sql_type": "jsonb",
+                            "rank": 3
+                        }
+                    }
+                },
+                "lock_point": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "hydro_identifier": {
+                            "sql_type": "character varying(255) DEFAULT 'void'",
+                            "rank": 2
+                        },
+                        "geographical_name": {
+                            "sql_type": "jsonb",
+                            "rank": 3
                         }
                     }
                 },
