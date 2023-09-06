@@ -90,7 +90,7 @@
                             "rank": 3
                         },
                         "tidal": {
-                            "sql_type": "character varying(10) DEFAULT '-32768'",
+                            "sql_type": "character varying(10) DEFAULT 'void'",
                             "rank": 4
                         },
                         "flow": {
@@ -114,7 +114,7 @@
                             "rank": 9
                         },
                         "fictitious": {
-                            "sql_type": "character varying(10) DEFAULT '-32768'",
+                            "sql_type": "character varying(10) DEFAULT 'void'",
                             "rank": 10
                         },
                         "trans_european_transport_network": {
@@ -126,7 +126,7 @@
                             "rank": 12
                         },
                         "navigable": {
-                            "sql_type": "character varying(10) DEFAULT '-32768'",
+                            "sql_type": "character varying(10) DEFAULT 'void'",
                             "rank": 13
                         },
                         "width_lower_range": {
@@ -189,12 +189,16 @@
                             "rank": 3
                         },
                         "tidal": {
-                            "sql_type": "character varying(10) DEFAULT '-32768'",
+                            "sql_type": "character varying(10) DEFAULT 'void'",
                             "rank": 4
                         },
                         "origin": {
                             "sql_type": "character varying(80) DEFAULT 'void'",
                             "rank": 5
+                        },
+                        "hydro_identifier": {
+                            "sql_type": "character varying(255) DEFAULT 'void'",
+                            "rank": 6
                         }
                     }
                 },
@@ -214,7 +218,7 @@
                             "rank": 3
                         },
                         "tidal": {
-                            "sql_type": "character varying(10) DEFAULT '-32768'",
+                            "sql_type": "character varying(10) DEFAULT 'void'",
                             "rank": 4
                         },
                         "origin": {
