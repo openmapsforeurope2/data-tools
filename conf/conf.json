@@ -2,7 +2,7 @@
     "db":{
         "host":"SMLPOPENMAPS2",
         "port":"5432",
-        "name":"ome2_hvlsp_v2",
+        "name":"ome2_hvlsp_template",
         "user":"ome2_user",
         "pwd":"ome2_user"
     },
@@ -62,7 +62,8 @@
                     "railway_station_area",
                     "aerodrome_point",
                     "aerodrome_area",
-                    "runway",
+                    "runway_line",
+                    "runway_point",
                     "ferry_crossing",
                     "port_point",
                     "port_area"
@@ -91,7 +92,7 @@
                 "tables": [
                     "international_boundary_line",
                     "international_boundary_node",
-                    "national_admin_extent"
+                    "landmask"
                 ]
             },
             "hy": {

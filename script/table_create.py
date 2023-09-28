@@ -50,7 +50,7 @@ def createTableAndIndexes(conf, mcd, theme, tables):
 
 def getCreateTrigger(conf, theme, tableName):
         fullTableName = getTableName(conf['data']['themes'][theme]['schema'], tableName)
-        if theme == "au" or theme == "ib":
+        if theme == "au" or theme == "ib" or tableName in ['drainage_basin']:
             return "CREATE TRIGGER ome2_reduce_precision_2d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_2d_trigger_function();"
         else:    
             return "CREATE TRIGGER ome2_reduce_precision_3d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_3d_trigger_function();"
