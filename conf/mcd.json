@@ -468,7 +468,7 @@
                 "runway_area": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(MultiLineStringZ,${srid})",
+                            "sql_type": "geometry(MultiPolygonZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
