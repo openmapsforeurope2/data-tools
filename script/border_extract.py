@@ -46,7 +46,11 @@ def run(
         q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE table_name = '"+tb+"' "+ ("AND table_schema = '"+theme_schema+"'") if theme_schema else ""
         print(u'query: {}'.format(q), flush=True)
         cursor.execute(q)
+
+        print(cursor)
         fields = cursor.fetchone()[0]
+
+        print("fields = " + fields)
 
         ids = None
         if not reset :
