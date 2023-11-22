@@ -2,7 +2,7 @@
     "db":{
         "host":"SMLPOPENMAPS2",
         "port":"5432",
-        "name":"ome2_hvlsp_v4",
+        "name":"ome2_hvlsp_template",
         "user":"ome2_user",
         "pwd":"ome2_user"
     },
@@ -30,8 +30,10 @@
         "common_fields": {
             "country": "country",
             "geometry": "geom",
-            "id": "inspireid",
-            "step": "w_step"
+            "id": "objectid",
+            "step": "w_step",
+            "scale": "w_scale",
+            "release": "w_release"
         },
         "history": {
             "suffix": "_wh",
@@ -76,12 +78,13 @@
                 "tables": [
                     "administrative_boundary",
                     "administrative_area",
-                    "administrative_unit_1",
-                    "administrative_unit_2",
-                    "administrative_unit_3",
-                    "administrative_unit_4",
-                    "administrative_unit_5",
-                    "administrative_unit_6",
+                    "administrative_unit_area_1",
+                    "administrative_unit_area_2",
+                    "administrative_unit_area_3",
+                    "administrative_unit_area_4",
+                    "administrative_unit_area_5",
+                    "administrative_unit_area_6",
+                    "maritime_zone",
                     "administrative_hierarchy"
                 ]
             },

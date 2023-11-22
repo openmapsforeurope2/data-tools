@@ -2,7 +2,7 @@
     "srid": "3035",
     "common": {
         "id_field": {
-            "inspireid": {
+            "objectid": {
                 "sql_type": "uuid DEFAULT gen_random_uuid()",
                 "index": "default",
                 "pkey": true
@@ -21,14 +21,6 @@
             "end_lifespan_version": {
                 "sql_type": "timestamp without time zone",
                 "rank": 3
-            },
-            "valid_from": {
-                "sql_type": "timestamp without time zone",
-                "rank": 4
-            },
-            "valid_to": {
-                "sql_type": "timestamp without time zone",
-                "rank": 5
             }
         },
         "working_fields": {
@@ -50,6 +42,16 @@
                 "sql_type": "character varying(255) DEFAULT 'void'",
                 "index": "default",
                 "rank": 4
+            },
+            "w_scale": {
+                "sql_type": "character varying(80) DEFAULT 'void'",
+                "index": "default",
+                "rank": 5
+            },
+            "w_release": {
+                "sql_type": "integer DEFAULT 1",
+                "index": "default",
+                "rank": 6
             }
         }
     },
@@ -316,27 +318,6 @@
                         }
                     }
                 },
-                "railway_station_point": {
-                    "fields": {
-                        "geom": {
-                            "sql_type": "geometry(PointZ,${srid})",
-                            "index": "gist",
-                            "rank": 1
-                        },
-                        "name": {
-                            "sql_type": "jsonb",
-                            "rank": 2
-                        },
-                        "station_code":{
-                            "sql_type": "character varying(255) DEFAULT 'void'",
-                            "rank": 3
-                        },
-                        "railway_use": {
-                            "sql_type": "character varying(255) DEFAULT 'void'",
-                            "rank": 4
-                        }
-                    }
-                },
                 "railway_station_area": {
                     "fields": {
                         "geom": {
@@ -358,6 +339,27 @@
                         }
                     }
                 },
+                "railway_station_point": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(PointZ,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "name": {
+                            "sql_type": "jsonb",
+                            "rank": 2
+                        },
+                        "station_code":{
+                            "sql_type": "character varying(255) DEFAULT 'void'",
+                            "rank": 3
+                        },
+                        "railway_use": {
+                            "sql_type": "character varying(255) DEFAULT 'void'",
+                            "rank": 4
+                        }
+                    }
+                },         
                 "aerodrome_point": {
                     "fields": {
                         "geom": {
@@ -601,7 +603,7 @@
                         }
                     }
                 },
-                "administrative_unit_area": {
+                "administrative_unit_area_1": {
                     "fields": {
                         "geom": {
                             "sql_type": "geometry(MultiPolygon,${srid})",
@@ -612,40 +614,11 @@
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 2
                         },
-                        "national_level": {
+                        "shn": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "geographical_name": {
-                            "sql_type": "jsonb",
-                            "rank": 4
-                        },
-                        "shn_code": {
-                            "sql_type": "character varying(255) DEFAULT 'void'",
-                            "rank": 5
-                        },
-                        "land_cover_type": {
-                            "sql_type": "character varying(255) DEFAULT 'void'",
-                            "rank": 6
-                        }
-                    }
-                },
-                "administrative_unit_1": {
-                    "fields": {
-                        "geom": {
-                            "sql_type": "geometry(MultiPolygon,${srid})",
-                            "index": "gist",
-                            "rank": 1
-                        },
-                        "national_code": {
-                            "sql_type": "character varying(255) DEFAULT 'void'",
-                            "rank": 2
-                        },
-                        "shn_code": {
-                            "sql_type": "character varying(255) DEFAULT 'void'",
-                            "rank": 3
-                        },
-                        "geographical_name": {
+                        "name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         },
@@ -653,17 +626,25 @@
                             "sql_type": "character varying(255) DEFAULT '-32768'",
                             "rank": 5
                         },
-                        "residence_of_authority": {
+                        "link_to_residence_of_authority": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 6
                         },
                         "land_cover_type": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 7
+                        },
+                        "valid_from":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 8
+                        },
+                        "valid_to":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 9
                         }
                     }
                 },
-                "administrative_unit_2": {
+                "administrative_unit_area_2": {
                     "fields": {
                         "geom": {
                             "sql_type": "geometry(MultiPolygon,${srid})",
@@ -674,11 +655,11 @@
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 2
                         },
-                        "shn_code": {
+                        "shn": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "geographical_name": {
+                        "name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         },
@@ -686,17 +667,25 @@
                             "sql_type": "character varying(255) DEFAULT '-32768'",
                             "rank": 5
                         },
-                        "residence_of_authority": {
+                        "link_to_residence_of_authority": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 6
                         },
                         "land_cover_type": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 7
+                        },
+                        "valid_from":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 8
+                        },
+                        "valid_to":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 9
                         }
                     }
                 },
-                "administrative_unit_3": {
+                "administrative_unit_area_3": {
                     "fields": {
                         "geom": {
                             "sql_type": "geometry(MultiPolygon,${srid})",
@@ -707,11 +696,11 @@
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 2
                         },
-                        "shn_code": {
+                        "shn": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "geographical_name": {
+                        "name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         },
@@ -719,17 +708,25 @@
                             "sql_type": "character varying(255) DEFAULT '-32768'",
                             "rank": 5
                         },
-                        "residence_of_authority": {
+                        "link_to_residence_of_authority": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 6
                         },
                         "land_cover_type": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 7
+                        },
+                        "valid_from":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 8
+                        },
+                        "valid_to":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 9
                         }
                     }
                 },
-                "administrative_unit_4": {
+                "administrative_unit_area_4": {
                     "fields": {
                         "geom": {
                             "sql_type": "geometry(MultiPolygon,${srid})",
@@ -740,11 +737,11 @@
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 2
                         },
-                        "shn_code": {
+                        "shn": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "geographical_name": {
+                        "name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         },
@@ -752,17 +749,25 @@
                             "sql_type": "character varying(255) DEFAULT '-32768'",
                             "rank": 5
                         },
-                        "residence_of_authority": {
+                        "link_to_residence_of_authority": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 6
                         },
                         "land_cover_type": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 7
+                        },
+                        "valid_from":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 8
+                        },
+                        "valid_to":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 9
                         }
                     }
                 },
-                "administrative_unit_5": {
+                "administrative_unit_area_5": {
                     "fields": {
                         "geom": {
                             "sql_type": "geometry(MultiPolygon,${srid})",
@@ -773,11 +778,11 @@
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 2
                         },
-                        "shn_code": {
+                        "shn": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "geographical_name": {
+                        "name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         },
@@ -785,17 +790,25 @@
                             "sql_type": "character varying(255) DEFAULT '-32768'",
                             "rank": 5
                         },
-                        "residence_of_authority": {
+                        "link_to_residence_of_authority": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 6
                         },
                         "land_cover_type": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 7
+                        },
+                        "valid_from":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 8
+                        },
+                        "valid_to":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 9
                         }
                     }
                 },
-                "administrative_unit_6": {
+                "administrative_unit_area_6": {
                     "fields": {
                         "geom": {
                             "sql_type": "geometry(MultiPolygon,${srid})",
@@ -806,11 +819,11 @@
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 2
                         },
-                        "shn_code": {
+                        "shn": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 3
                         },
-                        "geographical_name": {
+                        "name": {
                             "sql_type": "jsonb",
                             "rank": 4
                         },
@@ -818,13 +831,21 @@
                             "sql_type": "character varying(255) DEFAULT '-32768'",
                             "rank": 5
                         },
-                        "residence_of_authority": {
+                        "link_to_residence_of_authority": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 6
                         },
                         "land_cover_type": {
                             "sql_type": "character varying(255) DEFAULT 'void'",
                             "rank": 7
+                        },
+                        "valid_from":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 8
+                        },
+                        "valid_to":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 9
                         }
                     }
                 },
@@ -845,6 +866,48 @@
                         "shn_digit": {
                             "sql_type": "integer DEFAULT -32768",
                             "rank": 4
+                        }
+                    }
+                },
+                "maritime_zone": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygon,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "national_code": {
+                            "sql_type": "character varying(255) DEFAULT 'void'",
+                            "rank": 2
+                        },
+                        "shn": {
+                            "sql_type": "character varying(255) DEFAULT 'void'",
+                            "rank": 3
+                        },
+                        "name": {
+                            "sql_type": "jsonb",
+                            "rank": 4
+                        },
+                        "national_level_code": {
+                            "sql_type": "character varying(255) DEFAULT '-32768'",
+                            "rank": 5
+                        },
+                        "zone_type": {
+                            "sql_type": "character varying(255) DEFAULT 'void'",
+                            "rank": 6
+                        }
+                    }
+                },
+                "residence_of_authority": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(PointZ,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "name": {
+                            "sql_type": "jsonb",
+                            "rank": 2
                         }
                     }
                 }
