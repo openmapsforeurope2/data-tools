@@ -57,7 +57,7 @@
     },
     "working_ids": {
         "id_field": {
-            "inspireid": {
+            "objectid": {
                 "sql_type": "uuid"
             }
         }
