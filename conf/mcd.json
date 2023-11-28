@@ -64,7 +64,7 @@
     },
     "history": {
         "id_field": {
-            "inspireid": {
+            "objectid": {
                 "sql_type": "uuid",
                 "index": "default",
                 "pkey": true
