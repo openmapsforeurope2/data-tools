@@ -311,17 +311,21 @@
                             "sql_type": "character varying(255) DEFAULT '-32768'",
                             "rank": 7
                         },
-                        "railway_line_code": {
+                        "condition_of_facility": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 8
+                        },     
+                        "railway_line_code": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 9
                         },
                         "railway_line_name": {
                             "sql_type": "jsonb DEFAULT '{}'::json",
-                            "rank": 9
+                            "rank": 10
                         },
                         "main_railway_line_name": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 10
+                            "rank": 11
                         }
                     }
                 },
