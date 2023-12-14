@@ -44,7 +44,7 @@ def run(
 
         # on recupère tous les noms de champs de la table
         q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE table_name = '"+tb+"' "+ ("AND table_schema = '"+theme_schema+"'") if theme_schema else ""
-        print(u'query: {}'.format(q), flush=True)
+        print(u'query: {}'.format(q[:500]), flush=True)
         cursor.execute(q)
         fields = cursor.fetchone()[0]
 
@@ -52,7 +52,7 @@ def run(
         if not reset :
             # on recupere tout les ids deja extraits pour ne pas les extraires a nouveau
             q3 = "SELECT string_agg("+conf['data']['common_fields']['id']+"::character varying,',') FROM "+wIdsTableName
-            print(u'query: {}'.format(q3), flush=True)
+            print(u'query: {}'.format(q3[:500]), flush=True)
             cursor.execute(q3)
             ids = cursor.fetchone()[0]
             if ids is not None:
@@ -70,14 +70,14 @@ def run(
         if not reset and ids is not None:
             query += " AND "+conf['data']['common_fields']['id']+" NOT IN ('"+ids+"')"
 
-        print(u'query: {}'.format(query), flush=True)
+        print(u'query: {}'.format(query[:500]), flush=True)
         cursor.execute(query)
         conn.commit()
 
         # on enregistre tous les identifiants des objects extraits
         q2 = "DELETE FROM "+wIdsTableName+";"
         q2 += "INSERT INTO "+wIdsTableName+" ("+conf['data']['common_fields']['id']+") SELECT "+conf['data']['common_fields']['id']+" FROM "+wTableName
-        print(u'query: {}'.format(q2), flush=True)
+        print(u'query: {}'.format(q2[:500]), flush=True)
         cursor.execute(q2)
         conn.commit()
 
