@@ -1030,7 +1030,7 @@
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         },
-                        "flow": {
+                        "flow_direction": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
                         },
@@ -1042,11 +1042,11 @@
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 7
                         },
-                        "watercourse_name": {
+                        "name": {
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 8
                         },
-                        "watercourse_label": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 9
                         },
@@ -1091,11 +1091,11 @@
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 2
                         },
-                        "watercourse_name": {
+                        "name": {
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 3
                         },
-                        "watercourse_label": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         }
@@ -1116,7 +1116,7 @@
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
                         },
-                        "hydro_node_category_value":{
+                        "hydro_node_category":{
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         }
@@ -1236,6 +1236,18 @@
                             "sql_type": "geometry(MultiPolygonZ,${srid})",
                             "index": "gist",
                             "rank": 1
+                        },
+                        "composition": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 2
+                        },
+                        "name": {
+                            "sql_type": "jsonb DEFAULT '{}'::json",
+                            "rank": 3
+                        },
+                        "label": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 4
                         }
                     }
                 },
