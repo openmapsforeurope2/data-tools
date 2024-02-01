@@ -1275,7 +1275,7 @@
                 "dam_line": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "sql_type": "geometry(MultiLineStringZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -1296,7 +1296,7 @@
                 "dam_point": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "sql_type": "geometry(PointZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -1338,7 +1338,7 @@
                 "lock_line": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "sql_type": "geometry(MultiLineStringZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -1359,7 +1359,7 @@
                 "lock_point": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "sql_type": "geometry(PointZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -1380,7 +1380,7 @@
                 "falls_line": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "sql_type": "geometry(MultiLineStringZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
