@@ -1377,6 +1377,27 @@
                         }
                     }
                 },
+                "falls_area": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygonZ,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "hydro_identifier": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 2
+                        },
+                        "name": {
+                            "sql_type": "jsonb DEFAULT '{}'::json",
+                            "rank": 3
+                        },
+                        "label": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 4
+                        }
+                    }
+                },
                 "falls_line": {
                     "fields": {
                         "geom": {
