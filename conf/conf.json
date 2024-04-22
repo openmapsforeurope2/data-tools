@@ -117,6 +117,7 @@
                     "lock_area",
                     "lock_line",
                     "lock_point",
+                    "falls_area",
                     "falls_line",
                     "falls_point"
                 ]

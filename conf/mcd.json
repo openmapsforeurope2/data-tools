@@ -72,7 +72,7 @@
     },
     "history": {
         "id_field": {
-            "inspireid": {
+            "objectid": {
                 "sql_type": "uuid",
                 "index": "default",
                 "pkey": true
@@ -129,7 +129,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 8
                         },
-                        "main_street_name": {
+                        "street_label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 9
                         },
@@ -173,7 +173,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 19
                         },
-                        "main_road_name": {
+                        "road_label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 20
                         }
@@ -198,7 +198,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 4
                         },
-                        "main_road_name": {
+                        "road_label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
                         }
@@ -236,7 +236,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 3
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         }
@@ -257,7 +257,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 3
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         }
@@ -319,17 +319,21 @@
                             "sql_type": "character varying(255) DEFAULT '-32768'",
                             "rank": 7
                         },
-                        "railway_line_code": {
+                        "condition_of_facility": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 8
+                        },     
+                        "railway_line_code": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 9
                         },
                         "railway_line_name": {
                             "sql_type": "jsonb DEFAULT '{}'::json",
-                            "rank": 9
-                        },
-                        "main_railway_line_name": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 10
+                        },
+                        "railway_line_label": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 11
                         }
                     }
                 },
@@ -348,7 +352,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 3
                         },
-                        "main_railway_line_name": {
+                        "railway_line_label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         }
@@ -365,7 +369,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 2
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
                         },
@@ -390,7 +394,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 2
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
                         },
@@ -427,7 +431,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 5
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 6
                         },
@@ -468,7 +472,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 5
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 6
                         },
@@ -523,7 +527,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 2
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
                         },
@@ -548,7 +552,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 2
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
                         },
@@ -573,7 +577,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 2
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
                         },
@@ -686,7 +690,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 4
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
                         },
@@ -731,7 +735,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 4
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
                         },
@@ -776,7 +780,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 4
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
                         },
@@ -821,7 +825,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 4
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
                         },
@@ -866,7 +870,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 4
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
                         },
@@ -911,7 +915,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 4
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
                         },
@@ -947,13 +951,17 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 2
                         },
+                        "national_level_label": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 3
+                        },
                         "national_level_code": { 
                             "sql_type": "character varying(255) DEFAULT '-32768'",
-                            "rank": 3
+                            "rank": 4
                         },
                         "shn_digit": {
                             "sql_type": "integer DEFAULT -32768",
-                            "rank": 4
+                            "rank": 5
                         }
                     }
                 },
@@ -976,7 +984,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 4
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
                         },
@@ -1001,7 +1009,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 2
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
                         }
@@ -1030,7 +1038,7 @@
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         },
-                        "flow": {
+                        "flow_direction": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
                         },
@@ -1042,11 +1050,11 @@
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 7
                         },
-                        "watercourse_name": {
+                        "name": {
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 8
                         },
-                        "main_watercourse_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 9
                         },
@@ -1091,11 +1099,11 @@
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 2
                         },
-                        "watercourse_name": {
+                        "name": {
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 3
                         },
-                        "main_watercourse_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         }
@@ -1112,11 +1120,11 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 2
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
                         },
-                        "hydro_node_category_value":{
+                        "hydro_node_category":{
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         }
@@ -1133,7 +1141,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 2
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
                         },
@@ -1166,7 +1174,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 2
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
                         },
@@ -1199,7 +1207,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 2
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
                         },
@@ -1236,6 +1244,18 @@
                             "sql_type": "geometry(MultiPolygonZ,${srid})",
                             "index": "gist",
                             "rank": 1
+                        },
+                        "composition": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 2
+                        },
+                        "name": {
+                            "sql_type": "jsonb DEFAULT '{}'::json",
+                            "rank": 3
+                        },
+                        "label": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 4
                         }
                     }
                 },
@@ -1254,7 +1274,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 3
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         }
@@ -1263,7 +1283,7 @@
                 "dam_line": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "sql_type": "geometry(MultiLineStringZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -1275,7 +1295,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 3
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         }
@@ -1284,7 +1304,7 @@
                 "dam_point": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "sql_type": "geometry(PointZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -1296,7 +1316,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 3
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         }
@@ -1317,7 +1337,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 3
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         }
@@ -1326,7 +1346,7 @@
                 "lock_line": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "sql_type": "geometry(MultiLineStringZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -1338,7 +1358,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 3
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         }
@@ -1347,7 +1367,7 @@
                 "lock_point": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "sql_type": "geometry(PointZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -1359,7 +1379,28 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 3
                         },
-                        "main_name": {
+                        "label": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 4
+                        }
+                    }
+                },
+                "falls_area": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygonZ,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "hydro_identifier": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 2
+                        },
+                        "name": {
+                            "sql_type": "jsonb DEFAULT '{}'::json",
+                            "rank": 3
+                        },
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 4
                         }
@@ -1368,7 +1409,7 @@
                 "falls_line": {
                     "fields": {
                         "geom": {
-                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "sql_type": "geometry(MultiLineStringZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -1376,7 +1417,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 2
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
                         }
@@ -1393,7 +1434,7 @@
                             "sql_type": "jsonb DEFAULT '{}'::json",
                             "rank": 2
                         },
-                        "main_name": {
+                        "label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
                         }

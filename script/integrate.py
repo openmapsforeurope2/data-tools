@@ -149,7 +149,7 @@ def run(
         new_tuples = cursor.fetchall()
 
         for nt in new_tuples:
-            integrated.append(nt[0])
+            integrated.append("'" + nt[0] + "'")
         
         print("Nombre d'objets créés: "+str(len(new_tuples)))
 
