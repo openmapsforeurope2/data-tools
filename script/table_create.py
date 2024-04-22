@@ -82,7 +82,9 @@ def getTableFields(mcd, theme, tableName):
     return fieldsToCreate
 
 def getWorkingTableFields(mcd, theme, tableName):
-    return getTableFields(mcd, theme, tableName)
+    fieldsToCreate = getTableFields(mcd, theme, tableName)
+    fieldsToCreate = getOrderedFields(mcd['work']['working_fields'], fieldsToCreate)
+    return fieldsToCreate
 
 def getWorkingIdsTableFields(mcd, theme, tableName):
     fieldsToCreate = ""

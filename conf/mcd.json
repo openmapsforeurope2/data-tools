@@ -55,6 +55,14 @@
             }
         }
     },
+    "work":{
+        "working_fields": {
+            "w_tag": {
+                "sql_type": "character varying(255)",
+                "rank": 1
+            }
+        } 
+    },
     "working_ids": {
         "id_field": {
             "objectid": {
