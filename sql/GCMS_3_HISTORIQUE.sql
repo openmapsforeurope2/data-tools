@@ -65,7 +65,7 @@ BEGIN
         ALTER TABLE $x$ || nom_schema_table_h || $x$ ADD COLUMN gcms_numrecmodif integer;
         ALTER TABLE $x$ || nom_schema_table_h || $x$ DROP CONSTRAINT IF EXISTS $x$ || old_primary_key.name || $x$;
         ALTER TABLE $x$ || nom_schema_table_h || $x$ ALTER COLUMN $x$ || old_primary_key.column || $x$ DROP NOT NULL;
-        ALTER TABLE $x$ || nom_schema_table_h || $x$ ADD CONSTRAINT $x$ || nom_table || $x$_h_pkey PRIMARY KEY (cleabs, gcms_numrec);
+        ALTER TABLE $x$ || nom_schema_table_h || $x$ ADD CONSTRAINT $x$ || nom_table || $x$_h_pkey PRIMARY KEY (objectid, gcms_numrec);
         CREATE INDEX $x$ || quote_ident('index_gcms_numrec_' || lower(nom_table_h)) || $x$ ON $x$ || nom_schema_table_h || $x$ USING btree(gcms_numrec);
         CREATE INDEX $x$ || quote_ident('index_gcms_numrecmodif_' || lower(nom_table_h)) || $x$ ON $x$ || nom_schema_table_h || $x$ USING btree(gcms_numrecmodif);
         CREATE INDEX $x$ || quote_ident('index_geometry_' || lower(nom_table_h)) || $x$ ON $x$ || nom_schema_table_h || $x$ USING Gist( $x$ || geometry_name || $x$ );
@@ -168,11 +168,11 @@ BEGIN
 
 	EXECUTE $x$
         -- drop primary key constraint
-        ALTER TABLE $x$ || _table || $x$ DROP CONSTRAINT IF EXISTS $x$ || pkey_constraint || $x$;
+        --ALTER TABLE $x$ || _table || $x$ DROP CONSTRAINT IF EXISTS $x$ || pkey_constraint || $x$;
 		-- add cleabs column to table
-		ALTER TABLE $x$ || _table || $x$ ADD COLUMN cleabs text;
-		UPDATE $x$ || _table || $x$ SET cleabs = ign_gcms_generate_uuid();
-		ALTER TABLE $x$ || _table || $x$ ADD PRIMARY KEY (cleabs);
+		--ALTER TABLE $x$ || _table || $x$ ADD COLUMN objectid text;
+		--UPDATE $x$ || _table || $x$ SET objectid = ign_gcms_generate_uuid();
+		--ALTER TABLE $x$ || _table || $x$ ADD PRIMARY KEY (objectid);
 		-- reconciliation table must have been created (function ign_gcms_create_reconciliations_table)
 		INSERT INTO reconciliations (ordrefinevol, numrec, numclient, classesimpactees, daterec,
 									nom, changement, nature_operation, date_du_dernier_controle,
@@ -252,8 +252,7 @@ BEGIN
 			CONSTRAINT numrec_unique UNIQUE (numrec),
 			CONSTRAINT enforce_dims_geometrie CHECK (st_ndims(geometrie) = 2),
 			CONSTRAINT enforce_geotype_geometrie CHECK (geometrytype(geometrie) = 'MULTIPOLYGON'::text OR geometrie IS NULL)
-		)
-		WITH ( OIDS=TRUE );
+		);
 
 		CREATE INDEX index_numclient_reconciliations ON reconciliations USING btree (numclient);
 		CREATE INDEX index_numrec_reconciliations ON reconciliations USING btree (numrec);
@@ -322,7 +321,10 @@ AS $BODY$
 DECLARE
 	max_numrec integer;
     tablename TEXT;
+	curr_numrec integer;
 BEGIN
+
+	curr_numrec := nextval('seqnumrec');
 	
 	-- UPDATE
 	IF (TG_OP = 'UPDATE') THEN
@@ -379,7 +381,7 @@ BEGIN
 		--        car dans ce cas on NEW.gcms_numrec = OLD.gcms_numrec ( = currval('seqnumrec') )
 		IF NEW.gcms_numrec > OLD.gcms_numrec THEN
 
-		    PERFORM ign_gcms_add_to_history_table (tablename, OLD.cleabs::text, currval('seqnumrec')::integer);
+		    PERFORM ign_gcms_add_to_history_table (tablename, OLD.objectid::text, currval('seqnumrec')::integer);
 
 		    -- Cas d'un UPDATE qui est en réalité un DELETE (gcms_detruit est vrai)
 			-- 2022-06-19 : Seul l'update d'origine peut effectuer une suppression. 
@@ -456,7 +458,7 @@ $BODY$;
 -- [mmichaud 2016-07-29] la fonction ne nécessite plus que gcms_numrecmodif soit
 -- la dernière colonne
 --------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION ign_gcms_add_to_history_table(nomTable text, cleabs text, numderrec integer)
+CREATE OR REPLACE FUNCTION ign_gcms_add_to_history_table(nomTable text, objectid text, numderrec integer)
     RETURNS void AS $BODY$
 
 DECLARE
@@ -477,7 +479,7 @@ BEGIN
     requete := 'INSERT INTO ' || quote_ident(schema_table[0]) || '.' || quote_ident(table_h) || '(' || colonnes || ', gcms_numrecmodif)' ||
                ' (SELECT ' || colonnes || ', ' || numderrec ||
                ' FROM ' || quote_ident(schema_table[0]) || '.' || quote_ident(schema_table[1]) ||
-               ' WHERE cleabs=''' || cleabs || ''')' ;
+               ' WHERE objectid=''' || objectid || ''')' ;
     --RAISE NOTICE '%', requete;
     EXECUTE requete ;
 
@@ -1181,7 +1183,7 @@ BEGIN
 	attributes := array_remove(attributes, 'gcms_detruit');
 	attributes := array_remove(attributes, 'detruit');
 	attributes := array_remove(attributes, 'gcms_numrec');
-	attributes := array_remove(attributes, 'cleabs');
+	attributes := array_remove(attributes, 'objectid');
 	attributes := array_remove(attributes, 'numrec');
 	attributes := array_remove(attributes, 'ordrefinevol');
 	attributes := array_remove(attributes, 'daterec');
@@ -1298,7 +1300,7 @@ BEGIN
 	END LOOP ;
 	requete := left (requete, length(requete)-2);
 
-	requete := requete || ' FROM ' || tablename || ' WHERE cleabs = ''' || cleabs || '''';
+	requete := requete || ' FROM ' || tablename || ' WHERE objectid = ''' || objectid || '''';
 	requete := requete || '
 			 UNION ALL
 			 SELECT gcms_numrec,'||detruit_field||',';
@@ -1311,7 +1313,7 @@ BEGIN
 	END LOOP ;
 	requete := left (requete, length(requete)-2);
 
-	requete := requete || ' FROM ' || tablename_h || ' WHERE cleabs = ''' || cleabs || '''';
+	requete := requete || ' FROM ' || tablename_h || ' WHERE objectid = ''' || objectid || '''';
 	requete := requete || '
 			 ORDER BY gcms_numrec
 			 ) t
@@ -1347,7 +1349,7 @@ $BODY$ LANGUAGE 'plpgsql';
 --
 -- Fonction à appeler ainsi : SELECT * FROM ign_gcms_get_historique (tablename, tablename_h, cleabs)
 ---------------------------------------------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION ign_gcms_get_historique(tablename text, tablename_h text, cleabs text)
+CREATE OR REPLACE FUNCTION ign_gcms_get_historique(tablename text, tablename_h text, objectid text)
 RETURNS TABLE (daterec timestamp without time zone,
 				version bigint,
 				gcms_numrec integer,
@@ -1377,13 +1379,13 @@ BEGIN
 		r.operateur,
 		r.profil,
 		r.nature_operation FROM
-		(SELECT gcms_numrec,cleabs, %s  FROM %s
+		(SELECT gcms_numrec,objectid, %s  FROM %s
 		    UNION ALL
-		SELECT gcms_numrec,cleabs,%s  FROM %s) t
+		SELECT gcms_numrec,objectid,%s  FROM %s) t
 	JOIN reconciliations r ON (r.numrec=t.gcms_numrec)
-	WHERE cleabs=''%s''
+	WHERE objectid=''%s''
 	ORDER BY r.daterec ASC', detruit_field, detruit_field,
-	tablename, detruit_field, tablename_h, cleabs);
+	tablename, detruit_field, tablename_h, objectid);
 END;
 $$ LANGUAGE plpgsql;
 
@@ -1628,7 +1630,7 @@ $$ LANGUAGE plpgsql;
 -- A appeler ainsi : SELECT * FROM ign_gcms_select_cleabs_numrec (null::pai_zone_d_habitation, 'PAIHABIT0000001369988945', 23047695);
 -- (le null::xx  est important)
 -- -----------------------------------------------------------------------------
-CREATE OR REPLACE FUNCTION ign_gcms_select_cleabs_numrec(base anyelement, cleabs text, gcms_numrec integer)
+CREATE OR REPLACE FUNCTION ign_gcms_select_cleabs_numrec(base anyelement, objectid text, gcms_numrec integer)
 RETURNS SETOF anyelement
 AS $$
 DECLARE
@@ -1660,13 +1662,13 @@ BEGIN
 	liste_champs := left (liste_champs, length(liste_champs)-2);	-- on enleve la dernière virgule
 
     -- Requête dans la table principale
-    query = format('SELECT %s FROM %s WHERE cleabs = $1 AND gcms_numrec = $2', liste_champs, table_name);
-    RETURN QUERY EXECUTE query USING cleabs, gcms_numrec;
+    query = format('SELECT %s FROM %s WHERE objectid = $1 AND gcms_numrec = $2', liste_champs, table_name);
+    RETURN QUERY EXECUTE query USING objectid, gcms_numrec;
 
     -- Si pas de résultat : requête dans la table_h
     IF NOT FOUND THEN
-		query_h = format('SELECT %s FROM %s WHERE cleabs = $1 AND gcms_numrec = $2', liste_champs, table_name_h);
-		RETURN QUERY EXECUTE query_h USING cleabs, gcms_numrec;
+		query_h = format('SELECT %s FROM %s WHERE objectid = $1 AND gcms_numrec = $2', liste_champs, table_name_h);
+		RETURN QUERY EXECUTE query_h USING objectid, gcms_numrec;
 	END IF;
 
     RETURN;

@@ -176,6 +176,8 @@ def run(
         # on supprime les objets de la table
         if deleted:
             q6 = "DELETE FROM "+tableName
+            #Preparation pour historisation
+            #q6 = "UPDATE "+tableName+" SET gcms_detruit = true "
             q6 += " WHERE "+id_field+" IN ("+",".join(deleted)+")"
             print(q6[:500])
             cursor.execute(q6)
