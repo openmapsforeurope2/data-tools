@@ -30,7 +30,7 @@ python3 script/table_creation.py -c conf.json -m mcd.json -T tn -t road_link
 
 
 ## Cleaning step (10)
-### 1) Extract objects around a country's boundaries for the cleaning step: 
+### 1) Extract objects around a country's boundaries for cleaning: 
 
 <u>The Netherlands:</u>
 ~~~
@@ -59,7 +59,7 @@ python3 script/border_extraction.py -c conf.json -T tn -t road_link -b de -d 300
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -b be -d 3000 -n fr
 ~~~
 
-### 2) Cleaning step - delete objects outside border - (to be run from the data-cleaner project directory):
+### 2) Clean - delete objects outside border - (to be run from the data-cleaner project directory):
 
 <u>The Netherlands:</u>
 ~~~
@@ -83,25 +83,25 @@ python3 script/integration.py -c conf.json -T tn -t road_link -s 10
 
 
 ## Matching step (20)
-### 1) Extraction des objets autour des frontières d'un couple de pays pour l'étape de matching:
+### 1) Extract objects on the border between two neighbouring countries for matching:
 ~~~
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 1000 be fr
 ~~~
 
-### 2) Etape de matching
+### 2) Match
 creation_cn -c conf.json -t road_link
 
-road_link modifiée avec mise à jour du champ modification_type
+road_link modified with modification_type field updated
 
 
-### 3) Intégration des modifications dans la table principale et la table d'historique:
+### 3) Integrate modifications in the main table and working history table:
 ~~~
 python3 script/integration.py -c conf.json -T tn -t road_link -s 20
 ~~~
 
 
-## Etape de matching administratif (30)
-### 1) Extraction des objets autour des frontières d'un pays matching:
+## AU matching (30)
+### 1) Extract objects around a country's boundaries for matching:
 
 <u>The Netherlands:</u>
 ~~~
@@ -110,19 +110,19 @@ python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_ar
 
 <u>Belgium:</u>
 
-Exemple d'extraction autour des frontières avec un seul pays frontalier:
+Example of an extraction around boundaries with only one neighbouring country:
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_5 -b nl -d 1000 be
 ~~~
 
-Exemple d'extraction autour des frontières avec plusieurs pays frontaliers:
+Example of an extraction around boundaries with several one neighbouring countries:
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_5 -b nl -d 1000 be
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_5 -b de -d 1000 -n be
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_5 -b lu -d 1000 -n be
 ~~~
 
-Exemple d'extraction autour de toutes les frontières:
+Example of an extraction around all boundaries:
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_5 -d 1000 be '#'
 ~~~
