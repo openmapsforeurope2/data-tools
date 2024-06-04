@@ -115,7 +115,7 @@ Example of an extraction around boundaries with only one neighbouring country:
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_5 -b nl -d 1000 be
 ~~~
 
-Example of an extraction around boundaries with several one neighbouring countries:
+Example of an extraction around boundaries with several neighbouring countries:
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_5 -b nl -d 1000 be
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_5 -b de -d 1000 -n be
