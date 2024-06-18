@@ -16,7 +16,7 @@ border_extraction:
 integration:
 * s [mandatory] : step number
 
-reversion:
+rollback:
 * s [mandatory] : step number
 
 table_creation:
@@ -59,7 +59,7 @@ python3 script/border_extraction.py -c conf.json -T tn -t road_link -b de -d 300
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -b be -d 3000 -n fr
 ~~~
 
-### 2) Clean - delete objects outside border - (to be run from the data-cleaner project directory):
+### 2) Clean (delete) objects outside border - (to be run from the data-cleaner project directory):
 
 <u>The Netherlands:</u>
 ~~~
@@ -201,8 +201,8 @@ python3 script/integration.py -c conf.json -T au -t administrative_unit_area_5 -
 ~~~
 
 
-### Niveau 4)
-#### 1) Extraction des objets autour des frontières d'un pays:
+### Level 4)
+#### 1) Extract objects around a country's boundaries
 <u>Belgium:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_4 -d 1000 be '#'
@@ -245,7 +245,7 @@ Before running the integration, check in the log file whether invalid polygons h
 python3 script/integration.py -c conf.json -T au -t administrative_unit_area_4 -s 30
 ~~~
 
-### Niveau 3)
+### Level 3)
 #### 1) Extract objects around a country's boundaries
 
 <u>Belgium:</u>
@@ -285,7 +285,7 @@ Before running the integration, check in the log file whether invalid polygons h
 python3 script/integration.py -c conf.json -T au -t administrative_unit_area_3 -s 30
 ~~~
 
-### Niveau 2)
+### Level 2)
 #### 1) Extract objects around a country's boundaries
 <u>The Netherlands:</u>
 ~~~
@@ -334,7 +334,7 @@ Before running the integration, check in the log file whether invalid polygons h
 python3 script/integration.py -c conf.json -T au -t administrative_unit_area_2 -s 30
 ~~~
 
-### Niveau 1)
+### Level 1)
 #### 1) Extract objects around a country's boundaries
 <u>The Netherlands:</u>
 ~~~
