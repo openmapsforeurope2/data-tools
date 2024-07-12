@@ -14,13 +14,14 @@ def run(argv):
     arg_step = ""
     arg_theme = ""
     arg_tables = []
+    arg_nohistory = False # life-cycle management is enabled as default
     arg_verbose = False
     arg_help = "{0} -c <conf> -o <output> -v".format(argv[0])
     args = ""
     
     try:
         opts, args = getopt.getopt(argv[1:], "hc:s:T:t:v", ["help",
-        "conf=", "step=", "theme=", "table=", "verbose"])
+        "conf=", "step=", "theme=", "table=", "no_history", "verbose"])
     except:
         print(arg_help)
         sys.exit(2)
@@ -37,6 +38,8 @@ def run(argv):
             arg_theme = arg
         elif opt in ("-t", "--table"):
             arg_tables.append(arg)
+        elif opt in ("-n", "--no_history"):
+            arg_nohistory = True
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
@@ -44,6 +47,7 @@ def run(argv):
     print('conf:', arg_conf)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
+    print('no_history:', arg_nohistory)
     print('verbose:', arg_verbose)
 
     workspace = os.path.dirname(currentDir)+"/"
@@ -58,7 +62,7 @@ def run(argv):
 
     conf = utils.getConf(arg_conf)
 
-    integrate.run(arg_step, conf, arg_theme, arg_tables, arg_verbose)
+    integrate.run(arg_step, conf, arg_theme, arg_tables, arg_nohistory, arg_verbose)
 
     print("[END INTEGRATION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 

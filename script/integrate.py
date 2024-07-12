@@ -25,7 +25,7 @@ def getIdRank(cursor, idField):
 
 
 def run(
-    step, conf, theme, tables, verbose
+    step, conf, theme, tables, nohistory, verbose
 ):
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
@@ -132,8 +132,9 @@ def run(
                         count_m += 1
                         historized_m.append(sub_ids_[i])
                         modified.append(sub_ids_1[i])
-                        #deleted.append(sub_ids_[i])
-                        #integrated.append(sub_ids_[i])
+                        if nohistory:
+                            deleted.append(sub_ids_[i])
+                            integrated.append(sub_ids_[i])
 
                 if end == len(ids):
                     break
@@ -179,9 +180,11 @@ def run(
 
         # on supprime les objets de la table
         if deleted:
-            #q6 = "DELETE FROM "+tableName
-            #Preparation pour historisation
-            q6 = "UPDATE "+tableName+" SET gcms_detruit = true "
+            if nohistory:
+                q6 = "DELETE FROM "+tableName
+            else:
+                #Preparation pour historisation
+                q6 = "UPDATE "+tableName+" SET gcms_detruit = true "
             q6 += " WHERE "+id_field+" IN ("+",".join(deleted)+")"
             print(q6[:500])
             cursor.execute(q6)
@@ -197,7 +200,7 @@ def run(
             conn.commit()
         
         # on transfère les objets modifiés de la table de travail vers la table
-        if modified:
+        if modified and not(nohistory):
             sc_name = tableName[0:tableName.find(".")]
             tb_name = tableName[tableName.find(".")+1:]
             id_list = "'("+",".join(modified)+")'" 
