@@ -37,7 +37,7 @@ BEGIN
         q := q || quote_ident(field.column_name) || ' = ' || tb_name || '_w.' || quote_ident(field.column_name) || ',';
     END LOOP;
     q:= SUBSTRING(q, 1, LENGTH(q)-1);
-    q:= q || ' FROM ' || tb_name || '_w WHERE ' || sc_name || '.' || tb_name || '.' || id_field || ' = ' || tb_name || '_w.objectid AND ' || sc_name || '.' || tb_name || '. || id_field ||  in ' || id_list || ';';
+    q:= q || ' FROM ' || tb_name || '_w WHERE ' || sc_name || '.' || tb_name || '.' || id_field || ' = ' || tb_name || '_w.objectid AND ' || sc_name || '.' || tb_name || '.' || id_field ||  ' in ' || id_list || ';';
     EXECUTE q;
 END 
 $$ LANGUAGE plpgsql;
