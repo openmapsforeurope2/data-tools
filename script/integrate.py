@@ -204,7 +204,7 @@ def run(
             sc_name = tableName[0:tableName.find(".")]
             tb_name = tableName[tableName.find(".")+1:]
             id_list = "'("+",".join(modified)+")'" 
-            q8 = "SELECT ign_update_from_working_table('"+ tb_name +"', '" + sc_name + "', '" + id_field + "', " + id_list + " );"
+            q8 = "SELECT ign_update_from_working_table('"+ tb_name +"', '" + sc_name + "', '" + id_field + "', " + id_list + ", '" + step + "' );"
             print(q8[:500])
             cursor.execute(q8)
             conn.commit()
