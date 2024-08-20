@@ -1,11 +1,5 @@
 {
-    "db":{
-        "host":"SMLPOPENMAPS2",
-        "port":"5432",
-        "name":"ome2_hvlsp_v4",
-        "user":"ome2_user",
-        "pwd":"ome2_user"
-    },
+    "db_conf_file":"db_conf.json",
     "landmask": {
         "schema": "ib",
         "table": "landmask",

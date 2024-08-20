@@ -71,15 +71,27 @@ def run(argv):
         
     workspace = os.path.dirname(currentDir)+"/"
 
+    #conf
     if not os.path.isfile(workspace+"conf/"+arg_conf):
         print("le fichier de configuration "+ arg_conf + " n'existe pas.")
         sys.exit(2)
     arg_conf = workspace+"conf/"+arg_conf
 
+    conf = utils.getConf(arg_conf)
+
+    #bd conf
+    if not os.path.isfile(workspace+"conf/"+conf["db_conf_file"]):
+        print("le fichier de configuration "+ conf["db_conf_file"] + " n'existe pas.")
+        sys.exit(2)
+    arg_db_conf = workspace+"conf/"+conf["db_conf_file"]
+
+    db_conf = utils.getConf(arg_db_conf)
+
+    #merge confs
+    conf.update(db_conf)
+
 
     print("[START EXTRACTION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-
-    conf = utils.getConf(arg_conf)
 
     border_extract.run(conf, arg_theme, arg_tables, arg_dist, args, arg_bcc, arg_bt, (not arg_noreset), arg_verbose)
 

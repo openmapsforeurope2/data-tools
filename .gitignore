@@ -1,2 +1,3 @@
 /script/__pycache__
 /script/*.pyc
+conf/db_conf.json

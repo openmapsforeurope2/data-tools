@@ -44,21 +44,35 @@ def run(argv):
 
     workspace = os.path.dirname(currentDir)+"/"
 
-    if not os.path.isfile(workspace+"conf/"+arg_conf):
-        print("le fichier de configuration "+ arg_conf + " n'existe pas.")
-        sys.exit(2)
-    arg_conf = workspace+"conf/"+arg_conf
-
+    #mcd
     if not os.path.isfile(workspace+"conf/"+arg_mcd):
         print("le fichier de configuration "+ arg_mcd + " n'existe pas.")
         sys.exit(2)
     arg_mcd = workspace+"conf/"+arg_mcd
 
+    mcd = utils.getConf(arg_mcd)
 
-    print("[START TABLE CREATION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    #conf
+    if not os.path.isfile(workspace+"conf/"+arg_conf):
+        print("le fichier de configuration "+ arg_conf + " n'existe pas.")
+        sys.exit(2)
+    arg_conf = workspace+"conf/"+arg_conf
 
     conf = utils.getConf(arg_conf)
-    mcd = utils.getConf(arg_mcd)
+
+    #bd conf
+    if not os.path.isfile(workspace+"conf/"+conf["db_conf_file"]):
+        print("le fichier de configuration "+ conf["db_conf_file"] + " n'existe pas.")
+        sys.exit(2)
+    arg_db_conf = workspace+"conf/"+conf["db_conf_file"]
+
+    db_conf = utils.getConf(arg_db_conf)
+
+    #merge confs
+    conf.update(db_conf)
+
+
+    print("[START TABLE CREATION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     table_create.createTableAndIndexes(conf, mcd, arg_theme, arg_tables)
 
