@@ -93,6 +93,7 @@ def run(
                 # on recupere les objets dans la table de travail
                 q2 = "SELECT "+_fields+" FROM "+wTableName
                 q2 += " WHERE "+id_field+" IN ("+",".join(sub_ids_)+")"
+                print("GETTING WORKING TABLE ITEMS :")
                 print(q2[:500])
                 cursor.execute(q2)
                 w_tuples = cursor.fetchall()
@@ -107,6 +108,7 @@ def run(
                 # on recupere les objets dans la table principale
                 q2_bis = "SELECT "+_fields+" FROM "+tableName
                 q2_bis += " WHERE "+id_field+" IN ("+",".join(sub_ids_)+")"
+                print("GETTING MAIN TABLE ITEMS :")
                 print(q2_bis[:500])
                 cursor.execute(q2_bis)
                 o_tuples = cursor.fetchall()
@@ -135,7 +137,7 @@ def run(
                     break
                 else:
                     start = end
-                    end = max(start+bunch_size,len(ids))
+                    end = min(start+bunch_size,len(ids))
     
         print("Nombre d'objets supprimés: "+str(count_d))
         print("Nombre d'objets modifiés: "+str(count_m))
@@ -161,6 +163,7 @@ def run(
             values_d = fields.replace(modification_step_field, "'"+step+"'").replace(modification_type_field, "'D'")
             q4 = "INSERT INTO "+hTableName+" ("+fields+") SELECT "+values_d+" FROM "+tableName
             q4 += " WHERE "+id_field+" IN ("+",".join(historized_d)+")"
+            print("DELETED ITEMS HISTORIZATION :")
             print(q4[:500])
             cursor.execute(q4)
             conn.commit()
@@ -169,6 +172,7 @@ def run(
             values_m = fields.replace(modification_step_field, "'"+step+"'").replace(modification_type_field, "'M'")
             q5 = "INSERT INTO "+hTableName+" ("+fields+") SELECT "+values_m+" FROM "+tableName
             q5 += " WHERE "+id_field+" IN ("+",".join(historized_m)+")"
+            print("MODIFIED ITEMS HISTORIZATION :")
             print(q5[:500])
             cursor.execute(q5)
             conn.commit()
@@ -179,6 +183,7 @@ def run(
             #Preparation pour historisation
             #q6 = "UPDATE "+tableName+" SET gcms_detruit = true "
             q6 += " WHERE "+id_field+" IN ("+",".join(deleted)+")"
+            print("ITEMS DELETION:")
             print(q6[:500])
             cursor.execute(q6)
             conn.commit()
@@ -188,6 +193,7 @@ def run(
             values = _fields.replace(step_field, "'"+step+"'")
             q7 = "INSERT INTO "+tableName+" ("+_fields+") SELECT "+values+" FROM "+wTableName
             q7 += " WHERE "+id_field+" IN ("+",".join(integrated)+")"
+            print("ITEMS INTEGRATION:")
             print(q7[:500])
             cursor.execute(q7)
             conn.commit()

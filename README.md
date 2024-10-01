@@ -35,12 +35,14 @@ python3 script/table_creation.py -c conf.json -m mcd.json -T tn -t road_link
 <u>Pays-Bas:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 4000 nl '#'
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -d 4000 nl '#'
 python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -d 4000 nl '#'
 ~~~
 
 <u>Belgique:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 4000 be '#'
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -d 4000 be '#'
 python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -d 4000 be '#'
 ~~~
 
@@ -60,6 +62,16 @@ python3 script/border_extraction.py -c conf.json -T tn -t road_link -b ch -d 300
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -b de -d 3000 -n fr
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -b be -d 3000 -n fr
 
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -b false -B international -d 3000 fr
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -b ad -d 4000 -n fr
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -b mc -d 4000 -n fr
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -b lu -d 4000 -n fr
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -b it -d 4000 -n fr
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -b es -d 4000 -n fr
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -b ch -d 4000 -n fr
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -b de -d 4000 -n fr
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -b be -d 4000 -n fr
+
 python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -b false -B international -d 3000 fr
 python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -b ad -d 3000 -n fr
 python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -b mc -d 3000 -n fr
@@ -74,7 +86,13 @@ python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -b be
 <u>Suisse:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 4000 ch '#'
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -d 4000 ch '#'
 python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -d 4000 ch '#'
+~~~
+
+<u>Luxembourg:</u>
+~~~
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -d 4000 lu '#'
 ~~~
 
 ### 2) Etape de nettoyage - suppression des objets hors territoire - (se placer dans le répertoire du projet data-cleaner):
@@ -82,30 +100,40 @@ python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -d 40
 <u>Pays-Bas:</u>
 ~~~
 python3 script/clean.py -c conf.json -d 5 -T tn -t road_link_w nl
+python3 script/clean.py -c conf.json -d 5 -T tn -t railway_link_w nl
 python3 script/clean.py -c conf.json -d 5 -T hy -t watercourse_link_w nl
 ~~~
 
 <u>Belgique:</u>
 ~~~
 python3 script/clean.py -c conf.json -d 5 -T tn -t road_link_w be
+python3 script/clean.py -c conf.json -d 5 -T tn -t railway_link_w be
 python3 script/clean.py -c conf.json -d 5 -T hy -t watercourse_link_w be
 ~~~
 
 <u>France:</u>
 ~~~
 python3 script/clean.py -c conf.json -d 5 -T tn -t road_link_w fr
+python3 script/clean.py -c conf.json -d 5 -T tn -t railway_link_w fr
 python3 script/clean.py -c conf.json -d 5 -T hy -t watercourse_link_w fr
 ~~~
 
 <u>Suisse:</u>
 ~~~
 python3 script/clean.py -c conf.json -d 5 -T tn -t road_link_w ch
+python3 script/clean.py -c conf.json -d 5 -T tn -t railway_link_w ch
 python3 script/clean.py -c conf.json -d 5 -T hy -t watercourse_link_w ch
+~~~
+
+<u>Luxembourg:</u>
+~~~
+python3 script/clean.py -c conf.json -d 5 -T tn -t railway_link_w lu
 ~~~
 
 ### 3) Intégration des modifications dans la table principale et la table d'historique:
 ~~~
 python3 script/integration.py -c conf.json -T tn -t road_link -s 10
+python3 script/integration.py -c conf.json -T tn -t railway_link -s 10
 python3 script/integration.py -c conf.json -T hy -t watercourse_link -s 10
 ~~~
 
@@ -114,12 +142,13 @@ python3 script/integration.py -c conf.json -T hy -t watercourse_link -s 10
 ### 1) Extraction des objets autour des frontières d'un couple de pays pour l'étape de matching:
 ~~~
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 1000 be fr
+python3 script/border_extraction.py -c conf.json -T tn -t railway_link -d 1000 be fr
 python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -d 1000 be fr
 ~~~
 
 ~~~
 python3 script/border_extraction.py -c conf.json -T hy -t watercourse_area -d 1000 be fr
-python3 script/border_extraction.py -c conf.json -T hy -t standing_waters -d 1000 be fr
+python3 script/border_extraction.py -c conf.json -T hy -t standing_water -d 1000 be fr
 ~~~
 
 ### 2) Etape de matching
@@ -421,6 +450,7 @@ Retour à l'étape N (annulation des changement jusqu'à l'étape N incluse):
 ~~~
 python3 script/revertion.py -c conf.json -T hy -t watercourse_link -s 10
 python3 script/revertion.py -c conf.json -T tn -t road_link -s 10
+python3 script/revertion.py -c conf.json -T tn -t railway_link -s 10
 python3 script/revertion.py -c conf.json -T au -t administrative_unit_area_3 -s 30
 ~~~
 
