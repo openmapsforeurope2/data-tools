@@ -65,7 +65,7 @@
                     "aerodrome_point",
                     "aerodrome_area",
                     "runway_line",
-                    "runway_point",
+                    "runway_area",
                     "ferry_crossing",
                     "port_point",
                     "port_area"
