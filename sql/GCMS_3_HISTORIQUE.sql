@@ -388,15 +388,18 @@ BEGIN
 			-- Un trigger ne peut supprimer (passer gcms_detruit à vrai) un objet mis à jour par l'utilisateur
 		    IF (NEW.gcms_detruit) THEN
 			    NEW.gcms_date_destruction := now();
+				NEW.end_lifespan_version := now();
 			    RETURN NEW;
 		    ELSE
 			    NEW.gcms_date_destruction := NULL;
+				NEW.end_lifespan_version := NULL;
 		    END IF;
 
 		    -- Cas d'un vrai UPDATE
 			-- 2022-06-19 : les updates déclenchés par un trigger ne doivent pas mettre à jour 
 			-- gcms_date_modification car l'opération qui les a déclenché peut être un INSERT
 		    NEW.gcms_date_modification := now();
+			NEW.begin_lifespan_version := now();
 			-- Empreinte pour compatibilité GCVS ; dans ce cas la colonne géométrique s'appele "geometrie"
 			IF (ign_gcms_test_column_exists(TG_RELID, 'gcvs_empreinte')) THEN
 				SELECT ign_gcms_get_empreinte (OLD.gcvs_empreinte, NEW.geometrie) INTO NEW.gcvs_empreinte ;
@@ -439,6 +442,7 @@ BEGIN
 		--NEW.cleabs := ign_gcms_get_feature_id (TG_RELID);
 		--NEW.cleabs := ign_gcms_generate_uuid()::text;
 		NEW.gcms_date_creation := now();
+		NEW.begin_lifespan_version := now();
 		NEW.gcms_numrec := currval('seqnumrec');
 		-- Empreinte pour compatiblité GCVS ; dans ce cas la colonne géométrique s'appele "geometrie"
 		IF (ign_gcms_test_column_exists(TG_RELID, 'gcvs_empreinte')) THEN

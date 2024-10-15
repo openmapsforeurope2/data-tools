@@ -1,45 +1,45 @@
 # data-tools
 
-## Paramètrages
+## Parameters
 
-paramètres communs:
-* c [obligatoire] : fichier de configuration
-* T [obligatoire] : thème (on ne peut spécifier qu'un seul thème)
-* t [optionnel] : table (on peut spécifier plusieurs tables en ajoutant autant de fois cette option). Les tables doivent appartenir au thème T
+Common parameters:
+* c [mandatory] : configuration file
+* T [mandatory] : theme (only one theme can be specified)
+* t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T
 
 border_extraction:
-* d [obligatoire] : rayon du buffer (en degrés)
-* b [optionnel] : code du pays frontalier
-* n [optionnel] : option pour ne pas supprimer les données déjà extraites dans la table de travail
-* arguments : le(s) code(s) pays à extraire (un ou deux)
+* d [mandatory] : buffer radius (degrees)
+* b [optional] : neighbouring country code
+* n [optional] : option which enables not to delete data already present in the work table
+* arguments : codes of country/countries to extract (one or two)
 
 integration:
-* s [obligatoire] : numéro de l'étape
+* s [mandatory] : step number
 
-reversion:
-* s [obligatoire] : numéro de l'étape
+rollback:
+* s [mandatory] : step number
 
 table_creation:
-* m [obligatoire] : fichier de configuration du mcd
+* m [mandatory] : conceptual data model configuration file
 
 
-## Creation des tables
+## Table creation
 ~~~
 python3 script/table_creation.py -c conf.json -m mcd.json -T tn -t road_link
 ~~~
 
 
-## Etape de nettoyage (10)
-### 1) Extraction des objets autour des frontières d'un pays pour l'étape de nettoyage:
+## Cleaning step (10)
+### 1) Extract objects around a country's boundaries for cleaning: 
 
-<u>Pays-Bas:</u>
+<u>The Netherlands:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 4000 nl '#'
 python3 script/border_extraction.py -c conf.json -T tn -t railway_link -d 4000 nl '#'
 python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -d 4000 nl '#'
 ~~~
 
-<u>Belgique:</u>
+<u>Belgium:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 4000 be '#'
 python3 script/border_extraction.py -c conf.json -T tn -t railway_link -d 4000 be '#'
@@ -51,7 +51,7 @@ python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -d 40
 ~~~
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 3000 fr '#'
 
-// ou
+// or
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -b false -B international -d 3000 fr
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -b ad -d 3000 -n fr
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -b mc -d 3000 -n fr
@@ -95,16 +95,16 @@ python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -d 40
 python3 script/border_extraction.py -c conf.json -T tn -t railway_link -d 4000 lu '#'
 ~~~
 
-### 2) Etape de nettoyage - suppression des objets hors territoire - (se placer dans le répertoire du projet data-cleaner):
+### 2) Clean (delete) objects outside border - (to be run from the data-cleaner project directory):
 
-<u>Pays-Bas:</u>
+<u>The Netherlands:</u>
 ~~~
 python3 script/clean.py -c conf.json -d 5 -T tn -t road_link_w nl
 python3 script/clean.py -c conf.json -d 5 -T tn -t railway_link_w nl
 python3 script/clean.py -c conf.json -d 5 -T hy -t watercourse_link_w nl
 ~~~
 
-<u>Belgique:</u>
+<u>Belgium:</u>
 ~~~
 python3 script/clean.py -c conf.json -d 5 -T tn -t road_link_w be
 python3 script/clean.py -c conf.json -d 5 -T tn -t railway_link_w be
@@ -130,7 +130,7 @@ python3 script/clean.py -c conf.json -d 5 -T hy -t watercourse_link_w ch
 python3 script/clean.py -c conf.json -d 5 -T tn -t railway_link_w lu
 ~~~
 
-### 3) Intégration des modifications dans la table principale et la table d'historique:
+### 3) Integrate modifications in the main table and working history table:
 ~~~
 python3 script/integration.py -c conf.json -T tn -t road_link -s 10
 python3 script/integration.py -c conf.json -T tn -t railway_link -s 10
@@ -138,8 +138,8 @@ python3 script/integration.py -c conf.json -T hy -t watercourse_link -s 10
 ~~~
 
 
-## Etape de matching (20)
-### 1) Extraction des objets autour des frontières d'un couple de pays pour l'étape de matching:
+## Matching step (20)
+### 1) Extract objects on the border between two neighbouring countries for matching:
 ~~~
 python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 1000 be fr
 python3 script/border_extraction.py -c conf.json -T tn -t railway_link -d 1000 be fr
@@ -151,41 +151,41 @@ python3 script/border_extraction.py -c conf.json -T hy -t watercourse_area -d 10
 python3 script/border_extraction.py -c conf.json -T hy -t standing_water -d 1000 be fr
 ~~~
 
-### 2) Etape de matching
+### 2) Match
 creation_cn -c conf.json -t road_link
 
-road_link modifiée avec mise à jour du champ modification_type
+road_link modified with modification_type field updated
 
 
-### 3) Intégration des modifications dans la table principale et la table d'historique:
+### 3) Integrate modifications in the main table and working history table:
 ~~~
 python3 script/integration.py -c conf.json -T tn -t road_link -s 20
 ~~~
 
 
-## Etape de matching administratif (30)
-### 1) Extraction des objets autour des frontières d'un pays matching:
+## AU matching (30)
+### 1) Extract objects around a country's boundaries for matching:
 
-<u>Pays-Bas:</u>
+<u>The Netherlands:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_3 -d 1000 nl '#'
 ~~~
 
-<u>Belgique:</u>
+<u>Belgium:</u>
 
-Exemple d'extraction autour des frontières avec un seul pays frontalier:
+Example of an extraction around boundaries with only one neighbouring country:
 ~~~
 python3 script/border_extraction.py exit-c conf.json -T au -t administrative_unit_area_5 -b nl -d 1000 be
 ~~~
 
-Exemple d'extraction autour des frontières avec plusieurs pays frontaliers:
+Example of an extraction around boundaries with several neighbouring countries:
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_5 -b nl -d 1000 be
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_5 -b de -d 1000 -n be
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_5 -b lu -d 1000 -n be
 ~~~
 
-Exemple d'extraction autour de toutes les frontières:
+Example of an extraction around all boundaries:
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_5 -d 1000 be '#'
 ~~~
@@ -195,20 +195,20 @@ python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_ar
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_6 -d 1000 fr '#'
 ~~~
 
-### 2) Etape de matching
-Copier les tables des frontières et des contours des pays dans le schéma public:
+### 2) Matching
+Copy boundary tables and country outlines in the public schema: 
 ~~~
 python3 script/table_copy.py -c conf.json au.administrative_unit_area_1 ib.international_boundary_line
 ~~~
 
-Lancer le traitement:
+Run process:
 
-<u>Pays-Bas:</u>
+<u>The Netherlands:</u>
 ~~~
 bin/ome2_au_matching --c data/config/epg_parameters.ini --t administrative_unit_area_3_w --cc nl
 ~~~
 
-<u>Belgique:</u>
+<u>Belgium:</u>
 ~~~
 bin/ome2_au_matching --c data/config/epg_parameters.ini --t administrative_unit_area_5_w --cc be
 ~~~
@@ -218,15 +218,15 @@ bin/ome2_au_matching --c data/config/epg_parameters.ini --t administrative_unit_
 bin/ome2_au_matching --c data/config/epg_parameters.ini --t administrative_unit_area_6_w --cc fr
 ~~~
 
-### 3) Intégration des modifications dans la table principale et la table d'historique:
-Dans un premier temps, vérifier dans le fichier de log si des polygones non-valides ont été générés au cours de processus de matching, les corriger dans QGIS le cas échéant.
+### 3) Integrate modifications in the main table and working history (wh) table
+Before running the integration, check in the log file whether invalid polygons have been generated by the matching process. If there are some, correct them in QGIS.
 
-<u>Pays-Bas:</u>
+<u>The Netherlands:</u>
 ~~~
 python3 script/integration.py -c conf.json -T au -t administrative_unit_area_3 -s 30
 ~~~
 
-<u>Belgique:</u>
+<u>Belgium:</u>
 ~~~
 python3 script/integration.py -c conf.json -T au -t administrative_unit_area_5 -s 30
 ~~~
@@ -237,36 +237,36 @@ python3 script/integration.py -c conf.json -T au -t administrative_unit_area_6 -
 ~~~
 
 
-## Etape de merging administratif (30)
-### Niveau 5)
-#### 1) Extraction des objets autour des frontières d'un pays:
+## Administrative merging (30)
+### Level 5)
+#### 1) Extract objects around a country's boundaries
 <u>France:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_5 -d 1000 fr '#'
 ~~~
 
-#### 2) Etape de merging
-Copier les tables des surfaces administratives de niveau inférieur dans le schéma public:
+#### 2) Merging
+Copy lower level administrative unit table in the public schema:
 ~~~
 python3 script/table_copy.py -c conf.json au.administrative_unit_area_6
 ~~~
 
-Lancer le traitement:
+Run process:
 
 <u>France:</u>
 ~~~
 bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_6 --t administrative_unit_area_5_w --cc fr
 ~~~
 
-#### 3) Intégration des modifications dans la table principale et la table d'historique:
+#### 3)  Integrate modifications in the main table and working history (wh) table
 ~~~
 python3 script/integration.py -c conf.json -T au -t administrative_unit_area_5 -s 30
 ~~~
 
 
-### Niveau 4)
-#### 1) Extraction des objets autour des frontières d'un pays:
-<u>Belgique:</u>
+### Level 4)
+#### 1) Extract objects around a country's boundaries
+<u>Belgium:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_4 -d 1000 be '#'
 ~~~
@@ -276,10 +276,10 @@ python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_ar
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_4 -d 1000 fr '#'
 ~~~
 
-#### 2) Etape de merging
-Copier les tables des surfaces administratives de niveau inférieur dans le schéma public:
+#### 2) Merging
+Copy lower level administrative unit table in the public schema:
 
-<u>Belgique:</u>
+<u>Belgium:</u>
 ~~~
 python3 script/table_copy.py -c conf.json au.administrative_unit_area_5
 ~~~
@@ -289,9 +289,9 @@ python3 script/table_copy.py -c conf.json au.administrative_unit_area_5
 python3 script/table_copy.py -c conf.json au.administrative_unit_area_6
 ~~~
 
-Lancer le traitement:
+Run process:
 
-<u>Belgique:</u>
+<u>Belgium:</u>
 ~~~
 bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_5 --t administrative_unit_area_4_w --cc be
 ~~~
@@ -301,17 +301,17 @@ bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_uni
 bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_6 --t administrative_unit_area_4_w --cc fr
 ~~~
 
-#### 3) Intégration des modifications dans la table principale et la table d'historique:
-Dans un premier temps, vérifier dans le fichier de log si des polygones non-valides ont été générés au cours de processus de matching, les corriger dans QGIS le cas échéant.
+#### 3)  Integrate modifications in the main table and working history (wh) table
+Before running the integration, check in the log file whether invalid polygons have been generated by the matching process. If there are some, correct them in QGIS.
 
 ~~~
 python3 script/integration.py -c conf.json -T au -t administrative_unit_area_4 -s 30
 ~~~
 
-### Niveau 3)
-#### 1) Extraction des objets autour des frontières d'un pays matching:
+### Level 3)
+#### 1) Extract objects around a country's boundaries
 
-<u>Belgique:</u>
+<u>Belgium:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_3 -d 1000 be '#'
 ~~~
@@ -321,17 +321,17 @@ python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_ar
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_3 -d 1000 fr '#'
 ~~~
 
-#### 2) Etape de matching
-Copier les tables des surfaces administratives de niveau inférieur dans le schéma public:
+#### 2) Matching
+Copy lower level administrative unit table in the public schema:
 
-<u>Belgique, France:</u>
+<u>Belgium, France:</u>
 ~~~
 python3 script/table_copy.py -c conf.json au.administrative_unit_area_4
 ~~~
 
-Lancer le traitement:
+Run process:
 
-<u>Belgique:</u>
+<u>Belgium:</u>
 ~~~
 bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_4 --t administrative_unit_area_3_w --cc be
 ~~~
@@ -341,21 +341,21 @@ bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_uni
 bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_4 --t administrative_unit_area_3_w --cc fr
 ~~~
 
-#### 3) Intégration des modifications dans la table principale et la table d'historique:
-Dans un premier temps, vérifier dans le fichier de log si des polygones non-valides ont été générés au cours de processus de matching, les corriger dans QGIS le cas échéant.
+#### 3)  Integrate modifications in the main table and working history (wh) table
+Before running the integration, check in the log file whether invalid polygons have been generated by the matching process. If there are some, correct them in QGIS.
 
 ~~~
 python3 script/integration.py -c conf.json -T au -t administrative_unit_area_3 -s 30
 ~~~
 
-### Niveau 2)
-#### 1) Extraction des objets autour des frontières d'un pays matching:
-<u>Pays-Bas:</u>
+### Level 2)
+#### 1) Extract objects around a country's boundaries
+<u>The Netherlands:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_2 -d 1000 nl '#'
 ~~~
 
-<u>Belgique:</u>
+<u>Belgium:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_2 -d 1000 be '#'
 ~~~
@@ -365,22 +365,22 @@ python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_ar
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_2 --d 1000 fr '#'
 ~~~
 
-#### 2) Etape de matching
-Copier les tables des surfaces administratives de niveau inférieur dans le schéma public:
+#### 2) Matching
+Copy lower level administrative unit table in the public schema:
 
-<u>Pays-Bas, Belgique, France:</u>
+<u>The Netherlands, Belgium, France:</u>
 ~~~
 python3 script/table_copy.py -c conf.json au.administrative_unit_area_3
 ~~~
 
-Lancer le traitement:
+Run process:
 
-<u>Pays-Bas:</u>
+<u>The Netherlands:</u>
 ~~~
 bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_3 --t administrative_unit_area_2_w --cc nl
 ~~~
 
-<u>Belgique:</u>
+<u>Belgium:</u>
 ~~~
 bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_3 --t administrative_unit_area_2_w --cc be
 ~~~
@@ -390,21 +390,21 @@ bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_uni
 bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_3 --t administrative_unit_area_2_w --cc fr
 ~~~
 
-#### 3) Intégration des modifications dans la table principale et la table d'historique:
-Dans un premier temps, vérifier dans le fichier de log si des polygones non-valides ont été générés au cours de processus de matching, les corriger dans QGIS le cas échéant.
+#### 3)  Integrate modifications in the main table and working history (wh) table
+Before running the integration, check in the log file whether invalid polygons have been generated by the matching process. If there are some, correct them in QGIS.
 
 ~~~
 python3 script/integration.py -c conf.json -T au -t administrative_unit_area_2 -s 30
 ~~~
 
-### Niveau 1)
-#### 1) Extraction des objets autour des frontières d'un pays matching:
-<u>Pays-Bas:</u>
+### Level 1)
+#### 1) Extract objects around a country's boundaries
+<u>The Netherlands:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_1 -d 1000 nl '#'
 ~~~
 
-<u>Belgique:</u>
+<u>Belgium:</u>
 ~~~
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_1 -d 1000 be '#'
 ~~~
@@ -414,22 +414,22 @@ python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_ar
 python3 script/border_extraction.py -c conf.json -T au -t administrative_unit_area_1 -d 1000 fr '#'
 ~~~
 
-#### 2) Etape de matching
-Copier les tables des surfaces administratives de niveau inférieur dans le schéma public:
+#### 2) Matching
+Copy lower level administrative unit table in the public schema:
 
-<u>Pays-Bas, Belgique, France:</u>
+<u>The Netherlands, Belgium, France:</u>
 ~~~
 python3 script/table_copy.py -c conf.json au.administrative_unit_area_2
 ~~~
 
-Lancer le traitement:
+Run process:
 
-<u>Pays-Bas:</u>
+<u>The Netherlands:</u>
 ~~~
 bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_2 --t administrative_unit_area_1_w --cc nl
 ~~~
 
-<u>Belgique:</u>
+<u>Belgium:</u>
 ~~~
 bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_2 --t administrative_unit_area_1_w --cc be
 ~~~
@@ -439,14 +439,14 @@ bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_uni
 bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_2 --t administrative_unit_area_1_w --cc fr
 ~~~
 
-#### 3) Intégration des modifications dans la table principale et la table d'historique:
+#### 3)  Integrate modifications in the main table and working history (wh) table
 ~~~
 python3 script/integration.py -c conf.json -T au -t administrative_unit_area_1 -s 30
 ~~~
 
 
 ## Rollback
-Retour à l'étape N (annulation des changement jusqu'à l'étape N incluse):
+Go back to step N (cancel modifications including those performed by step N):
 ~~~
 python3 script/revertion.py -c conf.json -T hy -t watercourse_link -s 10
 python3 script/revertion.py -c conf.json -T tn -t road_link -s 10

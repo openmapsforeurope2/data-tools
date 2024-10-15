@@ -25,7 +25,7 @@ def getIdRank(cursor, idField):
 
 
 def run(
-    step, conf, theme, tables, verbose
+    step, conf, theme, tables, nohistory, verbose
 ):
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
@@ -53,6 +53,7 @@ def run(
     historized_d = []
     historized_m = []
     integrated = []
+    modified = []
     id_field = conf['data']['common_fields']['id']
     working_schema = conf['data']['themes'][theme]['w_schema']
     theme_schema = conf['data']['themes'][theme]['schema']
@@ -68,7 +69,7 @@ def run(
         hTableName = getTableName(history_schema, tb)+conf['data']['history']['suffix']
 
         # on recupere les noms des champs
-        q0 = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE table_name = '"+tb+"' "+ ("AND table_schema = '"+theme_schema+"'") if theme_schema else ""
+        q0 = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name not like '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+theme_schema+"'") if theme_schema else ""
         cursor.execute(q0)
         _fields = cursor.fetchone()[0]
 
@@ -77,6 +78,7 @@ def run(
         cursor.execute(q1)
         tuples = cursor.fetchall()
         ids_ = [ "'"+t[0]+"'" for t in tuples ]
+        ids_1 = [ "''"+t[0]+"''" for t in tuples ]
         ids = [ t[0] for t in tuples ]
 
         bunch_size = 10000
@@ -88,6 +90,7 @@ def run(
         if ids:
             while True:
                 sub_ids_ = ids_[start : end]
+                sub_ids_1 = ids_1[start : end]
                 sub_ids = ids[start : end]
 
                 # on recupere les objets dans la table de travail
@@ -130,8 +133,10 @@ def run(
                     elif not array_equal(w_objects[sub_ids[i]], o_objects[sub_ids[i]]):
                         count_m += 1
                         historized_m.append(sub_ids_[i])
-                        deleted.append(sub_ids_[i])
-                        integrated.append(sub_ids_[i])
+                        modified.append(sub_ids_1[i])
+                        if nohistory:
+                            deleted.append(sub_ids_[i])
+                            integrated.append(sub_ids_[i])
 
                 if end == len(ids):
                     break
@@ -156,7 +161,7 @@ def run(
         print("Nombre d'objets créés: "+str(len(new_tuples)))
 
         
-        # on transfert les objets dans la table historique
+        # on transfère les objets dans la table historique
         fields = _fields+","+modification_type_field+","+modification_step_field
 
         if historized_d:
@@ -179,16 +184,18 @@ def run(
 
         # on supprime les objets de la table
         if deleted:
-            q6 = "DELETE FROM "+tableName
-            #Preparation pour historisation
-            #q6 = "UPDATE "+tableName+" SET gcms_detruit = true "
+            if nohistory:
+                q6 = "DELETE FROM "+tableName
+            else:
+                #Preparation pour historisation
+                q6 = "UPDATE "+tableName+" SET gcms_detruit = true "
             q6 += " WHERE "+id_field+" IN ("+",".join(deleted)+")"
             print("ITEMS DELETION:")
             print(q6[:500])
             cursor.execute(q6)
             conn.commit()
 
-        # on transfert les objets de la table de travail vers la table
+        # on transfère les nouveaux objets de la table de travail vers la table
         if integrated:
             values = _fields.replace(step_field, "'"+step+"'")
             q7 = "INSERT INTO "+tableName+" ("+_fields+") SELECT "+values+" FROM "+wTableName
@@ -198,6 +205,15 @@ def run(
             cursor.execute(q7)
             conn.commit()
         
+        # on transfère les objets modifiés de la table de travail vers la table
+        if modified and not(nohistory):
+            sc_name = tableName[0:tableName.find(".")]
+            tb_name = tableName[tableName.find(".")+1:]
+            id_list = "'("+",".join(modified)+")'" 
+            q8 = "SELECT ign_update_from_working_table('"+ tb_name +"', '" + sc_name + "', '" + id_field + "', " + id_list + ", '" + step + "' );"
+            print(q8[:500])
+            cursor.execute(q8)
+            conn.commit()
 
     cursor.close()
     conn.close()

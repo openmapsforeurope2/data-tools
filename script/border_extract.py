@@ -43,7 +43,7 @@ def run(
         wIdsTableName = getTableName(working_schema, tb)+conf['data']['working']['ids_suffix']
 
         # on recupère tous les noms de champs de la table
-        q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE table_name = '"+tb+"' "+ ("AND table_schema = '"+theme_schema+"'") if theme_schema else ""
+        q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name not like '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+theme_schema+"'") if theme_schema else ""
         print(u'query: {}'.format(q[:500]), flush=True)
         cursor.execute(q)
         fields = cursor.fetchone()[0]
