@@ -64,6 +64,7 @@ def run(
         if reset : query += "DELETE FROM "+wTableName+";"
         query += "INSERT INTO "+wTableName+" ("+fields+") SELECT "+fields+" FROM "+tableName
         query += " WHERE "+where_statement_data
+        query += " AND NOT gcms_detruit"
         query += " AND ST_intersects("+conf['data']['common_fields']['geometry']+",(SELECT ST_Buffer("+boundary_statement+","+ str(distance)+")))"
         if 'where' in conf['border_extraction'] and conf['border_extraction']['where']:
             query += " AND "+conf['border_extraction']['where']
