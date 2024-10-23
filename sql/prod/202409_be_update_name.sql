@@ -15,7 +15,7 @@ SET name =
             ),
             jsonb_build_object(     
                 'script', 'latn',
-                'display', '2'::INT,
+                'display', '0'::INT,
                 'language', 'dut',
                 'spelling', b.namedut,
                 'nativeness', 'endonym',
@@ -24,7 +24,7 @@ SET name =
             ),
             jsonb_build_object(                                            
                 'script', 'latn',
-                'display', '3'::INT,
+                'display', '0'::INT,
                 'language', 'ger',
                 'spelling', b.nameger,
                 'nativeness', 'endonym',
@@ -45,7 +45,7 @@ SET name =
             ),
             jsonb_build_object(     
                 'script', 'latn',
-                'display', '2'::INT,
+                'display', '0'::INT,
                 'language', 'fre',
                 'spelling', b.namefre,
                 'nativeness', 'endonym',
@@ -54,7 +54,7 @@ SET name =
             ),
             jsonb_build_object(                                            
                 'script', 'latn',
-                'display', '3'::INT,
+                'display', '0'::INT,
                 'language', 'ger',
                 'spelling', b.nameger,
                 'nativeness', 'endonym',
@@ -86,7 +86,7 @@ SET name =
             ),
             jsonb_build_object(     
                 'script', 'latn',
-                'display', '2'::INT,
+                'display', '0'::INT,
                 'language', 'dut',
                 'spelling', b.namedut,
                 'nativeness', 'endonym',
@@ -95,7 +95,7 @@ SET name =
             ),
             jsonb_build_object(                                            
                 'script', 'latn',
-                'display', '3'::INT,
+                'display', '0'::INT,
                 'language', 'ger',
                 'spelling', b.nameger,
                 'nativeness', 'endonym',
@@ -116,7 +116,7 @@ SET name =
             ),
             jsonb_build_object(     
                 'script', 'latn',
-                'display', '2'::INT,
+                'display', '0'::INT,
                 'language', 'fre',
                 'spelling', b.namefre,
                 'nativeness', 'endonym',
@@ -125,7 +125,7 @@ SET name =
             ),
             jsonb_build_object(                                            
                 'script', 'latn',
-                'display', '3'::INT,
+                'display', '0'::INT,
                 'language', 'ger',
                 'spelling', b.nameger,
                 'nativeness', 'endonym',
@@ -157,7 +157,7 @@ SET name =
             ),
             jsonb_build_object(     
                 'script', 'latn',
-                'display', '2'::INT,
+                'display', '0'::INT,
                 'language', 'dut',
                 'spelling', b.namedut,
                 'nativeness', 'endonym',
@@ -166,7 +166,7 @@ SET name =
             ),
             jsonb_build_object(                                            
                 'script', 'latn',
-                'display', '3'::INT,
+                'display', '0'::INT,
                 'language', 'ger',
                 'spelling', b.nameger,
                 'nativeness', 'endonym',
@@ -187,7 +187,7 @@ SET name =
             ),
             jsonb_build_object(     
                 'script', 'latn',
-                'display', '2'::INT,
+                'display', '0'::INT,
                 'language', 'fre',
                 'spelling', b.namefre,
                 'nativeness', 'endonym',
@@ -196,7 +196,7 @@ SET name =
             ),
             jsonb_build_object(                                            
                 'script', 'latn',
-                'display', '3'::INT,
+                'display', '0'::INT,
                 'language', 'ger',
                 'spelling', b.nameger,
                 'nativeness', 'endonym',
@@ -227,7 +227,7 @@ SET name =
             ),
             jsonb_build_object(     
                 'script', 'latn',
-                'display', '2'::INT,
+                'display', '0'::INT,
                 'language', 'dut',
                 'spelling', b.namedut,
                 'nativeness', 'endonym',
@@ -236,7 +236,7 @@ SET name =
             ),
             jsonb_build_object(                                            
                 'script', 'latn',
-                'display', '3'::INT,
+                'display', '0'::INT,
                 'language', 'ger',
                 'spelling', b.nameger,
                 'nativeness', 'endonym',
@@ -257,7 +257,7 @@ SET name =
             ),
             jsonb_build_object(     
                 'script', 'latn',
-                'display', '2'::INT,
+                'display', '0'::INT,
                 'language', 'fre',
                 'spelling', b.namefre,
                 'nativeness', 'endonym',
@@ -266,7 +266,7 @@ SET name =
             ),
             jsonb_build_object(                                            
                 'script', 'latn',
-                'display', '3'::INT,
+                'display', '0'::INT,
                 'language', 'ger',
                 'spelling', b.nameger,
                 'nativeness', 'endonym',

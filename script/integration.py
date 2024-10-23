@@ -74,8 +74,6 @@ def run(argv):
 
     print("[START INTEGRATION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-    conf = utils.getConf(arg_conf)
-
     integrate.run(arg_step, conf, arg_theme, arg_tables, arg_nohistory, arg_verbose)
 
     print("[END INTEGRATION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
