@@ -21,6 +21,7 @@ def createTableAndIndexes(conf, mcd, theme, tables):
         query += getCreateTrigger(conf, theme, tableName)
 
         print(u'query: {}'.format(query), flush=True)
+        # print(u'{}'.format(query), flush=True)
         cursor.execute(query)
         conn.commit()
 
@@ -29,6 +30,7 @@ def createTableAndIndexes(conf, mcd, theme, tables):
         query_w += getCreateWorkingIndexesStatement(conf, mcd, theme, tableName)
 
         print(u'query: {}'.format(query_w), flush=True)
+        # print(u'{}'.format(query_w), flush=True)
         cursor.execute(query_w)
         conn.commit()
 
@@ -37,6 +39,7 @@ def createTableAndIndexes(conf, mcd, theme, tables):
         query_ids += getCreateWorkingIdsIndexesStatement(conf, mcd, theme, tableName)
 
         print(u'query: {}'.format(query_ids), flush=True)
+        # print(u'{}'.format(query_ids), flush=True)
         cursor.execute(query_ids)
         conn.commit()
 
@@ -45,6 +48,7 @@ def createTableAndIndexes(conf, mcd, theme, tables):
         query_h += getCreateHistoryIndexesStatement(conf, mcd, theme, tableName)
 
         print(u'query: {}'.format(query_h), flush=True)
+        # print(u'{}'.format(query_h), flush=True)
         cursor.execute(query_h)
         conn.commit()
 

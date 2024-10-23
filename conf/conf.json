@@ -44,7 +44,7 @@
             "tn": {
                 "schema": "tn",
                 "h_schema": "tn",
-                "w_schema": "public",
+                "w_schema": "wk",
                 "tables": [
                     "road_link",
                     "road",
@@ -68,7 +68,7 @@
             "au": {
                 "schema": "au",
                 "h_schema": "au",
-                "w_schema": "public",
+                "w_schema": "wk",
                 "tables": [
                     "administrative_boundary",
                     "administrative_area",
@@ -85,7 +85,7 @@
             "ib": {
                 "schema": "ib",
                 "h_schema": "ib",
-                "w_schema": "public",
+                "w_schema": "wk",
                 "tables": [
                     "international_boundary_line",
                     "international_boundary_node",
@@ -95,7 +95,7 @@
             "hy": {
                 "schema": "hy",
                 "h_schema": "hy",
-                "w_schema": "public",
+                "w_schema": "wk",
                 "tables": [
                     "watercourse_link",
                     "watercourse",
