@@ -27,12 +27,12 @@ def run(argv):
         "conf=", "theme=", "table=", "distance=", "border_country=", "boundary_type=", "noreset", "verbose"])
     except:
         print(arg_help)
-        sys.exit(2)
+        sys.exit(1)
     
     for opt, arg in opts:
         if opt in ("-h", "--help"):
             print(arg_help)  # print the help message
-            sys.exit(2)
+            sys.exit(1)
         elif opt in ("-c", "--conf"):
             arg_conf = arg
         elif opt in ("-T", "--theme"):
@@ -63,18 +63,18 @@ def run(argv):
 
     if arg_bt is not None and arg_bt not in boundary_types:
         print("le paramètre B (boundary_type) doit être choisi parmi les valeurs : " + ",".join(boundary_types))
-        sys.exit(2)
+        sys.exit(1)
 
     if arg_dist is None:
         print("le paramètre obligatoire --distance (-d) est manquant")
-        sys.exit(2)
+        sys.exit(1)
         
     workspace = os.path.dirname(currentDir)+"/"
 
     #conf
     if not os.path.isfile(workspace+"conf/"+arg_conf):
         print("le fichier de configuration "+ arg_conf + " n'existe pas.")
-        sys.exit(2)
+        sys.exit(1)
     arg_conf = workspace+"conf/"+arg_conf
 
     conf = utils.getConf(arg_conf)
@@ -82,7 +82,7 @@ def run(argv):
     #bd conf
     if not os.path.isfile(workspace+"conf/"+conf["db_conf_file"]):
         print("le fichier de configuration "+ conf["db_conf_file"] + " n'existe pas.")
-        sys.exit(2)
+        sys.exit(1)
     arg_db_conf = workspace+"conf/"+conf["db_conf_file"]
 
     db_conf = utils.getConf(arg_db_conf)
@@ -93,7 +93,10 @@ def run(argv):
 
     print("[START EXTRACTION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-    border_extract.run(conf, arg_theme, arg_tables, arg_dist, args, arg_bcc, arg_bt, (not arg_noreset), arg_verbose)
+    try:
+        border_extract.run(conf, arg_theme, arg_tables, arg_dist, args, arg_bcc, arg_bt, (not arg_noreset), arg_verbose)
+    except:
+        sys.exit(1)
 
     print("[END EXTRACTION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 

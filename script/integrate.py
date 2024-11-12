@@ -70,12 +70,20 @@ def run(
 
         # on recupere les noms des champs
         q0 = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name not like '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+theme_schema+"'") if theme_schema else ""
-        cursor.execute(q0)
+        try:
+            cursor.execute(q0)
+        except Exception as e:
+            print(e)
+            raise
         _fields = cursor.fetchone()[0]
 
         # on parcourt les identifiants des objets extraits
         q1 = "SELECT "+id_field+" FROM "+wIdsTableName
-        cursor.execute(q1)
+        try:
+            cursor.execute(q1)
+        except Exception as e:
+            print(e)
+            raise
         tuples = cursor.fetchall()
         ids_ = [ "'"+t[0]+"'" for t in tuples ]
         ids_1 = [ "''"+t[0]+"''" for t in tuples ]
@@ -98,7 +106,11 @@ def run(
                 q2 += " WHERE "+id_field+" IN ("+",".join(sub_ids_)+")"
                 print("GETTING WORKING TABLE ITEMS :")
                 print(q2[:500])
-                cursor.execute(q2)
+                try:
+                    cursor.execute(q2)
+                except Exception as e:
+                    print(e)
+                    raise
                 w_tuples = cursor.fetchall()
                 w_idRank = getIdRank(cursor, id_field)
 
@@ -113,7 +125,11 @@ def run(
                 q2_bis += " WHERE "+id_field+" IN ("+",".join(sub_ids_)+")"
                 print("GETTING MAIN TABLE ITEMS :")
                 print(q2_bis[:500])
-                cursor.execute(q2_bis)
+                try:
+                    cursor.execute(q2_bis)
+                except Exception as e:
+                    print(e)
+                    raise
                 o_tuples = cursor.fetchall()
                 o_idRank = getIdRank(cursor, id_field)
 
@@ -152,7 +168,11 @@ def run(
         q3 = "SELECT a."+id_field+" FROM "+wTableName+" AS a"
         q3 += " LEFT JOIN "+wIdsTableName+" AS b ON a."+id_field+"=b."+id_field
         q3 += " WHERE b."+id_field+" IS NULL"
-        cursor.execute(q3)
+        try:
+            cursor.execute(q3)
+        except Exception as e:
+            print(e)
+            raise
         new_tuples = cursor.fetchall()
 
         for nt in new_tuples:
@@ -170,7 +190,11 @@ def run(
             q4 += " WHERE "+id_field+" IN ("+",".join(historized_d)+")"
             print("DELETED ITEMS HISTORIZATION :")
             print(q4[:500])
-            cursor.execute(q4)
+            try:
+                cursor.execute(q4)
+            except Exception as e:
+                print(e)
+                raise
             conn.commit()
         
         if historized_m:
@@ -179,7 +203,11 @@ def run(
             q5 += " WHERE "+id_field+" IN ("+",".join(historized_m)+")"
             print("MODIFIED ITEMS HISTORIZATION :")
             print(q5[:500])
-            cursor.execute(q5)
+            try:
+                cursor.execute(q5)
+            except Exception as e:
+                print(e)
+                raise
             conn.commit()
 
         # on supprime les objets de la table
@@ -192,7 +220,11 @@ def run(
             q6 += " WHERE "+id_field+" IN ("+",".join(deleted)+")"
             print("ITEMS DELETION:")
             print(q6[:500])
-            cursor.execute(q6)
+            try:
+                cursor.execute(q6)
+            except Exception as e:
+                print(e)
+                raise
             conn.commit()
 
         # on transfère les nouveaux objets de la table de travail vers la table
@@ -202,7 +234,11 @@ def run(
             q7 += " WHERE "+id_field+" IN ("+",".join(integrated)+")"
             print("ITEMS INTEGRATION:")
             print(q7[:500])
-            cursor.execute(q7)
+            try:
+                cursor.execute(q7)
+            except Exception as e:
+                print(e)
+                raise
             conn.commit()
         
         # on transfère les objets modifiés de la table de travail vers la table
@@ -212,7 +248,11 @@ def run(
             id_list = "'("+",".join(modified)+")'" 
             q8 = "SELECT ign_update_from_working_table('"+ tb_name +"', '" + sc_name + "', '" + id_field + "', " + id_list + ", '" + step + "' );"
             print(q8[:500])
-            cursor.execute(q8)
+            try:
+                cursor.execute(q8)
+            except Exception as e:
+                print(e)
+                raise
             conn.commit()
 
     cursor.close()

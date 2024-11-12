@@ -30,11 +30,19 @@ def run(
 
         # on recupère tous les steps supérieur ou égal au step cible
         q0 = "SELECT DISTINCT("+step_field+") FROM "+tableName+" WHERE "+step_field+">="+step
-        cursor.execute(q0)
+        try:
+            cursor.execute(q0)
+        except Exception as e:
+            print(e)
+            raise
         steps0 = [ t[0] for t in cursor.fetchall() ]
 
         q0_bis = "SELECT DISTINCT("+modif_step_field+") FROM "+hTableName+" WHERE "+modif_step_field+">="+step
-        cursor.execute(q0_bis)
+        try:
+            cursor.execute(q0_bis)
+        except Exception as e:
+            print(e)
+            raise
         steps0_bis = [ t[0] for t in cursor.fetchall() ]
 
         orderedSteps = sorted(set(steps0+steps0_bis), reverse=True)
@@ -43,25 +51,41 @@ def run(
             # on supprime tous les objets du step present dans la table
             q = "DELETE FROM "+tableName+" WHERE "+step_field+"="+str(step)
             print(u'query: {}'.format(q), flush=True)
-            cursor.execute(q)
+            try:
+                cursor.execute(q)
+            except Exception as e:
+                print(e)
+                raise
             conn.commit()
 
             # on transfert tous les objets du step qui sont dans la table historique vers la table
             # on recupère tous les noms de champs de la table
             q1 = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE table_name = '"+tb+"' "+ ("AND table_schema = '"+theme_schema+"'") if theme_schema else ""
-            cursor.execute(q1)
+            try:
+                cursor.execute(q1)
+            except Exception as e:
+                print(e)
+                raise
             fields = cursor.fetchone()[0]
 
             q2 = "INSERT INTO "+tableName+" ("+fields+") SELECT "+fields+" FROM "+hTableName
             q2 += " WHERE "+modif_step_field+"="+str(step)
             print(u'query: {}'.format(q2), flush=True)
-            cursor.execute(q2)
+            try:
+                cursor.execute(q2)
+            except Exception as e:
+                print(e)
+                raise
             conn.commit()
 
             # on supprime tous les objets du step de la table historique
             q3 = "DELETE FROM "+hTableName+" WHERE "+modif_step_field+"="+str(step)
             print(u'query: {}'.format(q3), flush=True)
-            cursor.execute(q3)
+            try:
+                cursor.execute(q3)
+            except Exception as e:
+                print(e)
+                raise
             conn.commit()
 
     cursor.close()

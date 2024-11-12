@@ -22,21 +22,3 @@ def getConf(confFile):
 
         return json.loads(confString)
     return None
-
-def getTempFileNameConf(prefix):
-    return prefix + "_cleaning"
-
-def onWindows():
-    return sys.platform.startswith("win")
-
-def getCommandBase(conf):
-    if onWindows():
-        return 'psql -U "'+conf['user']+'" -h "'+conf['host']+'" -p "'+conf['port']+'" -d "'+conf['name']+'"'
-    else:
-        return 'PGPASSWORD="'+conf['pwd']+'" psql -U "'+conf['user']+'" -h "'+conf['host']+'" -p "'+conf['port']+'" -d "'+conf['name']+'"'
-
-def getPythonBinName():
-    if onWindows():
-        return 'python.exe'
-    else:
-        return 'python3'

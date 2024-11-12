@@ -22,7 +22,11 @@ def createTableAndIndexes(conf, mcd, theme, tables):
 
         print(u'query: {}'.format(query), flush=True)
         # print(u'{}'.format(query), flush=True)
-        cursor.execute(query)
+        try:
+            cursor.execute(query)
+        except Exception as e:
+            print(e)
+            raise
         conn.commit()
 
         # working
@@ -31,7 +35,11 @@ def createTableAndIndexes(conf, mcd, theme, tables):
 
         print(u'query: {}'.format(query_w), flush=True)
         # print(u'{}'.format(query_w), flush=True)
-        cursor.execute(query_w)
+        try:
+            cursor.execute(query_w)
+        except Exception as e:
+            print(e)
+            raise
         conn.commit()
 
         # ids
@@ -40,7 +48,11 @@ def createTableAndIndexes(conf, mcd, theme, tables):
 
         print(u'query: {}'.format(query_ids), flush=True)
         # print(u'{}'.format(query_ids), flush=True)
-        cursor.execute(query_ids)
+        try:
+            cursor.execute(query_ids)
+        except Exception as e:
+            print(e)
+            raise
         conn.commit()
 
         # history
@@ -49,8 +61,15 @@ def createTableAndIndexes(conf, mcd, theme, tables):
 
         print(u'query: {}'.format(query_h), flush=True)
         # print(u'{}'.format(query_h), flush=True)
-        cursor.execute(query_h)
+        try:
+            cursor.execute(query_h)
+        except Exception as e:
+            print(e)
+            raise
         conn.commit()
+        
+    cursor.close()
+    conn.close()
 
 def getCreateTrigger(conf, theme, tableName):
         fullTableName = getTableName(conf['data']['themes'][theme]['schema'], tableName)

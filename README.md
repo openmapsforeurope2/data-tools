@@ -92,7 +92,9 @@ python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -d 40
 
 <u>Luxembourg:</u>
 ~~~
+python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 4000 lu '#'
 python3 script/border_extraction.py -c conf.json -T tn -t railway_link -d 4000 lu '#'
+python3 script/border_extraction.py -c conf.json -T tn -t watercourse_link -d 4000 lu '#'
 ~~~
 
 ### 2) Clean (delete) objects outside border - (to be run from the data-cleaner project directory):
@@ -152,10 +154,9 @@ python3 script/border_extraction.py -c conf.json -T hy -t standing_water -d 1000
 ~~~
 
 ### 2) Match
-creation_cn -c conf.json -t road_link
-
-road_link modified with modification_type field updated
-
+~~~
+./bin/ome2_tn_matching --c ./data/config/epg_parameters.ini --t tn --cc be#lu
+~~~
 
 ### 3) Integrate modifications in the main table and working history table:
 ~~~

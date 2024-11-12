@@ -22,5 +22,12 @@ def copyTable(conf, tables):
         query = "DROP TABLE IF EXISTS "+targetTableName+"; CREATE TABLE "+targetTableName+" AS TABLE "+tableName+";"
 
         print(u'query: {}'.format(query), flush=True)
-        cursor.execute(query)
+        try:
+            cursor.execute(query)
+        except Exception as e:
+            print(e)
+            raise
         conn.commit()
+    
+    cursor.close()
+    conn.close()

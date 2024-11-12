@@ -23,12 +23,12 @@ def run(argv):
         "conf=", "step=", "theme=", "table=", "verbose"])
     except:
         print(arg_help)
-        sys.exit(2)
+        sys.exit(1)
     
     for opt, arg in opts:
         if opt in ("-h", "--help"):
             print(arg_help)  # print the help message
-            sys.exit(2)
+            sys.exit(1)
         elif opt in ("-c", "--conf"):
             arg_conf = arg
         elif opt in ("-s", "--step"):
@@ -51,7 +51,7 @@ def run(argv):
     #conf
     if not os.path.isfile(workspace+"conf/"+arg_conf):
         print("le fichier de configuration "+ arg_conf + " n'existe pas.")
-        sys.exit(2)
+        sys.exit(1)
     arg_conf = workspace+"conf/"+arg_conf
 
     conf = utils.getConf(arg_conf)
@@ -59,7 +59,7 @@ def run(argv):
     #bd conf
     if not os.path.isfile(workspace+"conf/"+conf["db_conf_file"]):
         print("le fichier de configuration "+ conf["db_conf_file"] + " n'existe pas.")
-        sys.exit(2)
+        sys.exit(1)
     arg_db_conf = workspace+"conf/"+conf["db_conf_file"]
 
     db_conf = utils.getConf(arg_db_conf)
@@ -70,8 +70,11 @@ def run(argv):
 
     print("[START REVERSION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-    revert.run(arg_step, conf, arg_theme, arg_tables, arg_verbose)
-
+    try:
+        revert.run(arg_step, conf, arg_theme, arg_tables, arg_verbose)
+    except:
+        sys.exit(1)
+    
     print("[END REVERSION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 if __name__ == "__main__":
