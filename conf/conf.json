@@ -40,11 +40,17 @@
             "ids_suffix": "_w_ids",
             "suffix": "_w"
         },
+        "update": {
+            "suffix": "_up",
+            "reference_suffix": "_ref",
+            "area_suffix": "_up_area"
+        },
         "themes": {
             "tn": {
                 "schema": "tn",
                 "h_schema": "tn",
-                "w_schema": "wk",
+                "w_schema": "public",
+                "u_schema": "public",
                 "tables": [
                     "road_link",
                     "road",
@@ -69,6 +75,7 @@
                 "schema": "au",
                 "h_schema": "au",
                 "w_schema": "wk",
+                "u_schema": "wk",
                 "tables": [
                     "administrative_boundary",
                     "administrative_area",
@@ -86,6 +93,7 @@
                 "schema": "ib",
                 "h_schema": "ib",
                 "w_schema": "wk",
+                "u_schema": "wk",
                 "tables": [
                     "international_boundary_line",
                     "international_boundary_node",
@@ -96,6 +104,7 @@
                 "schema": "hy",
                 "h_schema": "hy",
                 "w_schema": "wk",
+                "u_schema": "wk",
                 "tables": [
                     "watercourse_link",
                     "watercourse",

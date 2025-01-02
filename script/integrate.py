@@ -25,7 +25,7 @@ def getIdRank(cursor, idField):
 
 
 def run(
-    step, conf, theme, tables, nohistory, verbose
+    step, conf, theme, tables, to_up, nohistory, verbose
 ):
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
@@ -33,6 +33,9 @@ def run(
                                 port = conf['db']['port'],
                                 database = conf['db']['name'])
     cursor = conn.cursor()
+
+    if to_up :
+        nohistory = True
 
     print("INTEGRATING...", flush=True)
 
@@ -57,25 +60,31 @@ def run(
     id_field = conf['data']['common_fields']['id']
     working_schema = conf['data']['themes'][theme]['w_schema']
     theme_schema = conf['data']['themes'][theme]['schema']
+    update_schema = conf['data']['themes'][theme]['u_schema']
     history_schema = conf['data']['themes'][theme]['h_schema']
     modification_type_field = conf['data']['history']['fields']['modification_type']
     modification_step_field = conf['data']['history']['fields']['modification_step']
     step_field = conf['data']['common_fields']['step']
 
     for tb in tables:
-        tableName = getTableName(theme_schema, tb)
         wIdsTableName = getTableName(working_schema, tb)+conf['data']['working']['ids_suffix']
         wTableName = getTableName(working_schema, tb)+conf['data']['working']['suffix']
         hTableName = getTableName(history_schema, tb)+conf['data']['history']['suffix']
+        targetSchema = update_schema if to_up else theme_schema
+        if to_up :
+            tb += conf['data']['update']['suffix']
+        tableName = getTableName(targetSchema, tb)
 
         # on recupere les noms des champs
-        q0 = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name not like '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+theme_schema+"'") if theme_schema else ""
+        q0 = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name not like '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+targetSchema+"'") if targetSchema else ""
         try:
             cursor.execute(q0)
         except Exception as e:
             print(e)
             raise
         _fields = cursor.fetchone()[0]
+
+        print(_fields, flush=True)
 
         # on parcourt les identifiants des objets extraits
         q1 = "SELECT "+id_field+" FROM "+wIdsTableName
@@ -111,6 +120,7 @@ def run(
                 except Exception as e:
                     print(e)
                     raise
+
                 w_tuples = cursor.fetchall()
                 w_idRank = getIdRank(cursor, id_field)
 
@@ -180,35 +190,35 @@ def run(
         
         print("Nombre d'objets créés: "+str(len(new_tuples)))
 
-        
-        # on transfère les objets dans la table historique
-        fields = _fields+","+modification_type_field+","+modification_step_field
+        if not to_up :
+            # on transfère les objets dans la table historique
+            fields = _fields+","+modification_type_field+","+modification_step_field
 
-        if historized_d:
-            values_d = fields.replace(modification_step_field, "'"+step+"'").replace(modification_type_field, "'D'")
-            q4 = "INSERT INTO "+hTableName+" ("+fields+") SELECT "+values_d+" FROM "+tableName
-            q4 += " WHERE "+id_field+" IN ("+",".join(historized_d)+")"
-            print("DELETED ITEMS HISTORIZATION :")
-            print(q4[:500])
-            try:
-                cursor.execute(q4)
-            except Exception as e:
-                print(e)
-                raise
-            conn.commit()
-        
-        if historized_m:
-            values_m = fields.replace(modification_step_field, "'"+step+"'").replace(modification_type_field, "'M'")
-            q5 = "INSERT INTO "+hTableName+" ("+fields+") SELECT "+values_m+" FROM "+tableName
-            q5 += " WHERE "+id_field+" IN ("+",".join(historized_m)+")"
-            print("MODIFIED ITEMS HISTORIZATION :")
-            print(q5[:500])
-            try:
-                cursor.execute(q5)
-            except Exception as e:
-                print(e)
-                raise
-            conn.commit()
+            if historized_d:
+                values_d = fields.replace(modification_step_field, "'"+step+"'").replace(modification_type_field, "'D'")
+                q4 = "INSERT INTO "+hTableName+" ("+fields+") SELECT "+values_d+" FROM "+tableName
+                q4 += " WHERE "+id_field+" IN ("+",".join(historized_d)+")"
+                print("DELETED ITEMS HISTORIZATION :")
+                print(q4[:500])
+                try:
+                    cursor.execute(q4)
+                except Exception as e:
+                    print(e)
+                    raise
+                conn.commit()
+            
+            if historized_m:
+                values_m = fields.replace(modification_step_field, "'"+step+"'").replace(modification_type_field, "'M'")
+                q5 = "INSERT INTO "+hTableName+" ("+fields+") SELECT "+values_m+" FROM "+tableName
+                q5 += " WHERE "+id_field+" IN ("+",".join(historized_m)+")"
+                print("MODIFIED ITEMS HISTORIZATION :")
+                print(q5[:500])
+                try:
+                    cursor.execute(q5)
+                except Exception as e:
+                    print(e)
+                    raise
+                conn.commit()
 
         # on supprime les objets de la table
         if deleted:
@@ -229,7 +239,7 @@ def run(
 
         # on transfère les nouveaux objets de la table de travail vers la table
         if integrated:
-            values = _fields.replace(step_field, "'"+step+"'")
+            values = _fields.replace(step_field, "NULL" if to_up else "'"+step+"'")
             q7 = "INSERT INTO "+tableName+" ("+_fields+") SELECT "+values+" FROM "+wTableName
             q7 += " WHERE "+id_field+" IN ("+",".join(integrated)+")"
             print("ITEMS INTEGRATION:")

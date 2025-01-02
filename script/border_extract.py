@@ -5,7 +5,21 @@ def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName
 
 def run(
-    conf, theme, tables, distance, countryCodes, borderCountryCode, boundaryType, reset, verbose
+    conf,
+    theme,
+    tables,
+    output,
+    distance,
+    countryCodes,
+    borderCountryCode,
+    boundaryType,
+    inUpArea,
+    # inUpAreaW,
+    fromUp,
+    # fromArea,
+    # extractAllCountries,
+    reset,
+    verbose
 ):
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
@@ -19,31 +33,44 @@ def run(
     where_statement_boundary = ""
     where_statement_data = ""
     for country in  countryCodes:
-        where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['data']['common_fields']['country'] + (" = '"+country+"'" if borderCountryCode == False else " LIKE '%"+country+"%'") 
-        where_statement_data += ("," if where_statement_data else "") + "'"+country+"'"
+        where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['data']['common_fields']['country'] + (" = '"+country+"'" if borderCountryCode == False else " LIKE '%"+country+"%'")
+        if country != "#":
+            where_statement_data += (" OR " if where_statement_data else "") + conf['data']['common_fields']['country'] + (" = '"+country+"'" if borderCountryCode == False else " LIKE '%"+country+"%'")
     if borderCountryCode :
         where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['data']['common_fields']['country'] + " LIKE '%"+borderCountryCode+"%'"
 
     if boundaryType == "international":
         where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['boundary']['fields']['type'] + " = '" + conf['boundary']['boundary_type_values']['international'] + "'"
     
-    where_statement_data = conf['data']['common_fields']['country']+" IN ("+where_statement_data+")"
-
-    boundary_statement =  "ST_Union(ARRAY((SELECT "+conf['boundary']['fields']['geometry']+" FROM "+getTableName(conf['boundary']['schema'], conf['boundary']['table'])+" WHERE "+where_statement_boundary+")))"
     
+    boundary_statement = "ST_Union(ARRAY((SELECT "+conf['boundary']['fields']['geometry']+" FROM "+getTableName(conf['boundary']['schema'], conf['boundary']['table'])+" WHERE "+where_statement_boundary+")))"
+    boundary_buffer_statement = "SELECT ST_Buffer(("+boundary_statement+"),"+ str(distance)+")"
+
     
     theme_schema = conf['data']['themes'][theme]['schema']
     working_schema = conf['data']['themes'][theme]['w_schema']
+    update_schema = conf['data']['themes'][theme]['u_schema']
+    
     if not tables:
         tables = conf['data']['themes'][theme]['tables']
         
     for tb in tables:
-        tableName = getTableName(theme_schema, tb)
         wTableName = getTableName(working_schema, tb)+conf['data']['working']['suffix']
         wIdsTableName = getTableName(working_schema, tb)+conf['data']['working']['ids_suffix']
+        sourceSchema = update_schema if fromUp else theme_schema
+        if fromUp :
+            tb += conf['data']['update']['suffix']
+        tableName = getTableName(sourceSchema, tb)
+
+        # where_geom_statement = ""
+        if inUpArea:
+            inUpArea_statement = "ST_Union(ARRAY((SELECT "+conf['data']['common_fields']['geometry']+" FROM "+getTableName(update_schema, tb)+conf['data']['update']['area_suffix']
+            inUpArea_statement += " WHERE ST_Intersects("+conf['data']['common_fields']['geometry']+", ("+boundary_buffer_statement+"))"
+            inUpArea_statement +=")))"
+            where_statement_data += (" AND " if where_statement_data else "") + "ST_Intersects("+conf['data']['common_fields']['geometry']+", ("+inUpArea_statement+"))"
 
         # on recupère tous les noms de champs de la table
-        q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name not like '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+theme_schema+"'") if theme_schema else ""
+        q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name not like '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+sourceSchema+"'") if sourceSchema else ""
         print(u'query: {}'.format(q[:500]), flush=True)
         try:
             cursor.execute(q)
@@ -67,19 +94,19 @@ def run(
                 ids = ids.split(',')
                 ids = "','".join(ids)
 
-
         query = ""
         if reset : query += "DELETE FROM "+wTableName+";"
         query += "INSERT INTO "+wTableName+" ("+fields+") SELECT "+fields+" FROM "+tableName
         query += " WHERE "+where_statement_data
-        query += " AND NOT gcms_detruit"
-        query += " AND ST_intersects("+conf['data']['common_fields']['geometry']+",(SELECT ST_Buffer("+boundary_statement+","+ str(distance)+")))"
+        # query += " AND NOT gcms_detruit"
+        query += " AND ST_Intersects("+conf['data']['common_fields']['geometry']+",("+boundary_buffer_statement+"))"
         if 'where' in conf['border_extraction'] and conf['border_extraction']['where']:
             query += " AND "+conf['border_extraction']['where']
         if not reset and ids is not None:
             query += " AND "+conf['data']['common_fields']['id']+" NOT IN ('"+ids+"')"
 
         print(u'query: {}'.format(query[:500]), flush=True)
+        print(u'query: {}'.format(query), flush=True)
         try:
             cursor.execute(query)
         except Exception as e:
