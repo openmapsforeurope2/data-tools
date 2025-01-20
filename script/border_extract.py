@@ -18,6 +18,7 @@ def run(
     fromUp,
     # fromArea,
     # extractAllCountries,
+    all_objects,
     reset,
     verbose
 ):
@@ -97,8 +98,10 @@ def run(
         query = ""
         if reset : query += "DELETE FROM "+wTableName+";"
         query += "INSERT INTO "+wTableName+" ("+fields+") SELECT "+fields+" FROM "+tableName
-        query += " WHERE "+where_statement_data
-        # query += " AND NOT gcms_detruit"
+        if all_objects:
+            query += " WHERE "+where_statement_data
+        else:
+            query += " WHERE ((" + where_statement_data + ") AND NOT gcms_detruit ) "
         query += " AND ST_Intersects("+conf['data']['common_fields']['geometry']+",("+boundary_buffer_statement+"))"
         if 'where' in conf['border_extraction'] and conf['border_extraction']['where']:
             query += " AND "+conf['border_extraction']['where']

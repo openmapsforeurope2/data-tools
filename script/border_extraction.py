@@ -101,12 +101,13 @@ def run(argv):
     # arg_from_area = False
     # arg_to_ref = False
     # arg_extract_all_countries = False
+    arg_all_objects = False
     arg_noreset = False
     arg_verbose = False
     arg_help = "{0} -c <conf> -o <output> -v".format(argv[0])
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:o:d:b:B:aunvh", [
+        opts, args = getopt.getopt(argv[1:], "c:T:t:o:d:b:B:auAnvh", [
             "conf=", 
             "theme=", 
             "table=", 
@@ -120,6 +121,7 @@ def run(argv):
             # "from_area",
             # "to_ref",
             # "extract_all_countries",
+            "all_objects",
             "noreset", 
             "verbose",
             "help"
@@ -160,6 +162,8 @@ def run(argv):
         #     arg_to_ref = True
         # elif opt in ("-e", "--extract_all_countries"):
         #     arg_extract_all_countries = True
+        elif opt in ("-A", "--all_objects"):
+            arg_all_objects = True
         elif opt in ("-n", "--noreset"):
             arg_noreset = True
         elif opt in ("-v", "--verbose"):
@@ -178,22 +182,23 @@ def run(argv):
     # print('from_area:', arg_from_area)
     # print('to_ref:', arg_to_ref)
     # print('extract_all_countries:', arg_extract_all_countries)
+    print ('all_objects', arg_all)
     print('reset:', (not arg_noreset))
     print('verbose:', arg_verbose)
 
     if arg_bt is not None and arg_bt not in boundary_types:
-        print("le paramètre B (boundary_type) doit être choisi parmi les valeurs : " + ",".join(boundary_types))
+        print("The B (boundary_type) parameter must be chosen among the following values: " + ",".join(boundary_types))
         sys.exit(1)
 
     if arg_dist is None:
-        print("le paramètre obligatoire --distance (-d) est manquant")
+        print("Mandatory parameter --distance (-d) is missing")
         sys.exit(1)
         
     workspace = os.path.dirname(currentDir)+"/"
 
     #conf
     if not os.path.isfile(workspace+"conf/"+arg_conf):
-        print("le fichier de configuration "+ arg_conf + " n'existe pas.")
+        print("The configuration file "+ arg_conf + " does not exist.")
         sys.exit(1)
     arg_conf = workspace+"conf/"+arg_conf
 
@@ -201,7 +206,7 @@ def run(argv):
 
     #bd conf
     if not os.path.isfile(workspace+"conf/"+conf["db_conf_file"]):
-        print("le fichier de configuration "+ conf["db_conf_file"] + " n'existe pas.")
+        print("The configuration file "+ conf["db_conf_file"] + " does not exist.")
         sys.exit(1)
     arg_db_conf = workspace+"conf/"+conf["db_conf_file"]
 
@@ -227,6 +232,7 @@ def run(argv):
             arg_from_up,
             # arg_from_area,
             # arg_extract_all_countries,
+            arg_all_objects,
             (not arg_noreset),
             arg_verbose
         )
