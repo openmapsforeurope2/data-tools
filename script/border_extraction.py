@@ -182,7 +182,7 @@ def run(argv):
     # print('from_area:', arg_from_area)
     # print('to_ref:', arg_to_ref)
     # print('extract_all_countries:', arg_extract_all_countries)
-    print ('all_objects', arg_all)
+    print ('all_objects', arg_all_objects)
     print('reset:', (not arg_noreset))
     print('verbose:', arg_verbose)
 
