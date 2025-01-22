@@ -14,7 +14,7 @@ DECLARE
     q text;
 BEGIN
 
-    EXECUTE 'UPDATE ' || tb_name || ' SET ' || label_field || ' = ' || name_field || '::json->0->>''spelling''where ' || name_field || '::json->0->>''display'' = ''1'' AND (' || where_clause || ');';
+    EXECUTE 'UPDATE ' || tb_name || ' SET ' || label_field || ' = ' || name_field || '::json->0->>''spelling'' where ' || name_field || '::json->0->>''display'' = ''1'' AND (' || where_clause || ');';
     EXECUTE 'UPDATE ' || tb_name || ' SET ' || label_field || ' = concat( ' || label_field || ', ''#'', ' || name_field || '::json->1->>''spelling'') where ' || name_field || '::json->1->>''display'' = ''2'' AND (' || where_clause || ');';
     EXECUTE 'UPDATE ' || tb_name || ' SET ' || label_field || ' = concat( ' || label_field || ', ''#'', ' || name_field || '::json->2->>''spelling'') where ' || name_field || '::json->2->>''display'' = ''2'' AND (' || where_clause || ');';
     EXECUTE 'UPDATE ' || tb_name || ' SET ' || label_field || ' = concat( ' || label_field || ', ''#'', ' || name_field || '::json->1->>''spelling'') where ' || name_field || '::json->1->>''display'' = ''3'' AND (' || where_clause || ');';

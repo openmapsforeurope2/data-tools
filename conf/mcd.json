@@ -1487,6 +1487,86 @@
                             "rank": 3
                         }
                     }
+                },
+                "glacier_snowfield": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygonZ,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "ice_area_type": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 2
+                        },
+                        "name": {
+                            "sql_type": "jsonb DEFAULT '{}'::json",
+                            "rank": 3
+                        },
+                        "label": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 4
+                        }
+                    }
+                },
+                "wetland": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygonZ,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "local_name": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 2
+                        },
+                        "tidal": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 3
+                        }
+                    }
+                },
+                "shoreline_construction_area": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygonZ,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "shoreline_construction_type": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 2
+                        },
+                        "name": {
+                            "sql_type": "jsonb DEFAULT '{}'::json",
+                            "rank": 3
+                        },
+                        "label": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 4
+                        }
+                    }
+                },
+                "shoreline_construction_line": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(LineStringZ,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "shoreline_construction_type": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 2
+                        },
+                        "name": {
+                            "sql_type": "jsonb DEFAULT '{}'::json",
+                            "rank": 3
+                        },
+                        "label": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 4
+                        }
+                    }
                 }
             }
         }
