@@ -24,3 +24,8 @@ BEGIN
         END LOOP;
     END LOOP;
 END $$;
+
+
+-- Manage sequences
+GRANT USAGE, SELECT ON SEQUENCE seqnumrec TO ome2_user; 
+GRANT USAGE, SELECT ON SEQUENCE seqnumordrefinevol TO ome2_user; 
