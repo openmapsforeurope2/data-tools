@@ -211,13 +211,17 @@
                             "index": "gist",
                             "rank": 1
                         },
-                        "name": {
-                            "sql_type": "jsonb DEFAULT '{}'::json",
+                        "local_name": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 2
                         },
                         "form_of_road_node":{
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
+                        },
+                        "label":{
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 4
                         }
                     }
                 },               
@@ -334,6 +338,30 @@
                         "railway_line_label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 11
+                        },
+                        "min_max_track": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 12
+                        },
+                        "nominal_track_gauge": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 13
+                        },
+                        "track_gauge_category": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 14
+                        },
+                        "speed_class": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 15
+                        },
+                        "railway_use": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 16
+                        },
+                        "access_restriction": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 17
                         }
                     }
                 },
@@ -380,6 +408,10 @@
                         "railway_use": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
+                        },
+                        "form_of_railway_station": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 6
                         }
                     }
                 },
@@ -405,6 +437,10 @@
                         "railway_use": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
+                        },
+                        "form_of_railway_station": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 6
                         }
                     }
                 },         
@@ -446,6 +482,10 @@
                         "use_restriction": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 9
+                        },
+                        "condition_of_facility": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 10
                         }
                     }
                 },
@@ -487,6 +527,10 @@
                         "use_restriction": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 9
+                        },
+                        "condition_of_facility": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 10
                         }
                     }
                 },
@@ -538,6 +582,10 @@
                         "tent_network": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
+                        },
+                        "access_restriction": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 6
                         }
                     }
                 },               

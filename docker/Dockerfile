@@ -1,9 +1,7 @@
-FROM forge-idi:5000/docker-base
-
-ARG GIT_BRANCH
-ARG NB_PROC
+FROM debian:10
 
 RUN apt update
+RUN apt install -y libpq-dev
 RUN apt install -y python3
 RUN apt install -y python3-pip
 
@@ -16,5 +14,3 @@ COPY . $APP_DIR_SRC
 WORKDIR $APP_DIR_SRC
 
 RUN python3 -m pip install -r ./requirements.txt
-
-RUN git checkout $GIT_BRANCH

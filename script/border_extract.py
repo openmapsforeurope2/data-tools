@@ -36,6 +36,8 @@ def run(
         where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['data']['common_fields']['country'] + (" = '"+country+"'" if borderCountryCode == False else " LIKE '%"+country+"%'")
         if country != "#":
             where_statement_data += (" OR " if where_statement_data else "") + conf['data']['common_fields']['country'] + (" = '"+country+"'" if borderCountryCode == False else " LIKE '%"+country+"%'")
+    where_statement_data = "("+where_statement_data+")"
+
     if borderCountryCode :
         where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['data']['common_fields']['country'] + " LIKE '%"+borderCountryCode+"%'"
 
@@ -70,7 +72,7 @@ def run(
             where_statement_data += (" AND " if where_statement_data else "") + "ST_Intersects("+conf['data']['common_fields']['geometry']+", ("+inUpArea_statement+"))"
 
         # on recupère tous les noms de champs de la table
-        q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name not like '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+sourceSchema+"'") if sourceSchema else ""
+        q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name NOT LIKE '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+sourceSchema+"'") if sourceSchema else ""
         print(u'query: {}'.format(q[:500]), flush=True)
         try:
             cursor.execute(q)
