@@ -25,10 +25,10 @@ table_creation:
 
 ## DB initialization 1
 ~~~
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_up -f ./sql/db_init/HVLSP_0_GCMS_0_ADMIN.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_up -f ./sql/db_init/HVLSP_1_CREATE_SCHEMAS.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_up -f ./sql/db_init/ome2_reduce_precision_3d_trigger_function.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_up -f ./sql/db_init/ome2_reduce_precision_2d_trigger_function.sql
+psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -f ./sql/db_init/HVLSP_0_GCMS_0_ADMIN.sql
+psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -f ./sql/db_init/HVLSP_1_CREATE_SCHEMAS.sql
+psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -f ./sql/db_init/ome2_reduce_precision_3d_trigger_function.sql
+psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -f ./sql/db_init/ome2_reduce_precision_2d_trigger_function.sql
 ~~~
 s@m!Ch0n_2479
 
@@ -47,11 +47,11 @@ python3 script/table_creation.py -c conf.json -m mcd.json -T tn -t railway_link
 
 ## DB initialization 2
 ~~~
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_up -f ./sql/db_init/HVLSP_2_GCMS_1_COMMON.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_up -f ./sql/db_init/HVLSP_3_GCMS_3_HISTORIQUE.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_up -f ./sql/db_init/ign_gcms_history_trigger_function.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_up -f ./sql/db_init/HVLSP_4_GCMS_4_OME2_ADD_HISTORY.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_up -c "ALTER SEQUENCE public.seqnumrec OWNER TO g_ome2_user;"
+psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -f ./sql/db_init/HVLSP_2_GCMS_1_COMMON.sql
+psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -f ./sql/db_init/HVLSP_3_GCMS_3_HISTORIQUE.sql
+psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -f ./sql/db_init/ign_gcms_history_trigger_function.sql
+psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -f ./sql/db_init/HVLSP_4_GCMS_4_OME2_ADD_HISTORY.sql
+psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -c "ALTER SEQUENCE public.seqnumrec OWNER TO g_ome2_user;"
 ~~~
 
 

@@ -1,7 +1,7 @@
 {
     "db_conf_file":"db_conf.json",
     "landmask": {
-        "schema": "ib",
+        "schema": "prod",
         "table": "landmask",
         "fields":{
             "country": "country",
@@ -9,7 +9,7 @@
         }
     },
     "boundary": {
-        "schema": "ib",
+        "schema": "prod",
         "table": "international_boundary_line",
         "fields":{
             "country": "country",
@@ -40,17 +40,20 @@
             "ids_suffix": "_w_ids",
             "suffix": "_w"
         },
+        "reference": {
+            "suffix": "_ref"
+        },
         "update": {
             "suffix": "_up",
-            "reference_suffix": "_ref",
             "area_suffix": "_up_area"
         },
         "themes": {
             "tn": {
-                "schema": "tn",
-                "h_schema": "tn",
-                "w_schema": "public",
-                "u_schema": "public",
+                "schema": "prod",
+                "h_schema": "prod",
+                "w_schema": "work",
+                "u_schema": "work",
+                "r_schema": "ref",
                 "tables": [
                     "road_link",
                     "road",
@@ -72,10 +75,11 @@
                 ]
             },
             "au": {
-                "schema": "au",
-                "h_schema": "au",
-                "w_schema": "wk",
-                "u_schema": "wk",
+                "schema": "prod",
+                "h_schema": "prod",
+                "w_schema": "work",
+                "u_schema": "work",
+                "r_schema": "ref",
                 "tables": [
                     "administrative_boundary",
                     "administrative_area",
@@ -90,10 +94,11 @@
                 ]
             },
             "ib": {
-                "schema": "ib",
-                "h_schema": "ib",
-                "w_schema": "wk",
-                "u_schema": "wk",
+                "schema": "prod",
+                "h_schema": "prod",
+                "w_schema": "work",
+                "u_schema": "work",
+                "r_schema": "ref",
                 "tables": [
                     "international_boundary_line",
                     "international_boundary_node",
@@ -101,10 +106,11 @@
                 ]
             },
             "hy": {
-                "schema": "hy",
-                "h_schema": "hy",
-                "w_schema": "wk",
-                "u_schema": "wk",
+                "schema": "prod",
+                "h_schema": "prod",
+                "w_schema": "work",
+                "u_schema": "work",
+                "r_schema": "ref",
                 "tables": [
                     "watercourse_link",
                     "watercourse",

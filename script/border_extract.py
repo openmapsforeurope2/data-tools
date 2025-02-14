@@ -4,6 +4,22 @@ import psycopg2
 def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName
 
+def getCountryStatement(countryCodes):
+    statement = ""
+    count=0
+    for country in  countryCodes:
+        if country == "#":
+            continue
+        statement += ("'" if not statement else ",'") + country + "'"
+        count+=1
+    
+    if count==1:
+        return " = "+statement
+    if count==0:
+        return ""
+    return " IN "+statement
+
+
 def run(
     conf,
     theme,
@@ -65,10 +81,10 @@ def run(
             tb += conf['data']['update']['suffix']
         tableName = getTableName(sourceSchema, tb)
 
-        # where_geom_statement = ""
         if inUpArea:
             inUpArea_statement = "ST_Union(ARRAY((SELECT "+conf['data']['common_fields']['geometry']+" FROM "+getTableName(update_schema, tb)+conf['data']['update']['area_suffix']
-            inUpArea_statement += " WHERE ST_Intersects("+conf['data']['common_fields']['geometry']+", ("+boundary_buffer_statement+"))"
+            inUpArea_statement += " WHERE "+conf['data']['common_fields']['country']+getCountryStatement(countryCodes)
+            # inUpArea_statement += " WHERE ST_Intersects("+conf['data']['common_fields']['geometry']+", ("+boundary_buffer_statement+"))"
             inUpArea_statement +=")))"
             where_statement_data += (" AND " if where_statement_data else "") + "ST_Intersects("+conf['data']['common_fields']['geometry']+", ("+inUpArea_statement+"))"
 
@@ -104,7 +120,10 @@ def run(
             query += " WHERE "+where_statement_data
         else:
             query += " WHERE ((" + where_statement_data + ") AND NOT gcms_detruit ) "
-        query += " AND ST_Intersects("+conf['data']['common_fields']['geometry']+",("+boundary_buffer_statement+"))"
+        
+        #TODO : A laisser pour with up area ?
+        # query += " AND ST_Intersects("+conf['data']['common_fields']['geometry']+",("+boundary_buffer_statement+"))"
+        
         if 'where' in conf['border_extraction'] and conf['border_extraction']['where']:
             query += " AND "+conf['border_extraction']['where']
         if not reset and ids is not None:

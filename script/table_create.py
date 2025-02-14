@@ -16,6 +16,7 @@ def createTableAndIndexes(conf, mcd, theme, tables):
     
     for tableName in tables:
         # table
+        print(u'table: {}'.format(tableName), flush=True)
         query = getCreateTableStatement(conf, mcd, theme, tableName)
         query += getCreateIndexesStatement(conf, mcd, theme, tableName)
         query += getCreateTrigger(conf, theme, tableName)
@@ -32,11 +33,40 @@ def createTableAndIndexes(conf, mcd, theme, tables):
         # working
         query_w = getCreateWorkingTableStatement(conf, mcd, theme, tableName)
         query_w += getCreateWorkingIndexesStatement(conf, mcd, theme, tableName)
+        query_w += getCreateWorkingTrigger(conf, theme, tableName)
 
         print(u'query: {}'.format(query_w), flush=True)
         # print(u'{}'.format(query_w), flush=True)
         try:
             cursor.execute(query_w)
+        except Exception as e:
+            print(e)
+            raise
+        conn.commit()
+
+        # up
+        query_u = getCreateUpdateTableStatement(conf, mcd, theme, tableName)
+        query_u += getCreateUpdateIndexesStatement(conf, mcd, theme, tableName)
+        query_u += getCreateUpdateTrigger(conf, theme, tableName)
+
+        print(u'query: {}'.format(query_u), flush=True)
+        # print(u'{}'.format(query_w), flush=True)
+        try:
+            cursor.execute(query_u)
+        except Exception as e:
+            print(e)
+            raise
+        conn.commit()
+
+        # ref
+        query_r = getCreateRefTableStatement(conf, mcd, theme, tableName)
+        query_r += getCreateRefIndexesStatement(conf, mcd, theme, tableName)
+        query_r += getCreateRefTrigger(conf, theme, tableName)
+
+        print(u'query: {}'.format(query_r), flush=True)
+        # print(u'{}'.format(query_w), flush=True)
+        try:
+            cursor.execute(query_r)
         except Exception as e:
             print(e)
             raise
@@ -72,8 +102,23 @@ def createTableAndIndexes(conf, mcd, theme, tables):
     conn.close()
 
 def getCreateTrigger(conf, theme, tableName):
-        fullTableName = getTableName(conf['data']['themes'][theme]['schema'], tableName)
-        if theme == "au" or theme == "ib" or tableName in ['drainage_basin']:
+    fullTableName = getTableName(conf['data']['themes'][theme]['schema'], tableName)
+    return _getCreateTrigger(conf, theme, fullTableName)
+
+def getCreateWorkingTrigger(conf, theme, tableName):
+    fullTableName = getTableName(conf['data']['themes'][theme]['w_schema'], tableName)+conf['data']['working']['suffix']
+    return _getCreateTrigger(conf, theme, fullTableName)
+
+def getCreateUpdateTrigger(conf, theme, tableName):
+    fullTableName = getTableName(conf['data']['themes'][theme]['u_schema'], tableName)+conf['data']['update']['suffix']
+    return _getCreateTrigger(conf, theme, fullTableName)
+
+def getCreateRefTrigger(conf, theme, tableName):
+    fullTableName = getTableName(conf['data']['themes'][theme]['r_schema'], tableName)+conf['data']['reference']['suffix']
+    return _getCreateTrigger(conf, theme, fullTableName)
+
+def _getCreateTrigger(conf, theme, fullTableName):
+        if theme == "au" or theme == "ib" or fullTableName.endswith('drainage_basin'):
             return "CREATE TRIGGER ome2_reduce_precision_2d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_2d_trigger_function();"
         else:    
             return "CREATE TRIGGER ome2_reduce_precision_3d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_3d_trigger_function();"
@@ -142,6 +187,22 @@ def getCreateWorkingTableStatement( conf, mcd, theme, tableName ):
     statement += getWorkingPkeyConstraintStatement( conf, mcd, theme, tableName )
     return statement
 
+def getCreateUpdateTableStatement( conf, mcd, theme, tableName ):
+    fullTableName = getTableName(conf['data']['themes'][theme]['u_schema'], tableName)+conf['data']['update']['suffix']
+    statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
+    statement += " ("+getWorkingTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
+    statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
+    statement += getUpdatePkeyConstraintStatement( conf, mcd, theme, tableName )
+    return statement
+
+def getCreateRefTableStatement( conf, mcd, theme, tableName ):
+    fullTableName = getTableName(conf['data']['themes'][theme]['r_schema'], tableName)+conf['data']['reference']['suffix']
+    statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
+    statement += " ("+getTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
+    statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
+    statement += getRefPkeyConstraintStatement( conf, mcd, theme, tableName )
+    return statement
+
 def getCreateWorkingIdsTableStatement( conf, mcd, theme, tableName ):
     fullTableName = getTableName(conf['data']['themes'][theme]['w_schema'], tableName)+conf['data']['working']['ids_suffix']
     statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
@@ -184,9 +245,29 @@ def getCreateIndexesStatement(conf, mcd, theme, tableName):
     indexesToCreate = getIndexes(mcd['themes'][theme]['tables'][tableName]['fields'], schema, tableName, indexesToCreate)
     return indexesToCreate
 
+def getCreateRefIndexesStatement(conf, mcd, theme, tableName):
+    tableCompleteName = tableName + conf['data']['reference']['suffix']
+    schema = conf['data']['themes'][theme]['r_schema']
+    indexesToCreate = ""
+    indexesToCreate = getIndexes(mcd['common']['id_field'], schema, tableCompleteName, indexesToCreate)
+    indexesToCreate = getIndexes(mcd['common']['working_fields'], schema, tableCompleteName, indexesToCreate)
+    indexesToCreate = getIndexes(mcd['common']['fields'], schema, tableCompleteName, indexesToCreate)
+    indexesToCreate = getIndexes(mcd['themes'][theme]['tables'][tableName]['fields'], schema, tableCompleteName, indexesToCreate)
+    return indexesToCreate
+
 def getCreateWorkingIndexesStatement(conf, mcd, theme, tableName):
     tableCompleteName = tableName + conf['data']['working']['suffix']
     schema = conf['data']['themes'][theme]['w_schema']
+    indexesToCreate = ""
+    indexesToCreate = getIndexes(mcd['common']['id_field'], schema, tableCompleteName, indexesToCreate)
+    indexesToCreate = getIndexes(mcd['common']['working_fields'], schema, tableCompleteName, indexesToCreate)
+    indexesToCreate = getIndexes(mcd['common']['fields'], schema, tableCompleteName, indexesToCreate)
+    indexesToCreate = getIndexes(mcd['themes'][theme]['tables'][tableName]['fields'], schema, tableCompleteName, indexesToCreate)
+    return indexesToCreate
+
+def getCreateUpdateIndexesStatement(conf, mcd, theme, tableName):
+    tableCompleteName = tableName + conf['data']['update']['suffix']
+    schema = conf['data']['themes'][theme]['u_schema']
     indexesToCreate = ""
     indexesToCreate = getIndexes(mcd['common']['id_field'], schema, tableCompleteName, indexesToCreate)
     indexesToCreate = getIndexes(mcd['common']['working_fields'], schema, tableCompleteName, indexesToCreate)
@@ -223,9 +304,33 @@ def getPkeyConstraintStatement(conf, mcd, theme, tableName):
 
     return _getPkeyConstraintStatement(getTableName(schema, tableName), pkeyFields)
 
+def getRefPkeyConstraintStatement(conf, mcd, theme, tableName):
+    tableCompleteName = tableName + conf['data']['reference']['suffix']
+    schema = conf['data']['themes'][theme]['r_schema']
+
+    pkeyFields = []
+    getPkeyFields(mcd['common']['id_field'], pkeyFields)
+    getPkeyFields(mcd['common']['working_fields'], pkeyFields)
+    getPkeyFields(mcd['common']['fields'], pkeyFields)
+    getPkeyFields(mcd['themes'][theme]['tables'][tableName]['fields'], pkeyFields)
+
+    return _getPkeyConstraintStatement(getTableName(schema, tableCompleteName), pkeyFields)
+
 def getWorkingPkeyConstraintStatement(conf, mcd, theme, tableName):
     tableCompleteName = tableName + conf['data']['working']['suffix']
     schema = conf['data']['themes'][theme]['w_schema']
+
+    pkeyFields = []
+    getPkeyFields(mcd['common']['id_field'], pkeyFields)
+    getPkeyFields(mcd['common']['working_fields'], pkeyFields)
+    getPkeyFields(mcd['common']['fields'], pkeyFields)
+    getPkeyFields(mcd['themes'][theme]['tables'][tableName]['fields'], pkeyFields)
+
+    return _getPkeyConstraintStatement(getTableName(schema, tableCompleteName), pkeyFields)
+
+def getUpdatePkeyConstraintStatement(conf, mcd, theme, tableName):
+    tableCompleteName = tableName + conf['data']['update']['suffix']
+    schema = conf['data']['themes'][theme]['u_schema']
 
     pkeyFields = []
     getPkeyFields(mcd['common']['id_field'], pkeyFields)
