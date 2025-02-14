@@ -81,13 +81,6 @@ def run(
             tb += conf['data']['update']['suffix']
         tableName = getTableName(sourceSchema, tb)
 
-        if inUpArea:
-            inUpArea_statement = "ST_Union(ARRAY((SELECT "+conf['data']['common_fields']['geometry']+" FROM "+getTableName(update_schema, tb)+conf['data']['update']['area_suffix']
-            inUpArea_statement += " WHERE "+conf['data']['common_fields']['country']+getCountryStatement(countryCodes)
-            # inUpArea_statement += " WHERE ST_Intersects("+conf['data']['common_fields']['geometry']+", ("+boundary_buffer_statement+"))"
-            inUpArea_statement +=")))"
-            where_statement_data += (" AND " if where_statement_data else "") + "ST_Intersects("+conf['data']['common_fields']['geometry']+", ("+inUpArea_statement+"))"
-
         # on recupère tous les noms de champs de la table
         q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name NOT LIKE '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+sourceSchema+"'") if sourceSchema else ""
         print(u'query: {}'.format(q[:500]), flush=True)
@@ -121,8 +114,7 @@ def run(
         else:
             query += " WHERE ((" + where_statement_data + ") AND NOT gcms_detruit ) "
         
-        #TODO : A laisser pour with up area ?
-        # query += " AND ST_Intersects("+conf['data']['common_fields']['geometry']+",("+boundary_buffer_statement+"))"
+        query += " AND ST_Intersects("+conf['data']['common_fields']['geometry']+",("+boundary_buffer_statement+"))"
         
         if 'where' in conf['border_extraction'] and conf['border_extraction']['where']:
             query += " AND "+conf['border_extraction']['where']
@@ -130,13 +122,27 @@ def run(
             query += " AND "+conf['data']['common_fields']['id']+" NOT IN ('"+ids+"')"
 
         print(u'query: {}'.format(query[:500]), flush=True)
-        print(u'query: {}'.format(query), flush=True)
         try:
             cursor.execute(query)
         except Exception as e:
             print(e)
             raise
         conn.commit()
+
+        if inUpArea:
+            inUpArea_statement = "ST_Union(ARRAY((SELECT "+conf['data']['common_fields']['geometry']+" FROM "+getTableName(update_schema, tb)+conf['data']['update']['area_suffix']
+            # inUpArea_statement += " WHERE "+conf['data']['common_fields']['country']+getCountryStatement(countryCodes)
+            # inUpArea_statement += " WHERE ST_Intersects("+conf['data']['common_fields']['geometry']+", ("+boundary_buffer_statement+"))"
+            inUpArea_statement +=")))"
+            query = "DELETE FROM "+wTableName+" WHERE NOT ST_Intersects("+conf['data']['common_fields']['geometry']+", ("+inUpArea_statement+"))"
+
+            print(u'query: {}'.format(query[:500]), flush=True)
+            try:
+                cursor.execute(query)
+            except Exception as e:
+                print(e)
+                raise
+            conn.commit()
 
         # on enregistre tous les identifiants des objects extraits
         q2 = "DELETE FROM "+wIdsTableName+";"
