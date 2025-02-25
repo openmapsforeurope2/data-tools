@@ -181,7 +181,7 @@ python3 script/border_extraction.py -c conf.json -T hy -t standing_water -d 1000
 
 ### 2) Match
 ~~~
-./bin/ome2_tn_matching --c ./data/config/epg_parameters.ini --t tn --cc be#lu
+./bin/tn_matching --c ./data/config/epg_parameters.ini --T tn --cc be#lu
 ~~~
 
 ### 3) Integrate modifications in the main table and working history table:
@@ -232,17 +232,17 @@ Run process:
 
 <u>The Netherlands:</u>
 ~~~
-bin/ome2_au_matching --c data/config/epg_parameters.ini --t administrative_unit_area_3_w --cc nl
+bin/au_matching --c data/config/epg_parameters.ini --t work.administrative_unit_area_3_w --cc nl
 ~~~
 
 <u>Belgium:</u>
 ~~~
-bin/ome2_au_matching --c data/config/epg_parameters.ini --t administrative_unit_area_5_w --cc be
+bin/au_matching --c data/config/epg_parameters.ini --t work.administrative_unit_area_5_w --cc be
 ~~~
 
 <u>France:</u>
 ~~~
-bin/ome2_au_matching --c data/config/epg_parameters.ini --t administrative_unit_area_6_w --cc fr
+bin/au_matching --c data/config/epg_parameters.ini --t work.administrative_unit_area_6_w --cc fr
 ~~~
 
 ### 3) Integrate modifications in the main table and working history (wh) table
@@ -282,7 +282,7 @@ Run process:
 
 <u>France:</u>
 ~~~
-bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_6 --t administrative_unit_area_5_w --cc fr
+bin/au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_6 --t administrative_unit_area_5_w --cc fr
 ~~~
 
 #### 3)  Integrate modifications in the main table and working history (wh) table
@@ -320,12 +320,12 @@ Run process:
 
 <u>Belgium:</u>
 ~~~
-bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_5 --t administrative_unit_area_4_w --cc be
+bin/au_merging --c data/config/epg_parameters.ini --s prod.administrative_unit_area_5 --t work.administrative_unit_area_4_w --cc be
 ~~~
 
 <u>France:</u>
 ~~~
-bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_6 --t administrative_unit_area_4_w --cc fr
+bin/au_merging --c data/config/epg_parameters.ini --s prod.administrative_unit_area_6 --t work.administrative_unit_area_4_w --cc fr
 ~~~
 
 #### 3)  Integrate modifications in the main table and working history (wh) table
@@ -360,12 +360,12 @@ Run process:
 
 <u>Belgium:</u>
 ~~~
-bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_4 --t administrative_unit_area_3_w --cc be
+bin/au_merging --c data/config/epg_parameters.ini --s prod.administrative_unit_area_4 --t work.administrative_unit_area_3_w --cc be
 ~~~
 
 <u>France:</u>
 ~~~
-bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_4 --t administrative_unit_area_3_w --cc fr
+bin/au_merging --c data/config/epg_parameters.ini --s prod.administrative_unit_area_4 --t work.administrative_unit_area_3_w --cc fr
 ~~~
 
 #### 3)  Integrate modifications in the main table and working history (wh) table
@@ -404,17 +404,17 @@ Run process:
 
 <u>The Netherlands:</u>
 ~~~
-bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_3 --t administrative_unit_area_2_w --cc nl
+bin/au_merging --c data/config/epg_parameters.ini --s prod.administrative_unit_area_3 --t work.administrative_unit_area_2_w --cc nl
 ~~~
 
 <u>Belgium:</u>
 ~~~
-bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_3 --t administrative_unit_area_2_w --cc be
+bin/au_merging --c data/config/epg_parameters.ini --s prod.administrative_unit_area_3 --t work.administrative_unit_area_2_w --cc be
 ~~~
 
 <u>France:</u>
 ~~~
-bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_3 --t administrative_unit_area_2_w --cc fr
+bin/au_merging --c data/config/epg_parameters.ini --s prod.administrative_unit_area_3 --t work.administrative_unit_area_2_w --cc fr
 ~~~
 
 #### 3)  Integrate modifications in the main table and working history (wh) table
@@ -453,17 +453,17 @@ Run process:
 
 <u>The Netherlands:</u>
 ~~~
-bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_2 --t administrative_unit_area_1_w --cc nl
+bin/au_merging --c data/config/epg_parameters.ini --s prod.administrative_unit_area_2 --t work.administrative_unit_area_1_w --cc nl
 ~~~
 
 <u>Belgium:</u>
 ~~~
-bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_2 --t administrative_unit_area_1_w --cc be
+bin/au_merging --c data/config/epg_parameters.ini --s prod.administrative_unit_area_2 --t work.administrative_unit_area_1_w --cc be
 ~~~
 
 <u>France:</u>
 ~~~
-bin/ome2_au_merging --c data/config/epg_parameters.ini --s au_administrative_unit_area_2 --t administrative_unit_area_1_w --cc fr
+bin/au_merging --c data/config/epg_parameters.ini --s prod.administrative_unit_area_2 --t work.administrative_unit_area_1_w --cc fr
 ~~~
 
 #### 3)  Integrate modifications in the main table and working history (wh) table
