@@ -4,7 +4,8 @@ import getopt
 from datetime import datetime
 import shutil
 import utils
-import table_copy_
+import copy_table_
+
 
 def run(argv):
 
@@ -55,11 +56,12 @@ def run(argv):
     print("[START TABLE COPY] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        table_copy_.copyTable(conf, args)
+        copy_table_.run(conf, args)
     except:
         sys.exit(1)
 
     print("[END TABLE COPY] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
 
 if __name__ == "__main__":
     run(sys.argv)

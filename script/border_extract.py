@@ -1,159 +1,139 @@
-import psycopg2
+import os
+import sys
+import getopt
+from datetime import datetime
+import shutil
+import utils
+import border_extract_
 
 
-def getTableName(schema , tableName):
-    return (schema+"." if schema else "") + tableName
+def run(argv):
 
-def getCountryStatement(countryCodes):
-    statement = ""
-    count=0
-    for country in  countryCodes:
-        if country == "#":
-            continue
-        statement += ("'" if not statement else ",'") + country + "'"
-        count+=1
+    currentDir = os.path.dirname(os.path.abspath(__file__))
+
+    boundary_types = ["international","maritime","land_maritime","coastline","inland_water"]
+
+    arg_conf = ""
+    arg_theme = ""
+    arg_tables = []
+    arg_output = None
+    arg_dist = None
+    arg_bcc = None
+    arg_bt = None
+    arg_from_up = False
+    arg_noreset = False
+    arg_verbose = False
+    arg_help = "{0} -c <conf> -o <output> -v".format(argv[0])
     
-    if count==1:
-        return " = "+statement
-    if count==0:
-        return ""
-    return " IN "+statement
-
-
-def run(
-    conf,
-    theme,
-    tables,
-    output,
-    distance,
-    countryCodes,
-    borderCountryCode,
-    boundaryType,
-    inUpArea,
-    # inUpAreaW,
-    fromUp,
-    # fromArea,
-    # extractAllCountries,
-    all_objects,
-    reset,
-    verbose
-):
-    conn = psycopg2.connect(    user = conf['db']['user'],
-                                password = conf['db']['pwd'],
-                                host = conf['db']['host'],
-                                port = conf['db']['port'],
-                                database = conf['db']['name'])
-    cursor = conn.cursor()
-
-    print("EXTRACTING...", flush=True)
-
-    where_statement_boundary = ""
-    where_statement_data = ""
-    for country in  countryCodes:
-        where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['data']['common_fields']['country'] + (" = '"+country+"'" if borderCountryCode == False else " LIKE '%"+country+"%'")
-        if country != "#":
-            where_statement_data += (" OR " if where_statement_data else "") + conf['data']['common_fields']['country'] + (" = '"+country+"'" if borderCountryCode == False else " LIKE '%"+country+"%'")
-    where_statement_data = "("+where_statement_data+")"
-
-    if borderCountryCode :
-        where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['data']['common_fields']['country'] + " LIKE '%"+borderCountryCode+"%'"
-
-    if boundaryType == "international":
-        where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['boundary']['fields']['type'] + " = '" + conf['boundary']['boundary_type_values']['international'] + "'"
+    try:
+        opts, args = getopt.getopt(argv[1:], "c:T:t:o:d:b:B:auAnvh", [
+            "conf=", 
+            "theme=", 
+            "table=", 
+            "output=", 
+            "distance=", 
+            "border_country=", 
+            "boundary_type=", 
+            "in_up_area",
+            "from_up",
+            "noreset", 
+            "verbose",
+            "help"
+        ])
+    except:
+        print(arg_help)
+        sys.exit(1)
     
-    
-    boundary_statement = "ST_Union(ARRAY((SELECT "+conf['boundary']['fields']['geometry']+" FROM "+getTableName(conf['boundary']['schema'], conf['boundary']['table'])+" WHERE "+where_statement_boundary+")))"
-    boundary_buffer_statement = "SELECT ST_Buffer(("+boundary_statement+"),"+ str(distance)+")"
-
-    
-    theme_schema = conf['data']['themes'][theme]['schema']
-    working_schema = conf['data']['themes'][theme]['w_schema']
-    update_schema = conf['data']['themes'][theme]['u_schema']
-    
-    if not tables:
-        tables = conf['data']['themes'][theme]['tables']
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            print(arg_help)  # print the help message
+            sys.exit(1)
+        elif opt in ("-c", "--conf"):
+            arg_conf = arg
+        elif opt in ("-T", "--theme"):
+            arg_theme = arg
+        elif opt in ("-t", "--table"):
+            arg_tables.append(arg)
+        elif opt in ("-o", "--output"):
+            arg_output = arg
+        elif opt in ("-d", "--distance"):
+            arg_dist = arg
+        elif opt in ("-b", "--border_country"):
+            arg_bcc = arg
+            if arg_bcc == "false":
+                arg_bcc = False
+        elif opt in ("-B", "--boundary_type"):
+            arg_bt = arg
+        elif opt in ("-u", "--from_up"):
+            arg_from_up = True
+        elif opt in ("-A", "--all_objects"):
+            arg_all_objects = True
+        elif opt in ("-n", "--noreset"):
+            arg_noreset = True
+        elif opt in ("-v", "--verbose"):
+            arg_verbose = True
         
-    for tb in tables:
-        wTableName = getTableName(working_schema, tb)+conf['data']['working']['suffix']
-        wIdsTableName = getTableName(working_schema, tb)+conf['data']['working']['ids_suffix']
-        sourceSchema = update_schema if fromUp else theme_schema
-        if fromUp :
-            tb += conf['data']['update']['suffix']
-        tableName = getTableName(sourceSchema, tb)
+    print('conf:', arg_conf)
+    print('theme:', arg_theme)
+    print('tables:', arg_tables)
+    print('output:', arg_output)
+    print('distance:', arg_dist)
+    print('border country:', arg_bcc)
+    print('boundary type:', arg_bt)
+    print('from_up:', arg_from_up)
+    print('reset:', (not arg_noreset))
+    print('verbose:', arg_verbose)
 
-        # on recupère tous les noms de champs de la table
-        q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name NOT LIKE '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+sourceSchema+"'") if sourceSchema else ""
-        print(u'query: {}'.format(q[:500]), flush=True)
-        try:
-            cursor.execute(q)
-        except Exception as e:
-            print(e)
-            raise
-        fields = cursor.fetchone()[0]
+    if arg_bt is not None and arg_bt not in boundary_types:
+        print("The B (boundary_type) parameter must be chosen among the following values: " + ",".join(boundary_types))
+        sys.exit(1)
 
-        ids = None
-        if not reset :
-            # on recupere tout les ids deja extraits pour ne pas les extraires a nouveau
-            q3 = "SELECT string_agg("+conf['data']['common_fields']['id']+"::character varying,',') FROM "+wIdsTableName
-            print(u'query: {}'.format(q3[:500]), flush=True)
-            try:
-                cursor.execute(q3)
-            except Exception as e:
-                print(e)
-                raise
-            ids = cursor.fetchone()[0]
-            if ids is not None:
-                ids = ids.split(',')
-                ids = "','".join(ids)
-
-        query = ""
-        if reset : query += "DELETE FROM "+wTableName+";"
-        query += "INSERT INTO "+wTableName+" ("+fields+") SELECT "+fields+" FROM "+tableName
-        if all_objects:
-            query += " WHERE "+where_statement_data
-        else:
-            query += " WHERE ((" + where_statement_data + ") AND NOT gcms_detruit ) "
+    if arg_dist is None:
+        print("Mandatory parameter --distance (-d) is missing")
+        sys.exit(1)
         
-        query += " AND ST_Intersects("+conf['data']['common_fields']['geometry']+",("+boundary_buffer_statement+"))"
-        
-        if 'where' in conf['border_extraction'] and conf['border_extraction']['where']:
-            query += " AND "+conf['border_extraction']['where']
-        if not reset and ids is not None:
-            query += " AND "+conf['data']['common_fields']['id']+" NOT IN ('"+ids+"')"
+    workspace = os.path.dirname(currentDir)+"/"
 
-        print(u'query: {}'.format(query[:500]), flush=True)
-        try:
-            cursor.execute(query)
-        except Exception as e:
-            print(e)
-            raise
-        conn.commit()
+    #conf
+    if not os.path.isfile(workspace+"conf/"+arg_conf):
+        print("The configuration file "+ arg_conf + " does not exist.")
+        sys.exit(1)
+    arg_conf = workspace+"conf/"+arg_conf
 
-        if inUpArea:
-            inUpArea_statement = "ST_Union(ARRAY((SELECT "+conf['data']['common_fields']['geometry']+" FROM "+getTableName(update_schema, tb)+conf['data']['update']['area_suffix']
-            # inUpArea_statement += " WHERE "+conf['data']['common_fields']['country']+getCountryStatement(countryCodes)
-            # inUpArea_statement += " WHERE ST_Intersects("+conf['data']['common_fields']['geometry']+", ("+boundary_buffer_statement+"))"
-            inUpArea_statement +=")))"
-            query = "DELETE FROM "+wTableName+" WHERE NOT ST_Intersects("+conf['data']['common_fields']['geometry']+", ("+inUpArea_statement+"))"
+    conf = utils.getConf(arg_conf)
 
-            print(u'query: {}'.format(query[:500]), flush=True)
-            try:
-                cursor.execute(query)
-            except Exception as e:
-                print(e)
-                raise
-            conn.commit()
+    #bd conf
+    if not os.path.isfile(workspace+"conf/"+conf["db_conf_file"]):
+        print("The configuration file "+ conf["db_conf_file"] + " does not exist.")
+        sys.exit(1)
+    arg_db_conf = workspace+"conf/"+conf["db_conf_file"]
 
-        # on enregistre tous les identifiants des objects extraits
-        q2 = "DELETE FROM "+wIdsTableName+";"
-        q2 += "INSERT INTO "+wIdsTableName+" ("+conf['data']['common_fields']['id']+") SELECT "+conf['data']['common_fields']['id']+" FROM "+wTableName
-        print(u'query: {}'.format(q2[:500]), flush=True)
-        try:
-            cursor.execute(q2)
-        except Exception as e:
-            print(e)
-            raise
-        conn.commit()
+    db_conf = utils.getConf(arg_db_conf)
 
-    cursor.close()
-    conn.close()
+    #merge confs
+    conf.update(db_conf)
+
+    print("[START EXTRACTION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+    try:
+        border_extract.run(
+            conf,
+            arg_theme,
+            arg_tables,
+            arg_output,
+            arg_dist,
+            args,
+            arg_bcc,
+            arg_bt,
+            arg_from_up,
+            (not arg_noreset),
+            arg_verbose
+        )
+    except:
+        sys.exit(1)
+
+    print("[END EXTRACTION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+
+if __name__ == "__main__":
+    run(sys.argv)

@@ -4,14 +4,15 @@ import getopt
 from datetime import datetime
 import shutil
 import utils
-import revert
+import clean_
+
 
 def run(argv):
 
     currentDir = os.path.dirname(os.path.abspath(__file__))
 
     arg_conf = ""
-    arg_step = ""
+    arg_dist = None
     arg_theme = ""
     arg_tables = []
     arg_verbose = False
@@ -19,8 +20,8 @@ def run(argv):
     args = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "hc:s:T:t:v", ["help",
-        "conf=", "step=", "theme=", "table=", "verbose"])
+        opts, args = getopt.getopt(argv[1:], "hc:d:T:t:v", ["help",
+        "conf=", "dist=", "theme=", "verbose"])
     except:
         print(arg_help)
         sys.exit(1)
@@ -31,8 +32,8 @@ def run(argv):
             sys.exit(1)
         elif opt in ("-c", "--conf"):
             arg_conf = arg
-        elif opt in ("-s", "--step"):
-            arg_step = arg
+        elif opt in ("-d", "--dist"):
+            arg_dist = arg
         elif opt in ("-T", "--theme"):
             arg_theme = arg
         elif opt in ("-t", "--table"):
@@ -40,13 +41,18 @@ def run(argv):
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
-    print('step:', arg_step)
     print('conf:', arg_conf)
+    print('distance:', arg_dist)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
     print('verbose:', arg_verbose)
-    
+    print('args:', args)
+
     workspace = os.path.dirname(currentDir)+"/"
+
+    if arg_dist is None:
+        print("le paramètre -d est obligatoire.")
+        sys.exit(1)
 
     #conf
     if not os.path.isfile(workspace+"conf/"+arg_conf):
@@ -68,14 +74,15 @@ def run(argv):
     conf.update(db_conf)
 
 
-    print("[START REVERSION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("[START CLEANING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        revert.run(arg_step, conf, arg_theme, arg_tables, arg_verbose)
+        clean_.run(conf, arg_dist, arg_theme, arg_tables, args, arg_verbose)
     except:
         sys.exit(1)
     
-    print("[END REVERSION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("[END CLEANING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
 
 if __name__ == "__main__":
     run(sys.argv)

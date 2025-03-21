@@ -1,92 +1,83 @@
-import psycopg2
+import os
+import sys
+import getopt
+from datetime import datetime
+import shutil
+import utils
+import revert_
 
-def getTableName(schema , tableName):
-    return (schema+"." if schema else "") + tableName
 
-def run(
-    step, conf, theme, tables, verbose
-):
-    conn = psycopg2.connect(    user = conf['db']['user'],
-                                password = conf['db']['pwd'],
-                                host = conf['db']['host'],
-                                port = conf['db']['port'],
-                                database = conf['db']['name'])
-    cursor = conn.cursor()
+def run(argv):
 
-    print("REVERTING...", flush=True)
+    currentDir = os.path.dirname(os.path.abspath(__file__))
 
-    # On revert tout un theme si pas d argument sinon on revert les tables passees en argument
-    if not tables :
-        tables = conf['border-extraction']['data']['themes'][theme]
+    arg_conf = ""
+    arg_step = ""
+    arg_theme = ""
+    arg_tables = []
+    arg_verbose = False
+    arg_help = "{0} -c <conf> -o <output> -v".format(argv[0])
+    args = ""
+    
+    try:
+        opts, args = getopt.getopt(argv[1:], "hc:s:T:t:v", ["help",
+        "conf=", "step=", "theme=", "table=", "verbose"])
+    except:
+        print(arg_help)
+        sys.exit(1)
+    
+    for opt, arg in opts:
+        if opt in ("-h", "--help"):
+            print(arg_help)  # print the help message
+            sys.exit(1)
+        elif opt in ("-c", "--conf"):
+            arg_conf = arg
+        elif opt in ("-s", "--step"):
+            arg_step = arg
+        elif opt in ("-T", "--theme"):
+            arg_theme = arg
+        elif opt in ("-t", "--table"):
+            arg_tables.append(arg)
+        elif opt in ("-v", "--verbose"):
+            arg_verbose = True
 
-    theme_schema = conf['data']['themes'][theme]['schema']
-    history_schema = conf['data']['themes'][theme]['h_schema']
-    step_field = conf['data']['common_fields']['step']
-    modif_step_field = conf['data']['history']['fields']['modification_step']
+    print('step:', arg_step)
+    print('conf:', arg_conf)
+    print('theme:', arg_theme)
+    print('tables:', arg_tables)
+    print('verbose:', arg_verbose)
+    
+    workspace = os.path.dirname(currentDir)+"/"
 
-    for tb in tables:
-        tableName = getTableName(theme_schema, tb)
-        hTableName = getTableName(history_schema, tb)+conf['data']['history']['suffix']
+    #conf
+    if not os.path.isfile(workspace+"conf/"+arg_conf):
+        print("le fichier de configuration "+ arg_conf + " n'existe pas.")
+        sys.exit(1)
+    arg_conf = workspace+"conf/"+arg_conf
 
-        # on recupère tous les steps supérieur ou égal au step cible
-        q0 = "SELECT DISTINCT("+step_field+") FROM "+tableName+" WHERE "+step_field+">="+step
-        try:
-            cursor.execute(q0)
-        except Exception as e:
-            print(e)
-            raise
-        steps0 = [ t[0] for t in cursor.fetchall() ]
+    conf = utils.getConf(arg_conf)
 
-        q0_bis = "SELECT DISTINCT("+modif_step_field+") FROM "+hTableName+" WHERE "+modif_step_field+">="+step
-        try:
-            cursor.execute(q0_bis)
-        except Exception as e:
-            print(e)
-            raise
-        steps0_bis = [ t[0] for t in cursor.fetchall() ]
+    #bd conf
+    if not os.path.isfile(workspace+"conf/"+conf["db_conf_file"]):
+        print("le fichier de configuration "+ conf["db_conf_file"] + " n'existe pas.")
+        sys.exit(1)
+    arg_db_conf = workspace+"conf/"+conf["db_conf_file"]
 
-        orderedSteps = sorted(set(steps0+steps0_bis), reverse=True)
+    db_conf = utils.getConf(arg_db_conf)
 
-        for step in orderedSteps:
-            # on supprime tous les objets du step present dans la table
-            q = "DELETE FROM "+tableName+" WHERE "+step_field+"="+str(step)
-            print(u'query: {}'.format(q), flush=True)
-            try:
-                cursor.execute(q)
-            except Exception as e:
-                print(e)
-                raise
-            conn.commit()
+    #merge confs
+    conf.update(db_conf)
 
-            # on transfert tous les objets du step qui sont dans la table historique vers la table
-            # on recupère tous les noms de champs de la table
-            q1 = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE table_name = '"+tb+"' "+ ("AND table_schema = '"+theme_schema+"'") if theme_schema else ""
-            try:
-                cursor.execute(q1)
-            except Exception as e:
-                print(e)
-                raise
-            fields = cursor.fetchone()[0]
 
-            q2 = "INSERT INTO "+tableName+" ("+fields+") SELECT "+fields+" FROM "+hTableName
-            q2 += " WHERE "+modif_step_field+"="+str(step)
-            print(u'query: {}'.format(q2), flush=True)
-            try:
-                cursor.execute(q2)
-            except Exception as e:
-                print(e)
-                raise
-            conn.commit()
+    print("[START REVERSION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-            # on supprime tous les objets du step de la table historique
-            q3 = "DELETE FROM "+hTableName+" WHERE "+modif_step_field+"="+str(step)
-            print(u'query: {}'.format(q3), flush=True)
-            try:
-                cursor.execute(q3)
-            except Exception as e:
-                print(e)
-                raise
-            conn.commit()
+    try:
+        revert.run(arg_step, conf, arg_theme, arg_tables, arg_verbose)
+    except:
+        sys.exit(1)
+    
+    print("[END REVERSION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
-    cursor.close()
-    conn.close()
+
+if __name__ == "__main__":
+    run(sys.argv)

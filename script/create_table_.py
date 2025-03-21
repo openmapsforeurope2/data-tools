@@ -2,6 +2,16 @@ import psycopg2
 
 
 def createTableAndIndexes(conf, mcd, theme, tables):
+    """
+    Fonction utilitaire pour la création des tables.
+
+    Paramètres:
+    conf (objet) : configuration
+    mcd (objet) : description du modèle de données
+    theme (str) : thème dont on souhaite créer les tables
+    tables (array) : tables à créer (si le tableau est vide ce sont toutes les tables du thème qui seront créées)
+    """
+
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
                                 host = conf['db']['host'],
@@ -190,7 +200,7 @@ def getCreateWorkingTableStatement( conf, mcd, theme, tableName ):
 def getCreateUpdateTableStatement( conf, mcd, theme, tableName ):
     fullTableName = getTableName(conf['data']['themes'][theme]['u_schema'], tableName)+conf['data']['update']['suffix']
     statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
-    statement += " ("+getWorkingTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
+    statement += " ("+getTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
     statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
     statement += getUpdatePkeyConstraintStatement( conf, mcd, theme, tableName )
     return statement

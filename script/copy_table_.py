@@ -1,7 +1,15 @@
 import psycopg2
 
 
-def copyTable(conf, tables):
+def run(conf, tables):
+    """
+    Fonction utilitaire pour la copy de table.
+
+    Paramètres:
+    conf (objet) : configuration
+    tables (array) : tables à copier
+    """
+
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
                                 host = conf['db']['host'],
