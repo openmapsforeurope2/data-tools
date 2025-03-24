@@ -7,6 +7,7 @@ import psycopg2
 def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName
 
+
 def run(
     conf, dist, theme, tables, countryCodes, verbose
 ):  
