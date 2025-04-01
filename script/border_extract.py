@@ -103,6 +103,7 @@ def run(argv):
     conf = utils.getConf(arg_conf)
 
     #bd conf
+    print(workspace+"conf/"+conf["db_conf_file"])
     if not os.path.isfile(workspace+"conf/"+conf["db_conf_file"]):
         print("The configuration file "+ conf["db_conf_file"] + " does not exist.")
         sys.exit(1)
@@ -116,7 +117,7 @@ def run(argv):
     print("[START EXTRACTION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        border_extract.run(
+        border_extract_.run(
             conf,
             arg_theme,
             arg_tables,
