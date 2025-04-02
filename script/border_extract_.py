@@ -48,16 +48,12 @@ def run(
     reset (bool) : indique si la table de travail doit être vidée avant d'extraire 
     verbose (bool) : mode verbeux
     """
-    print('hello1')
-
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
                                 host = conf['db']['host'],
                                 port = conf['db']['port'],
                                 database = conf['db']['name'])
     cursor = conn.cursor()
-
-    print('hello2')
 
     print("EXTRACTING...", flush=True)
 

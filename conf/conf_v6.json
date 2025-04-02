@@ -1,0 +1,157 @@
+{
+    "db_conf_file":"db_conf_v6.json",
+    "landmask": {
+        "schema": "ib",
+        "table": "landmask",
+        "fields":{
+            "country": "country",
+            "geometry": "geom"
+        }
+    },
+    "boundary": {
+        "schema": "ib",
+        "table": "international_boundary_line",
+        "fields":{
+            "country": "country",
+            "geometry": "geom",
+            "type": "boundary_type"
+        },
+        "boundary_type_values":{
+            "international": "international_boundary"
+        }
+    },
+    "data": {
+        "common_fields": {
+            "country": "country",
+            "geometry": "geom",
+            "id": "objectid",
+            "step": "w_step",
+            "scale": "w_scale",
+            "release": "w_release"
+        },
+        "history": {
+            "suffix": "_wh",
+            "fields": {
+                "modification_type": "w_modification_type",
+                "modification_step": "w_modification_step"
+            }
+        },
+        "working": {
+            "ids_suffix": "_w_ids",
+            "suffix": "_w"
+        },
+        "reference": {
+            "suffix": "_ref"
+        },
+        "update": {
+            "suffix": "_up",
+            "area_suffix": "_up_area"
+        },
+        "themes": {
+            "tn": {
+                "schema": "tn",
+                "h_schema": "tn",
+                "w_schema": "public",
+                "u_schema": "work",
+                "r_schema": "ref",
+                "tables": [
+                    "road_link",
+                    "road",
+                    "road_node",
+                    "road_service_point",
+                    "road_service_area",
+                    "marker_post",
+                    "railway_link",
+                    "railway_line",
+                    "railway_station_point",
+                    "railway_station_area",
+                    "aerodrome_point",
+                    "aerodrome_area",
+                    "runway_line",
+                    "runway_area",
+                    "ferry_crossing",
+                    "port_point",
+                    "port_area"
+                ]
+            },
+            "au": {
+                "schema": "au",
+                "h_schema": "au",
+                "w_schema": "public",
+                "u_schema": "work",
+                "r_schema": "ref",
+                "tables": [
+                    "administrative_boundary",
+                    "administrative_area",
+                    "administrative_unit_area_1",
+                    "administrative_unit_area_2",
+                    "administrative_unit_area_3",
+                    "administrative_unit_area_4",
+                    "administrative_unit_area_5",
+                    "administrative_unit_area_6",
+                    "maritime_zone",
+                    "administrative_hierarchy"
+                ]
+            },
+            "ib": {
+                "schema": "ib",
+                "h_schema": "ib",
+                "w_schema": "public",
+                "u_schema": "work",
+                "r_schema": "ref",
+                "tables": [
+                    "international_boundary_line",
+                    "international_boundary_node",
+                    "landmask"
+                ]
+            },
+            "hy": {
+                "schema": "hy",
+                "h_schema": "hy",
+                "w_schema": "public",
+                "u_schema": "work",
+                "r_schema": "ref",
+                "tables": [
+                    "watercourse_link",
+                    "watercourse",
+                    "hydro_node",
+                    "watercourse_area",
+                    "standing_water",
+                    "drainage_basin",
+                    "shoreline",
+                    "shore",
+                    "dam_area",
+                    "dam_line",
+                    "dam_point",
+                    "lock_area",
+                    "lock_line",
+                    "lock_point",
+                    "falls_area",
+                    "falls_line",
+                    "falls_point",
+                    "glacier_snowfield",
+                    "wetland",
+                    "shoreline_construction_area",
+                    "shoreline_construction_line"
+                ]
+            }
+        }
+    },
+    "border_extraction": {
+        "where1": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3.38928 50.36368,3.38928 50.71280,3.88366 50.71280,3.88366 50.36368,3.38928 50.36368))'),4326))",
+        "where2": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3808951 3040674,3808951 3101076,3882202 3101076,3882202 3040674,3808951 3040674))'),3035))",
+        "where3": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3868601 3040674,3868601 3049417,3882202 3049417,3882202 3040674,3868601 3040674))'),3035))",
+        "where4": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3873474.9 3041465.1,3873474.9 3041743.9,3873766.5 3041743.9,3873766.5 3041465.1,3873474.9 3041465.1))'),3035))",
+        "where5": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3873928.44 3041451.10,3873928.44 3041472.10,3873947.22 3041472.10,3873947.22 3041451.10,3873928.44 3041451.10))'),3035))",
+        "where6": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3873530 3041774,3873530 3041417,3873959 3041417,3873959 3041774,3873530 3041774))'),3035))",
+        "where7": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3954091 2976736,3954091 2976184,3955300 2976184,3955300 2976736,3954091 2976736))'),3035))",
+        "where8": "ST_intersects(${data.common_fields.geometry},ST_Buffer(ST_SetSRID(ST_GeomFromText('POINT(3812159.902 3096438.205)'),3035),10))",
+        "where9": "ST_intersects(${data.common_fields.geometry},ST_Buffer(ST_SetSRID(ST_GeomFromText('POINT(3845812.259 3073050.570)'),3035),10))",
+        "where10": "ST_intersects(${data.common_fields.geometry},ST_Buffer(ST_SetSRID(ST_GeomFromText('POINT(3845812.374 3073050.449)'),3035),10))",
+        "where11": "ST_intersects(${data.common_fields.geometry},ST_Buffer(ST_SetSRID(ST_GeomFromText('POINT(3838672.3 3097452.2)'),3035),10))",
+        "where12": "ST_intersects(${data.common_fields.geometry},ST_Buffer(ST_SetSRID(ST_GeomFromText('POINT(3844994.91 3087939.87)'),3035),10))",
+        "where13": "ST_intersects(${data.common_fields.geometry},ST_Buffer(ST_SetSRID(ST_GeomFromText('POINT(3812509 3095177)'),3035),500))",
+        "where14": "ST_intersects(${data.common_fields.geometry}, ST_SetSRID(ST_Envelope('LINESTRING(3926226 3154869, 3928005 3156511)'::geometry), 3035))",
+        "where15": "ST_intersects(${data.common_fields.geometry},ST_Buffer(ST_SetSRID(ST_GeomFromText('POINT(3849352 3067098)'),3035),20000))"
+    }
+}

@@ -121,7 +121,7 @@ def run(argv):
             conf,
             arg_theme,
             arg_tables,
-            arg_output,
+            #arg_output,
             arg_dist,
             args,
             arg_bcc,
