@@ -7,7 +7,7 @@ import psycopg2
 def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName
 
-def getWorkingTableName(w_schema, tb, w_suffix):
+def getWorkingTableName(schema, tableName, w_suffix):
     return (schema+"." if schema else "") + tableName + w_suffix
 
 def run(
