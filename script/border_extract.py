@@ -16,7 +16,6 @@ def run(argv):
     arg_conf = ""
     arg_theme = ""
     arg_tables = []
-    arg_output = None
     arg_dist = None
     arg_bcc = None
     arg_bt = None
@@ -54,8 +53,6 @@ def run(argv):
             arg_theme = arg
         elif opt in ("-t", "--table"):
             arg_tables.append(arg)
-        elif opt in ("-o", "--output"):
-            arg_output = arg
         elif opt in ("-d", "--distance"):
             arg_dist = arg
         elif opt in ("-b", "--border_country"):
@@ -76,7 +73,6 @@ def run(argv):
     print('conf:', arg_conf)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
-    print('output:', arg_output)
     print('distance:', arg_dist)
     print('border country:', arg_bcc)
     print('boundary type:', arg_bt)
@@ -116,11 +112,10 @@ def run(argv):
     print("[START EXTRACTION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        border_extract.run(
+        border_extract_.run(
             conf,
             arg_theme,
             arg_tables,
-            arg_output,
             arg_dist,
             args,
             arg_bcc,
@@ -129,7 +124,9 @@ def run(argv):
             (not arg_noreset),
             arg_verbose
         )
-    except:
+
+    except Exception as e:
+        print(e)
         sys.exit(1)
 
     print("[END EXTRACTION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))

@@ -10,7 +10,7 @@
         {
             "label": "run the code (extract)",
             "type": "shell",
-            "command": "docker run --privileged data-tools python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 1000 be lu",
+            "command": "docker run --privileged data-tools python3 script/border_extract.py -c conf.json -T tn -t road_link -d 1000 be lu",
             "group": "build",
             "problemMatcher": []
         },

@@ -27,7 +27,7 @@ On trouve également dans ce projet les [scripts SQL](https://github.com/openmap
 
 La configuration de ce projet décrit le modèle de données des tables et la structure de la base de données OME2.
 
-Les fichiers de configuration se trouvent dans le [dossier de configuration](https://github.com/openmapsforeurope2/area_matching/tree/main/config) et sont les suivants :
+Les fichiers de configuration se trouvent dans le [dossier de configuration](https://github.com/openmapsforeurope2/data-tools/tree/main/conf) et sont les suivants :
 - conf.json :  ce fichier liste les tables constituant chaque thème, leur répartition dans les différents schémas, leur principaux champs (champs de travail, identifiant, géométrie, code pays). C'est également dans ce fichier qu'est précisé le système de nommage des tables (suffix des table de travail, de référence, de mise à jour...). C'est la configuration de base utilisé par tous les outils. Il pointe sur le fichier de db_conf.json.
 - db_conf.json : informations de connexion à la base de données.
 - mcd.json : ce fichier décrit le modèle de données de l'ensemble des tables. Il n'est utilisé que par la fonction 'create_table'.
@@ -38,7 +38,7 @@ Les fichiers de configuration se trouvent dans le [dossier de configuration](htt
 Tous les outils sont utilisés en ligne de commande.
 
 
-### border_extraction
+### border_extract
 
 Paramètres
 * c [mandatory] : configuration file
@@ -53,25 +53,25 @@ Paramètres
 
 Exemple d'extraction des données d'un pays sur l'ensemble de ses frontières :
 ~~~
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -d 4000 nl '#'
+python3 script/border_extract.py -c conf.json -T tn -t road_link -d 4000 nl '#'
 ~~~
 
 Exemple d'extraction des données de deux pays frontaliers:
 ~~~
-python3 script/border_extraction.py -c conf.json -T hy -t watercourse_link -d 1000 be fr
+python3 script/border_extract.py -c conf.json -T hy -t watercourse_link -d 1000 be fr
 ~~~
 
 Exemple d'extraction de l'ensemble des données d'un pays et des données des pays limitrophes frontière par frontière:
 ~~~
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -b false -B international -d 3000 fr
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -b ad -d 3000 -n fr
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -b mc -d 3000 -n fr
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -b lu -d 3000 -n fr
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -b it -d 3000 -n fr
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -b es -d 3000 -n fr
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -b ch -d 3000 -n fr
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -b de -d 3000 -n fr
-python3 script/border_extraction.py -c conf.json -T tn -t road_link -b be -d 3000 -n fr
+python3 script/border_extract.py -c conf.json -T tn -t road_link -b false -B international -d 3000 fr
+python3 script/border_extract.py -c conf.json -T tn -t road_link -b ad -d 3000 -n fr
+python3 script/border_extract.py -c conf.json -T tn -t road_link -b mc -d 3000 -n fr
+python3 script/border_extract.py -c conf.json -T tn -t road_link -b lu -d 3000 -n fr
+python3 script/border_extract.py -c conf.json -T tn -t road_link -b it -d 3000 -n fr
+python3 script/border_extract.py -c conf.json -T tn -t road_link -b es -d 3000 -n fr
+python3 script/border_extract.py -c conf.json -T tn -t road_link -b ch -d 3000 -n fr
+python3 script/border_extract.py -c conf.json -T tn -t road_link -b de -d 3000 -n fr
+python3 script/border_extract.py -c conf.json -T tn -t road_link -b be -d 3000 -n fr
 ~~~
 > _Note : la première ligne permet d'extraire les données autour des frontières internationales qui ont un code pays simple. Cela correspond aux frontières non reconnues ('in dispute')._
 

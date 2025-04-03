@@ -71,7 +71,8 @@ def run(
 
     if boundaryType == "international":
         where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['boundary']['fields']['type'] + " = '" + conf['boundary']['boundary_type_values']['international'] + "'"
-    
+
+    where_statement_boundary += (" AND " if where_statement_boundary else "") + " NOT gcms_detruit"
     
     boundary_statement = "ST_Union(ARRAY((SELECT "+conf['boundary']['fields']['geometry']+" FROM "+getTableName(conf['boundary']['schema'], conf['boundary']['table'])+" WHERE "+where_statement_boundary+")))"
     boundary_buffer_statement = "SELECT ST_Buffer(("+boundary_statement+"),"+ str(distance)+")" if distance is not None else None
@@ -120,7 +121,8 @@ def run(
         query = ""
         if reset : query += "DELETE FROM "+wTableName+";"
         query += "INSERT INTO "+wTableName+" ("+fields+") SELECT "+fields+" FROM "+tableName
-        if fromUp : 
+
+        if fromUp :
             #a confirmer qu il n y a pas de colonne gcms_detruit dans tables _up (ou qu on ne prend pas ce champs en compte)
             query += " WHERE "+where_statement_data
         else:
@@ -129,8 +131,8 @@ def run(
         if boundary_buffer_statement is not None :
             query += " AND ST_Intersects("+conf['data']['common_fields']['geometry']+",("+boundary_buffer_statement+"))"
         
-        if 'where' in conf['border_extraction'] and conf['border_extraction']['where']:
-            query += " AND "+conf['border_extraction']['where']
+        if 'where' in conf['border_extract'] and conf['border_extract']['where']:
+            query += " AND "+conf['border_extract']['where']
         if not reset and ids is not None:
             query += " AND "+conf['data']['common_fields']['id']+" NOT IN ('"+ids+"')"
 

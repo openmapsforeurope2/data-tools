@@ -9,7 +9,7 @@
         }
     },
     "boundary": {
-        "schema": "prod",
+        "schema": "ib",
         "table": "international_boundary_line",
         "fields":{
             "country": "country",
@@ -106,9 +106,9 @@
                 ]
             },
             "hy": {
-                "schema": "prod",
-                "h_schema": "prod",
-                "w_schema": "work",
+                "schema": "hy",
+                "h_schema": "hy",
+                "w_schema": "public",
                 "u_schema": "work",
                 "r_schema": "ref",
                 "tables": [
@@ -137,7 +137,7 @@
             }
         }
     },
-    "border_extraction": {
+    "border_extract": {
         "where1": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3.38928 50.36368,3.38928 50.71280,3.88366 50.71280,3.88366 50.36368,3.38928 50.36368))'),4326))",
         "where2": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3808951 3040674,3808951 3101076,3882202 3101076,3882202 3040674,3808951 3040674))'),3035))",
         "where3": "ST_intersects(${data.common_fields.geometry},ST_SetSRID(ST_GeomFromText('POLYGON((3868601 3040674,3868601 3049417,3882202 3049417,3882202 3040674,3868601 3040674))'),3035))",
@@ -152,6 +152,7 @@
         "where12": "ST_intersects(${data.common_fields.geometry},ST_Buffer(ST_SetSRID(ST_GeomFromText('POINT(3844994.91 3087939.87)'),3035),10))",
         "where13": "ST_intersects(${data.common_fields.geometry},ST_Buffer(ST_SetSRID(ST_GeomFromText('POINT(3812509 3095177)'),3035),500))",
         "where14": "ST_intersects(${data.common_fields.geometry}, ST_SetSRID(ST_Envelope('LINESTRING(3926226 3154869, 3928005 3156511)'::geometry), 3035))",
-        "where15": "ST_intersects(${data.common_fields.geometry},ST_Buffer(ST_SetSRID(ST_GeomFromText('POINT(3849352 3067098)'),3035),20000))"
+        "where15": "ST_intersects(${data.common_fields.geometry},ST_Buffer(ST_SetSRID(ST_GeomFromText('POINT(3849352 3067098)'),3035),20000))",
+        "where16": "ST_intersects(${data.common_fields.geometry}, ST_SetSRID(ST_Envelope('LINESTRING(3835916 3099026, 3839493 3097544)'::geometry), 3035))"
     }
 }
