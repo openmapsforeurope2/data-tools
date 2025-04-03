@@ -48,7 +48,6 @@ def run(
     reset (bool) : indique si la table de travail doit être vidée avant d'extraire 
     verbose (bool) : mode verbeux
     """
-
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
                                 host = conf['db']['host'],
