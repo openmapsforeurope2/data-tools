@@ -117,10 +117,6 @@ def run(argv):
             conf,
             arg_theme,
             arg_tables,
-<<<<<<< HEAD
-=======
-            #arg_output,
->>>>>>> ca4ff754c7999b86608445d5c3064be975750b29
             arg_dist,
             args,
             arg_bcc,
