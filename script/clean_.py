@@ -7,6 +7,8 @@ import psycopg2
 def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName
 
+def getWorkingTableName(schema, tableName, w_suffix):
+    return (schema+"." if schema else "") + tableName + w_suffix
 
 def run(
     conf, dist, theme, tables, countryCodes, verbose
@@ -36,11 +38,12 @@ def run(
         landmask_statement = "SELECT ST_Union(ARRAY(SELECT geom FROM "+ getTableName(conf['landmask']['schema'], conf['landmask']['table']) +" WHERE "+conf['landmask']["fields"]["country"]+"='"+c+"'))"
 
         w_schema = conf['data']['themes'][theme]['w_schema']
+        w_suffix = conf['data']['working']['suffix']
         if not tables:
             tables = conf['data']['themes'][theme]['tables']
 
         for tb in tables:
-            query = "DELETE FROM "+getTableName(w_schema, tb)
+            query = "DELETE FROM "+getWorkingTableName(w_schema, tb, w_suffix)
             query += " WHERE "+conf['data']['common_fields']['country']+"='"+c+"'"
             # query += " AND NOT ST_intersects(("+landmask_statement+"), geom)"
             query += " AND ST_Distance(("+landmask_statement+"), geom) > "+dist

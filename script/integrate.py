@@ -88,7 +88,7 @@ def run(argv):
     print("[START INTEGRATION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        integrate.run(arg_step, conf, arg_theme, arg_tables, arg_to_up, arg_nohistory, arg_verbose)
+        integrate_.run(arg_step, conf, arg_theme, arg_tables, arg_to_up, arg_nohistory, arg_verbose)
     except:
         sys.exit(1)
     

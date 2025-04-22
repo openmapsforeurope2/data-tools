@@ -27,7 +27,7 @@ def run(conf, tables):
             print(u'Nothing to do, the table '+tableName+' is already in the schema "public"', flush=True)
             continue
 
-        query = "DROP TABLE IF EXISTS "+targetTableName+"; CREATE TABLE "+targetTableName+" AS TABLE "+tableName+";"
+        query = "DROP TABLE IF EXISTS "+targetTableName+"; CREATE TABLE "+targetTableName+" AS SELECT * FROM "+tableName+" WHERE NOT gcms_detruit;"
 
         print(u'query: {}'.format(query), flush=True)
         try:
