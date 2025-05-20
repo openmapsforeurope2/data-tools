@@ -1,5 +1,6 @@
 {
-    "db_conf_file":"db_conf.json",
+    "db_conf_file":"db_conf_v6.json",
+    "mcd_conf_file":"mcd.json",
     "landmask": {
         "schema": "prod",
         "table": "landmask",
@@ -49,11 +50,11 @@
         },
         "themes": {
             "tn": {
-                "schema": "prod",
-                "h_schema": "prod",
-                "w_schema": "work",
-                "u_schema": "work",
-                "r_schema": "ref",
+                "schema": "tn",
+                "h_schema": "tn",
+                "w_schema": "",
+                "u_schema": "",
+                "r_schema": "",
                 "tables": [
                     "road_link",
                     "road",
@@ -134,6 +135,61 @@
                     "shoreline_construction_area",
                     "shoreline_construction_line"
                 ]
+            }
+        },
+        "prepare": {
+            "cleaning": {
+                "tn": {
+                    "tables": {
+                        "road_link": {
+                            "extraction_distance": {
+                                "default": 4000,
+                                "fr": 3000
+                            }
+                        },
+                        "railway": {
+                            "extraction_distance": {
+                                "default": 4000
+                            }
+                        }
+                    }
+                },
+                "hy": {
+                    "tables": {
+                        "watercourse_link": {
+                            "extraction_distance": {
+                                "default": 4000,
+                                "fr": 3000
+                            }
+                        }
+                    }
+                }
+            },
+            "matching": {
+                "themes": {
+                    "tn": {
+                        "extraction_distance": {
+                            "default": 1000
+                        },
+                        "tables": [
+                            "road_link",
+                            "railway"
+                        ]
+                    },
+                    "hy": {
+                        "extraction_distance": {
+                            "default": 1000
+                        },
+                        "tables": [
+                            "watercourse_link",
+                            "watercourse_area",
+                            "standing_water"
+                        ]
+                    }
+                }
+            },
+            "validation": {
+                "schema": ""
             }
         }
     },

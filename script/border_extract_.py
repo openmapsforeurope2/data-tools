@@ -5,22 +5,6 @@ def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName
 
 
-def getCountryStatement(countryCodes):
-    statement = ""
-    count=0
-    for country in  countryCodes:
-        if country == "#":
-            continue
-        statement += ("'" if not statement else ",'") + country + "'"
-        count+=1
-    
-    if count==1:
-        return " = "+statement
-    if count==0:
-        return ""
-    return " IN "+statement
-
-
 def run(
     conf,
     theme,

@@ -16,21 +16,16 @@ def run(argv):
     arg_theme = ""
     arg_tables = []
     arg_verbose = False
-    arg_help = "{0} -c <conf> -o <output> -v".format(argv[0])
     args = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "hc:d:T:t:v", ["help",
+        opts, args = getopt.getopt(argv[1:], "c:d:T:t:v", [
         "conf=", "dist=", "theme=", "verbose"])
     except:
-        print(arg_help)
         sys.exit(1)
     
     for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            print(arg_help)  # print the help message
-            sys.exit(1)
-        elif opt in ("-c", "--conf"):
+        if opt in ("-c", "--conf"):
             arg_conf = arg
         elif opt in ("-d", "--dist"):
             arg_dist = arg

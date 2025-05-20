@@ -12,20 +12,14 @@ def run(argv):
     currentDir = os.path.dirname(os.path.abspath(__file__))
 
     arg_conf = ""
-    arg_help = "{0} -c <conf> -o <output> -v".format(argv[0])
     args = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "hc:", ["help", "conf="])
-    except:
-        print(arg_help)
+        opts, args = getopt.getopt(argv[1:], "c:", ["conf="])
         sys.exit(1)
     
     for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            print(arg_help)  # print the help message
-            sys.exit(1)
-        elif opt in ("-c", "--conf"):
+        if opt in ("-c", "--conf"):
             arg_conf = arg
 
     print('conf:', arg_conf)

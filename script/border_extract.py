@@ -22,32 +22,25 @@ def run(argv):
     arg_from_up = False
     arg_noreset = False
     arg_verbose = False
-    arg_help = "{0} -c <conf> -o <output> -v".format(argv[0])
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:o:d:b:B:auAnvh", [
+        opts, args = getopt.getopt(argv[1:], "c:T:t:d:b:B:aunv", [
             "conf=", 
             "theme=", 
             "table=", 
-            "output=", 
             "distance=", 
             "border_country=", 
             "boundary_type=", 
             "in_up_area",
             "from_up",
             "noreset", 
-            "verbose",
-            "help"
+            "verbose"
         ])
     except:
-        print(arg_help)
         sys.exit(1)
     
     for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            print(arg_help)  # print the help message
-            sys.exit(1)
-        elif opt in ("-c", "--conf"):
+        if opt in ("-c", "--conf"):
             arg_conf = arg
         elif opt in ("-T", "--theme"):
             arg_theme = arg
@@ -63,8 +56,6 @@ def run(argv):
             arg_bt = arg
         elif opt in ("-u", "--from_up"):
             arg_from_up = True
-        elif opt in ("-A", "--all_objects"):
-            arg_all_objects = True
         elif opt in ("-n", "--noreset"):
             arg_noreset = True
         elif opt in ("-v", "--verbose"):
@@ -77,6 +68,7 @@ def run(argv):
     print('border country:', arg_bcc)
     print('boundary type:', arg_bt)
     print('from_up:', arg_from_up)
+    print('codes:', args)
     print('reset:', (not arg_noreset))
     print('verbose:', arg_verbose)
 

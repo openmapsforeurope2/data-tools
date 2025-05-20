@@ -18,29 +18,23 @@ def run(argv):
     arg_to_up = False
     arg_nohistory = False # life-cycle management is enabled as default
     arg_verbose = False
-    arg_help = "{0} -c <conf> -o <output> -v".format(argv[0])
     args = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:s:T:t:unvh", [
+        opts, args = getopt.getopt(argv[1:], "c:s:T:t:unv", [
             "conf=",
             "step=",
             "theme=",
             "table=",
             "to_up",
             "no_history",
-            "verbose",
-            "help"
+            "verbose"
         ])
     except:
-        print(arg_help)
         sys.exit(1)
     
     for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            print(arg_help)  # print the help message
-            sys.exit(1)
-        elif opt in ("-c", "--conf"):
+        if opt in ("-c", "--conf"):
             arg_conf = arg
         elif opt in ("-s", "--step"):
             arg_step = arg
