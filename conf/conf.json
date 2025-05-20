@@ -139,30 +139,20 @@
         },
         "prepare": {
             "cleaning": {
-                "tn": {
-                    "tables": {
-                        "road_link": {
-                            "extraction_distance": {
-                                "default": 4000,
-                                "fr": 3000
-                            }
-                        },
-                        "railway": {
-                            "extraction_distance": {
-                                "default": 4000
-                            }
+                "themes": {
+                    "tn": {
+                        "extraction_distance": {
+                            "default": 1000
+                        }
+                    },
+                    "hy": {
+                        "extraction_distance": {
+                            "default": 1000
                         }
                     }
                 },
-                "hy": {
-                    "tables": {
-                        "watercourse_link": {
-                            "extraction_distance": {
-                                "default": 4000,
-                                "fr": 3000
-                            }
-                        }
-                    }
+                "neighbors": {
+                    "fr": []
                 }
             },
             "matching": {
@@ -189,7 +179,39 @@
                 }
             },
             "validation": {
-                "schema": ""
+                "target_schema": "validation",
+                "source_schema": "",
+                "user": "ome2_validation",
+                "themes": {
+                    "tn": {
+                        "tables": {
+                            "road_link" : {
+                                "final_step": "280"
+                            },
+                            "railway" : {
+                                "final_step": "280"
+                            }
+                        }
+                    },
+                    "hy": {
+                        "tables": {
+                            "watercourse_link" : {
+                                "final_step": "280"
+                            },
+                            "watercourse_area" : {
+                                "final_step": "399"
+                            },
+                            "standing_water" : {
+                                "final_step": "399"
+                            }
+                        }
+                    }
+                },
+                "suffix": {
+                    "init": "_init",
+                    "ref": "_ref",
+                    "correct": "_to_correct"
+                }
             }
         }
     },

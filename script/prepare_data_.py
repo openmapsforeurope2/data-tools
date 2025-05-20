@@ -5,6 +5,7 @@ import border_extract_
 def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName
 
+
 def getPkeyConstraintStatement(fields, targetTableName):
     q = ""
     for field in fields:
@@ -16,12 +17,14 @@ def getPkeyConstraintStatement(fields, targetTableName):
                 q += "ALTER TABLE " + targetTableName + " ALTER COLUMN " + field + " SET DEFAULT "+ parts[-1] +";"
     return q
 
+
 def getAllPkeyConstraintStatement(mcd, theme, tableName, targetTableName):
     q = getPkeyConstraintStatement(mcd['common']['id_field'], targetTableName)
     q += getPkeyConstraintStatement(mcd['common']['working_fields'], targetTableName)
     q += getPkeyConstraintStatement(mcd['common']['fields'], targetTableName)
     q += getPkeyConstraintStatement(mcd['themes'][theme]['tables'][tableName]['fields'], targetTableName)
     return q
+
 
 def getCreateIndexStatement(fields, targetTableName):
     q = ""
@@ -38,11 +41,26 @@ def getCreateIndexStatement(fields, targetTableName):
                 raise Exception('Unknown index: '+fields[field]['index'])
     return q
 
+
 def getAllCreateIndexStatement(mcd, theme, tableName, targetTableName):
     q = getCreateIndexStatement(mcd['common']['id_field'], targetTableName)
     q += getCreateIndexStatement(mcd['common']['working_fields'], targetTableName)
     q += getCreateIndexStatement(mcd['common']['fields'], targetTableName)
     q += getCreateIndexStatement(mcd['themes'][theme]['tables'][tableName]['fields'], targetTableName)
+    return q
+
+
+def getGrantStatement(tableFullName, user):
+    return "GRANT ALL ON " + tableFullName + " TO " + user + ";"
+
+
+def getInitTableStatement( mcd, theme, tableName, sourceTableName, targetTableName, user = None ):
+    q = "DROP TABLE IF EXISTS " + targetTableName + ";"
+    q += "CREATE TABLE " + targetTableName + " AS SELECT * FROM " + sourceTableName + ";"
+    q += getAllPkeyConstraintStatement(mcd, theme, tableName, targetTableName)
+    q += getAllCreateIndexStatement(mcd, theme, tableName, targetTableName)
+    if user :
+        q += getGrantStatement(targetTableName, user)
     return q
 
 
@@ -91,13 +109,16 @@ def init_working_tables(
                                 database = conf['db']['name'])
     cursor = conn.cursor()
 
+    countryCodes = sorted(countryCodes)
+
     if operation == "matching" :
+        
         suffix = "_" + "_".join(countryCodes) + "_" + suffix
 
-        countryCodes = sorted(countryCodes)
         borderCode = "#".join(countryCodes)
         countryCodes.append(borderCode)
 
+        # TODO : a confirmer qu'on n'utilise que les objets c1, c2 et c1#c2 pour le matching
         where_statement = ""
         for country in countryCodes:
             where_statement += (" OR " if where_statement else "") + conf['data']['common_fields']['country'] + " = '" + country + "'"
@@ -112,10 +133,41 @@ def init_working_tables(
             wTableName = getTableName(working_schema, tableName)+conf['data']['working']['suffix']
             targetTableName = wTableName + suffix
 
-            q = "DROP TABLE IF EXISTS " + targetTableName + ";"
-            q += "CREATE TABLE " + targetTableName + " AS SELECT * FROM " + wTableName + " WHERE " + where_statement + ";"
-            q += getAllPkeyConstraintStatement(mcd, theme, tableName, targetTableName)
-            q += getAllCreateIndexStatement(mcd, theme, tableName, targetTableName)
+            q = getInitTableStatement( mcd, theme, tableName, wTableName, targetTableName )
+
+            # print(u'query: {}'.format(q[:500]), flush=True)
+            print(u'query: {}'.format(q), flush=True)
+            try:
+                cursor.execute(q)
+            except Exception as e:
+                print(e)
+                raise
+            conn.commit()
+
+    elif operation == "validation" :
+        prefix = "_".join(countryCodes) + "_"
+        suffix = "_" + "_".join(countryCodes) + "_" + suffix
+
+
+        target_schema = conf['data']['prepare'][operation]['target_schema']
+        source_schema = conf['data']['prepare'][operation]['source_schema']
+
+        if not tables:
+            tables = conf['data']['prepare'][operation]['themes'][theme]['tables']
+
+        for tableName in tables:
+            final_step = conf['data']['prepare'][operation]['themes'][theme]['tables'][tableName]['final_step']
+
+            sourceInitTableName = getTableName(source_schema, tableName) + conf['data']['working']['suffix'] + suffix
+            sourceFinalTableName = "_" + final_step + "_" + sourceInitTableName
+
+            targetInitTableName = getTableName(target_schema, prefix + tableName) + conf['data']['prepare'][operation]['suffix']['init']
+            targetRefTableName = getTableName(target_schema, prefix + tableName) + conf['data']['prepare'][operation]['suffix']['ref']
+            targetCorrectTableName = getTableName(target_schema, prefix + tableName) + conf['data']['prepare'][operation]['suffix']['correct']
+
+            q = getInitTableStatement( mcd, theme, tableName, sourceInitTableName, targetInitTableName, conf['data']['prepare'][operation]['user'] )
+            q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetCorrectTableName, conf['data']['prepare'][operation]['user'] )
+            q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetRefTableName )
 
             # print(u'query: {}'.format(q[:500]), flush=True)
             print(u'query: {}'.format(q), flush=True)
@@ -128,6 +180,7 @@ def init_working_tables(
 
     cursor.close()
     conn.close()
+
 
 def extract_data(
     conf,
@@ -151,9 +204,14 @@ def extract_data(
                     distance = countryDist
 
         if not tables:
+            tables = conf['data']['prepare'][operation]['themes'][theme]['tables'].keys()
+
+        for tableName in tables:
             tables = conf['data']['prepare'][operation]['themes'][theme]['tables']
-        
+    elif operation == "validation" :
+        return
     else :
         raise Exception('Unknown operation: '+operation)
 
     border_extract_.run(conf, theme, tables, distance, countryCodes, borderCountryCode, boundaryType, fromUp, reset, verbose)
+

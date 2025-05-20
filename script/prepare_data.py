@@ -19,12 +19,13 @@ def run(argv):
     arg_operation = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:s:mv", [
+        opts, args = getopt.getopt(argv[1:], "c:T:t:s:mwv", [
             "conf=",
             "theme=",
             "table=",
             "suffix=",
             "matching",
+            "validation",
             "verbose"
         ])
     except:
@@ -41,6 +42,8 @@ def run(argv):
             arg_suffix = arg
         elif opt in ("-m", "--matching"):
                 arg_operation = "matching" if arg_operation == "" else None
+        elif opt in ("-w", "--validation"):
+                arg_operation = "validation" if arg_operation == "" else None
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
