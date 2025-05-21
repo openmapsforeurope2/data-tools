@@ -10,7 +10,7 @@ def getPkeyConstraintStatement(fields, targetTableName):
     q = ""
     for field in fields:
         if 'pkey' in fields[field] and fields[field]['pkey']:
-            q += "ALTER TABLE " + targetTableName + " ADD CONSTRAINT "+ targetTableName.replace(".", "_") +" PRIMARY KEY ("+ field +");"
+            q += "ALTER TABLE " + targetTableName + " ADD CONSTRAINT "+ targetTableName.replace(".", "_") + field +"_pkey PRIMARY KEY ("+ field +");"
             q += "ALTER TABLE " + targetTableName + " ALTER COLUMN " + field + " SET NOT NULL;"
             if "default" in fields[field]['sql_type'].lower() :
                 parts = fields[field]['sql_type'].lower().split('default')
@@ -79,6 +79,7 @@ def run(
 
     Paramètres:
     conf (objet) : configuration
+    mcd (objet) : description du modèle de données
     theme (str) : thème à préparer
     tables (array) : tables à préparer (si le tableau est vide ce sont toutes les tables du thème qui seront préparées)
     suffix (str) : suffix appliqué aux tables préparées
@@ -87,6 +88,9 @@ def run(
     verbose (bool) : mode verbeux
     """
     print("PREPARING...", flush=True)
+
+    if not tables:
+            tables = conf['data']['operation'][operation]['themes'][theme]['tables'].keys()
 
     extract_data(conf, theme, tables, countryCodes, operation, verbose)
     init_working_tables(conf, mcd, theme, tables, suffix, countryCodes, operation, verbose)
@@ -125,9 +129,6 @@ def init_working_tables(
         where_statement = "("+where_statement+")"
         
         working_schema = conf['data']['themes'][theme]['w_schema']
-        
-        if not tables:
-            tables = conf['data']['prepare'][operation]['themes'][theme]['tables']
             
         for tableName in tables:
             wTableName = getTableName(working_schema, tableName)+conf['data']['working']['suffix']
@@ -149,24 +150,21 @@ def init_working_tables(
         suffix = "_" + "_".join(countryCodes) + "_" + suffix
 
 
-        target_schema = conf['data']['prepare'][operation]['target_schema']
-        source_schema = conf['data']['prepare'][operation]['source_schema']
-
-        if not tables:
-            tables = conf['data']['prepare'][operation]['themes'][theme]['tables']
+        target_schema = conf['data'][theme]['v_schema']
+        source_schema = conf['data'][theme]['w_schema']
 
         for tableName in tables:
-            final_step = conf['data']['prepare'][operation]['themes'][theme]['tables'][tableName]['final_step']
+            final_step = conf['data']['operation']['matching']['themes'][theme]['tables'][tableName]['final_step']
 
             sourceInitTableName = getTableName(source_schema, tableName) + conf['data']['working']['suffix'] + suffix
             sourceFinalTableName = "_" + final_step + "_" + sourceInitTableName
 
-            targetInitTableName = getTableName(target_schema, prefix + tableName) + conf['data']['prepare'][operation]['suffix']['init']
-            targetRefTableName = getTableName(target_schema, prefix + tableName) + conf['data']['prepare'][operation]['suffix']['ref']
-            targetCorrectTableName = getTableName(target_schema, prefix + tableName) + conf['data']['prepare'][operation]['suffix']['correct']
+            targetInitTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['init']
+            targetRefTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['ref']
+            targetCorrectTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['correct']
 
-            q = getInitTableStatement( mcd, theme, tableName, sourceInitTableName, targetInitTableName, conf['data']['prepare'][operation]['user'] )
-            q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetCorrectTableName, conf['data']['prepare'][operation]['user'] )
+            q = getInitTableStatement( mcd, theme, tableName, sourceInitTableName, targetInitTableName, conf['data']['validation']['user'] )
+            q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetCorrectTableName, conf['data']['validation']['user'] )
             q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetRefTableName )
 
             # print(u'query: {}'.format(q[:500]), flush=True)
@@ -196,18 +194,13 @@ def extract_data(
         fromUp = None
         reset = True
 
-        distance = conf['data']['prepare'][operation]['themes'][theme]['extraction_distance']['default']
+        distance = conf['data']['operation'][operation]['themes'][theme]['extraction_distance']['default']
         for country in  countryCodes:
-            if country in conf['data']['prepare'][operation]['themes'][theme]['extraction_distance'] :
-                countryDist = conf['data']['prepare'][operation]['themes'][theme]['extraction_distance'][country]
+            if country in conf['data']['operation'][operation]['themes'][theme]['extraction_distance'] :
+                countryDist = conf['data']['operation'][operation]['themes'][theme]['extraction_distance'][country]
                 if countryDist > distance:
                     distance = countryDist
 
-        if not tables:
-            tables = conf['data']['prepare'][operation]['themes'][theme]['tables'].keys()
-
-        for tableName in tables:
-            tables = conf['data']['prepare'][operation]['themes'][theme]['tables']
     elif operation == "validation" :
         return
     else :

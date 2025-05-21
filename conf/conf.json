@@ -48,6 +48,14 @@
             "suffix": "_up",
             "area_suffix": "_up_area"
         },
+        "validation": {
+            "user": "ome2_validation",
+            "suffix": {
+                "init": "_init",
+                "ref": "_ref",
+                "correct": "_to_correct"
+            }
+        },
         "themes": {
             "tn": {
                 "schema": "tn",
@@ -55,6 +63,7 @@
                 "w_schema": "",
                 "u_schema": "",
                 "r_schema": "",
+                "v_schema": "validation",
                 "tables": [
                     "road_link",
                     "road",
@@ -78,9 +87,10 @@
             "au": {
                 "schema": "prod",
                 "h_schema": "prod",
-                "w_schema": "work",
-                "u_schema": "work",
+                "w_schema": "",
+                "u_schema": "",
                 "r_schema": "ref",
+                "v_schema": "validation",
                 "tables": [
                     "administrative_boundary",
                     "administrative_area",
@@ -97,9 +107,10 @@
             "ib": {
                 "schema": "prod",
                 "h_schema": "prod",
-                "w_schema": "work",
-                "u_schema": "work",
+                "w_schema": "",
+                "u_schema": "",
                 "r_schema": "ref",
+                "v_schema": "validation",
                 "tables": [
                     "international_boundary_line",
                     "international_boundary_node",
@@ -109,9 +120,10 @@
             "hy": {
                 "schema": "hy",
                 "h_schema": "hy",
-                "w_schema": "public",
-                "u_schema": "work",
+                "w_schema": "",
+                "u_schema": "",
                 "r_schema": "ref",
+                "v_schema": "validation",
                 "tables": [
                     "watercourse_link",
                     "watercourse",
@@ -137,7 +149,7 @@
                 ]
             }
         },
-        "prepare": {
+        "operation": {
             "cleaning": {
                 "themes": {
                     "tn": {
@@ -161,39 +173,19 @@
                         "extraction_distance": {
                             "default": 1000
                         },
-                        "tables": [
-                            "road_link",
-                            "railway"
-                        ]
-                    },
-                    "hy": {
-                        "extraction_distance": {
-                            "default": 1000
-                        },
-                        "tables": [
-                            "watercourse_link",
-                            "watercourse_area",
-                            "standing_water"
-                        ]
-                    }
-                }
-            },
-            "validation": {
-                "target_schema": "validation",
-                "source_schema": "",
-                "user": "ome2_validation",
-                "themes": {
-                    "tn": {
                         "tables": {
                             "road_link" : {
                                 "final_step": "280"
                             },
-                            "railway" : {
+                            "railway_link" : {
                                 "final_step": "280"
                             }
                         }
                     },
                     "hy": {
+                        "extraction_distance": {
+                            "default": 1000
+                        },
                         "tables": {
                             "watercourse_link" : {
                                 "final_step": "280"
@@ -206,11 +198,6 @@
                             }
                         }
                     }
-                },
-                "suffix": {
-                    "init": "_init",
-                    "ref": "_ref",
-                    "correct": "_to_correct"
                 }
             }
         }
