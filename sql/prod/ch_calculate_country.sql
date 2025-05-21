@@ -13,6 +13,9 @@ FROM au.administrative_unit_area_1 b WHERE b.country = 'li' AND ST_Within(a.geom
 UPDATE road_link_ch_li a SET new_country_code = 'ch' 
 FROM au.administrative_unit_area_1 b WHERE b.country = 'ch' AND ST_Within(a.geom, b.geom);
 
+-- This is enough for most feature classes. The country attribution can be checked visually in QGIS and corrected manually if necessary. 
+-- For feature classes which overlap international boundaries (i.e. those where edge-matching is applied), continue with the steps below.
+
 -- *** For networks and areas
     -- For networks
     UPDATE road_link_ch_li a SET inter_li = ST_Length(ST_Intersection (a.geom, b.geom))
