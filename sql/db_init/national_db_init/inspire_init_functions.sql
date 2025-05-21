@@ -29,7 +29,7 @@ BEGIN
                 alter_query := 'ALTER TABLE ' || ome2_tb || ' ADD COLUMN ' || ome2_field || ' character varying(255);';
                 EXECUTE alter_query;
 
-                update_query := 'UPDATE ' || ome2_tb || ' a SET ' || ome2_field || ' = b.' || _att_value || ' FROM ' || cs_name || '.' || _key || ' b WHERE b.' || networkref_name || ' LIKE ''%'' || a.' || inspireid_name || '|| ''%'';';
+                update_query := 'UPDATE ' || ome2_tb || ' a SET ' || ome2_field || ' = b.' || _att_value || ' FROM ' || cs_name || '.' || _key || ' b WHERE b.' || networkref_name || '::text LIKE ''%'' || a.' || inspireid_name || '::text || ''%'';';
                 RAISE notice 'update_query = %', update_query;
                 EXECUTE update_query;
             END LOOP;
@@ -67,7 +67,7 @@ BEGIN
                 alter_query := 'ALTER TABLE ' || ome2_tb || ' ADD COLUMN ' || ome2_field || ' character varying(255);';
                 EXECUTE alter_query;
 
-                update_query := 'UPDATE ' || ome2_tb || ' a SET ' || ome2_field || ' = b.' || _att_value || ' FROM ' || cs_name || '.' || _key || ' b WHERE b.' || networkref_name || ' = a.' || inspireid_name || ';';
+                update_query := 'UPDATE ' || ome2_tb || ' a SET ' || ome2_field || ' = b.' || _att_value || ' FROM ' || cs_name || '.' || _key || ' b WHERE b.' || networkref_name || '::text = a.' || inspireid_name || '::text ;';
                 RAISE notice 'update_query = %', update_query;
                 EXECUTE update_query;
             END LOOP;
@@ -106,7 +106,7 @@ BEGIN
                 alter_query := 'ALTER TABLE ' || ome2_tb || ' ADD COLUMN ' || ome2_field || ' character varying(255);';
                 EXECUTE alter_query;
 
-                update_query := 'UPDATE ' || ome2_tb || ' a SET ' || ome2_field || ' = b.' || _att_value || ' FROM ' || cs_name || '.' || _key || ' b WHERE b.' || networkref_name || ' = a.' || inspireid_name || ';';
+                update_query := 'UPDATE ' || ome2_tb || ' a SET ' || ome2_field || ' = b.' || _att_value || ' FROM ' || cs_name || '.' || _key || ' b WHERE b.' || networkref_name || '::text = a.' || inspireid_name || '::text ;';
                 RAISE notice 'update_query = %', update_query;
                 EXECUTE update_query;
             END LOOP;

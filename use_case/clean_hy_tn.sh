@@ -50,9 +50,9 @@ python3 data-tools/script/integrate.py -c conf.json -T tn -t road_link -s 10
 #python3 data-tools/script/clean.py -c conf.json -d 5 -T tn -t road_link_w ch
 #python3 data-tools/script/integrate.py -c conf.json -T tn -t road_link -s 10
 #[UPDATE 01/10/2024] Clean launched on all tables at once
-python3 data-tools/script/border_extract.py -c conf.json -T tn -d 1000 ch '#'
-python3 data-tools/script/clean.py -c conf.json -d 5 -T tn ch
-python3 data-tools/script/integrate.py -c conf.json -T tn -s 10
+python3 script/border_extract.py -c conf.json -T tn -d 1000 ch '#'
+python3 script/clean.py -c conf.json -d 5 -T tn ch
+python3 script/integrate.py -c conf.json -T tn -s 10
 
 # CH TN clean with AT because of new boundary (18/04/2025) 
 python3 script/border_extract.py -c conf_v6.json -T tn -b at -d 1000 ch
@@ -129,3 +129,8 @@ python3 script/integrate.py -c conf_v6.json -T hy -s 10
 python3 data-tools/script/border_extract.py -c conf.json -T tn -d 1000 lu '#'
 python3 data-tools/script/clean.py -c conf.json -d 5 -T tn lu
 python3 data-tools/script/integrate.py -c conf.json -T tn -s 10
+
+# LU on all HY layers (07/05/2025)
+python3 script/border_extract.py -c conf_v6.json -T hy -d 1000 lu #
+python3 script/clean.py -c conf_v6.json -d 5 -T hy lu
+python3 script/integrate.py -c conf_v6.json -T hy -s 10
