@@ -80,6 +80,18 @@ python3 script/border_extract.py -c conf_v6.json -T hy -b at -d 1000 cz
 python3 script/clean.py -c conf_v6.json -d 5 -T hy cz
 python3 script/integrate.py -c conf_v6.json -T hy -s 10
 
+
+#################################################################################################
+# ES                                                                                            #
+#################################################################################################
+
+# Only on es#fr boundary for all hydro tables
+python3 script/border_extract.py -c conf_v6.json -T hy -b false -B international -d 20000 es
+python3 script/border_extract.py -c conf_v6.json -T hy -b fr -d 20000 -n es
+python3 script/clean.py -c conf_v6.json -d 5 -T hy es
+python3 script/integrate.py -c conf_v6.json -T hy -s 10
+
+
 #################################################################################################
 # FR                                                                                            #
 #################################################################################################
