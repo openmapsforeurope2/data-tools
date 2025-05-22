@@ -71,7 +71,6 @@ def run(argv):
             conf,
             arg_theme,
             arg_tables,
-            arg_suffix,
             args,
             arg_verbose
         )
