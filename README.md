@@ -163,6 +163,12 @@ Exemples d'appel:
 python3 script/copy_table.py -c conf.json au.administrative_unit_area_1 ib.international_boundary_line
 ~~~
 
+### integrate_from_validation
+~~~
+python3 script/integrate_from_validation.py -c conf.json -T hy at cz
+~~~
+
+
 
 ### Création de la Base de Données OME2
 
