@@ -1,3 +1,5 @@
+-- Used on road_link, watercourse_link, watercourse_area, standing_water
+
 DROP TABLE IF EXISTS road_link_ch_li;
 CREATE TABLE road_link_ch_li AS SELECT * FROM tn.road_link WHERE country = 'ch';
 
@@ -55,3 +57,7 @@ CASE
 END
 WHERE new_country_code IS NULL;
 
+--** Integration
+UPDATE tn.road_link a SET country = b.new_country_code
+FROM road_link_ch_li b
+WHERE a.objectid = b.objectid and a.country != b.new_country_code AND (a.country = 'ch' OR a.country = 'li');

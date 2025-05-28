@@ -220,7 +220,8 @@ python3 script/integrate.py -c conf_v6.json -T au -t administrative_unit_area_2 
 python3 script/border_extract.py -c conf_v6.json -T au -t administrative_unit_area_1 -b false -B international -d 1000 es
 python3 script/border_extract.py -c conf_v6.json -T au -t administrative_unit_area_1 -b fr -d 1000 -n es
 # Not needed since the same polygon border the fr and ad boundaries: python3 script/border_extract.py -c conf_v6.json -T au -t administrative_unit_area_1 -b ad -d 1000 -n es
-au_merging --c d:/dev/au_merging/config/epg_parameters_ng.ini --s au.administrative_unit_area_2 --t public.administrative_unit_area_1_w --cc es
+# WARNING User level 4 as source otherwise Ceuta, Melilla and other small territories will be missing
+au_merging --c d:/dev/au_merging/config/epg_parameters_ng.ini --s au.administrative_unit_area_4 --t public.administrative_unit_area_1_w --cc es
 # Check log shapefiles for errors
 python3 script/integrate.py -c conf_v6.json -T au -t administrative_unit_area_1 -s 30
 

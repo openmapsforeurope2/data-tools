@@ -31,6 +31,11 @@ python3 script/border_extract.py -c conf_v6.json -T hy -b li -d 1000 -n at
 python3 script/clean.py -c conf_v6.json -d 5 -T hy at
 python3 script/integrate.py -c conf_v6.json -T hy -s 10
 
+## Relaunched on at#cz boundary (22/05/2025) with a higher distance
+python3 script/border_extract.py -c conf_v6.json -T hy -b cz -d 15000 at
+python3 script/clean.py -c conf_v6.json -d 5 -T hy at
+python3 script/integrate.py -c conf_v6.json -T hy -s 10
+
 #################################################################################################
 # BE                                                                                            #
 #################################################################################################
@@ -88,6 +93,13 @@ python3 script/integrate.py -c conf_v6.json -T hy -s 10
 # Only on es#fr boundary for all hydro tables
 python3 script/border_extract.py -c conf_v6.json -T hy -b false -B international -d 20000 es
 python3 script/border_extract.py -c conf_v6.json -T hy -b fr -d 20000 -n es
+python3 script/clean.py -c conf_v6.json -d 5 -T hy es
+python3 script/integrate.py -c conf_v6.json -T hy -s 10
+
+python3 script/border_extract.py -c conf_v6.json -T hy -b false -B international -d 20000 es
+python3 script/border_extract.py -c conf_v6.json -T hy -b gi -d 20000 -n es
+python3 script/border_extract.py -c conf_v6.json -T hy -b ma -d 20000 -n es
+python3 script/border_extract.py -c conf_v6.json -T hy -b pt -d 20000 -n es
 python3 script/clean.py -c conf_v6.json -d 5 -T hy es
 python3 script/integrate.py -c conf_v6.json -T hy -s 10
 
