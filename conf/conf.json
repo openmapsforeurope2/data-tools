@@ -162,7 +162,9 @@
                         "extraction_distance": {
                             "default": 1000,
                             "at": 15000,
-                            "es": 20000
+                            "ch": 15000,
+                            "es": 20000,
+                            "li": 5000
                         }
                     }
                 },
