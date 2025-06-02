@@ -90,7 +90,7 @@ def run(
     print("PREPARING...", flush=True)
 
     if not tables:
-            tables = conf['data']['operation'][operation]['themes'][theme]['tables'].keys()
+        tables = conf['data']['operation']['matching']['themes'][theme]['tables'].keys()
 
     extract_data(conf, theme, tables, countryCodes, operation, verbose)
     init_working_tables(conf, mcd, theme, tables, suffix, countryCodes, operation, verbose)
@@ -120,12 +120,10 @@ def init_working_tables(
         suffix = "_" + "_".join(countryCodes) + "_" + suffix
 
         borderCode = "#".join(countryCodes)
-        countryCodes.append(borderCode)
 
-        # TODO : a confirmer qu'on n'utilise que les objets c1, c2 et c1#c2 pour le matching
         where_statement = ""
         for country in countryCodes:
-            where_statement += (" OR " if where_statement else "") + conf['data']['common_fields']['country'] + " = '" + country + "'"
+            where_statement += (" OR " if where_statement else "") + conf['data']['common_fields']['country'] + " LIKE '%" + country + "%'"
         where_statement = "("+where_statement+")"
         
         working_schema = conf['data']['themes'][theme]['w_schema']
@@ -150,8 +148,8 @@ def init_working_tables(
         suffix = "_" + "_".join(countryCodes) + "_" + suffix
 
 
-        target_schema = conf['data'][theme]['v_schema']
-        source_schema = conf['data'][theme]['w_schema']
+        target_schema = conf['data']['themes'][theme]['v_schema']
+        source_schema = conf['data']['themes'][theme]['w_schema']
 
         for tableName in tables:
             final_step = conf['data']['operation']['matching']['themes'][theme]['tables'][tableName]['final_step']
@@ -191,7 +189,7 @@ def extract_data(
     if operation == "matching" :
         borderCountryCode = None
         boundaryType = None
-        fromUp = None
+        fromUp = False
         reset = True
 
         distance = conf['data']['operation'][operation]['themes'][theme]['extraction_distance']['default']

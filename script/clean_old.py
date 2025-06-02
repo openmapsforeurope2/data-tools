@@ -12,71 +12,67 @@ def run(argv):
     currentDir = os.path.dirname(os.path.abspath(__file__))
 
     arg_conf = ""
+    arg_dist = None
     arg_theme = ""
     arg_tables = []
-    arg_borders = []
-    arg_in_dispute = False
-    arg_all = False
     arg_verbose = False
     args = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:b:iav", [
-        "conf=", "theme=", "table=", "border=", "in_dispute=", "all", "verbose"])
+        opts, args = getopt.getopt(argv[1:], "c:d:T:t:v", [
+        "conf=", "dist=", "theme=", "table=", "verbose"])
     except:
         sys.exit(1)
     
     for opt, arg in opts:
         if opt in ("-c", "--conf"):
             arg_conf = arg
+        elif opt in ("-d", "--dist"):
+            arg_dist = arg
         elif opt in ("-T", "--theme"):
             arg_theme = arg
         elif opt in ("-t", "--table"):
             arg_tables.append(arg)
-        elif opt in ("-b", "--border"):
-            arg_borders.append(arg)
-        elif opt in ("-i", "--in_dispute"):
-            arg_in_dispute = True
-        elif opt in ("-a", "--all"):
-            arg_all = True
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
-    if arg_all and arg_borders:
-        print("les paramètres -a et -b ne peuvent pas être utilisés simultanément")
-        sys.exit(1)
-
     print('conf:', arg_conf)
+    print('distance:', arg_dist)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
-    print('borders:', arg_borders)
-    print('in dispute:', arg_in_dispute)
-    print('all:', arg_all)
     print('verbose:', arg_verbose)
-    print('country codes:', args)
+    print('args:', args)
+
+    workspace = os.path.dirname(currentDir)+"/"
+
+    if arg_dist is None:
+        print("le paramètre -d est obligatoire.")
+        sys.exit(1)
 
     #conf
-    if not os.path.isfile(arg_conf):
+    if not os.path.isfile(workspace+"conf/"+arg_conf):
         print("le fichier de configuration "+ arg_conf + " n'existe pas.")
         sys.exit(1)
+    arg_conf = workspace+"conf/"+arg_conf
 
     conf = utils.getConf(arg_conf)
 
     #bd conf
-    arg_db_conf = os.path.join(os.path.dirname(arg_conf), conf["db_conf_file"])
-    if not os.path.isfile(arg_db_conf):
-        print("le fichier de configuration "+ arg_db_conf + " n'existe pas.")
+    if not os.path.isfile(workspace+"conf/"+conf["db_conf_file"]):
+        print("le fichier de configuration "+ conf["db_conf_file"] + " n'existe pas.")
         sys.exit(1)
+    arg_db_conf = workspace+"conf/"+conf["db_conf_file"]
 
     db_conf = utils.getConf(arg_db_conf)
 
     #merge confs
     conf.update(db_conf)
 
+
     print("[START CLEANING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        clean_.run(conf, arg_theme, arg_tables, args, arg_borders, arg_in_dispute, arg_all, arg_verbose)
+        clean_.run(conf, arg_dist, arg_theme, arg_tables, args, arg_verbose)
     except:
         sys.exit(1)
     

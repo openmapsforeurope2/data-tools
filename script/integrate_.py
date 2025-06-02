@@ -99,8 +99,6 @@ def run(
             raise
         _fields = cursor.fetchone()[0]
 
-        print(_fields, flush=True)
-
         # on parcourt les identifiants des objets extraits
         q1 = "SELECT "+id_field+" FROM "+wIdsTableName
         try:

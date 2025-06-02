@@ -38,13 +38,11 @@ def integrate(
     tables,
     verbose
 ):
-    to_up = False
-    nohistory = False
+    toUp = False
+    noHistory = False
     step = "20" #a mettre dans fichier de conf ?
 
-    integrate_.run(step, conf, theme, tables, to_up, nohistory, verbose)
-
-    #debug 4338736.32,2639792.02
+    integrate_.run(step, conf, theme, tables, toUp, noHistory, verbose)
 
 
 def copy_data_in_working_tables(

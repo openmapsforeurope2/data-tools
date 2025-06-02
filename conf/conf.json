@@ -2,7 +2,7 @@
     "db_conf_file":"db_conf_v6.json",
     "mcd_conf_file":"mcd.json",
     "landmask": {
-        "schema": "prod",
+        "schema": "ib",
         "table": "landmask",
         "fields":{
             "country": "country",
@@ -151,6 +151,7 @@
         },
         "operation": {
             "cleaning": {
+                "distance": 5,
                 "themes": {
                     "tn": {
                         "extraction_distance": {
@@ -159,12 +160,22 @@
                     },
                     "hy": {
                         "extraction_distance": {
-                            "default": 1000
+                            "default": 1000,
+                            "at": 15000,
+                            "es": 20000
                         }
                     }
                 },
                 "neighbors": {
-                    "fr": []
+                    "at": ["li", "ch", "sk", "hu", "cz", "si", "it", "de"],
+                    "be": ["de", "lu", "nl", "fr"],
+                    "ch": ["li", "ch", "de", "fr", "it"],
+                    "cz": ["sk", "at", "pl", "de"],
+                    "es": ["gi", "ad", "fr", "pt"],
+                    "fr": ["ad","mc","lu","it","es","ch","de","be"],
+                    "li": ["at", "ch"],
+                    "lu": ["fr", "be", "lu"],
+                    "nl": ["be", "de"]
                 }
             },
             "matching": {
