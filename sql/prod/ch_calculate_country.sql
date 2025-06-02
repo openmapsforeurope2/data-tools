@@ -1,3 +1,5 @@
+-- Used on road_link, watercourse_link, watercourse_area, standing_water
+
 DROP TABLE IF EXISTS road_link_ch_li;
 CREATE TABLE road_link_ch_li AS SELECT * FROM tn.road_link WHERE country = 'ch';
 
@@ -12,6 +14,9 @@ FROM au.administrative_unit_area_1 b WHERE b.country = 'li' AND ST_Within(a.geom
 
 UPDATE road_link_ch_li a SET new_country_code = 'ch' 
 FROM au.administrative_unit_area_1 b WHERE b.country = 'ch' AND ST_Within(a.geom, b.geom);
+
+-- This is enough for most feature classes. The country attribution can be checked visually in QGIS and corrected manually if necessary. 
+-- For feature classes which overlap international boundaries (i.e. those where edge-matching is applied), continue with the steps below.
 
 -- *** For networks and areas
     -- For networks
@@ -52,3 +57,7 @@ CASE
 END
 WHERE new_country_code IS NULL;
 
+--** Integration
+UPDATE tn.road_link a SET country = b.new_country_code
+FROM road_link_ch_li b
+WHERE a.objectid = b.objectid and a.country != b.new_country_code AND (a.country = 'ch' OR a.country = 'li');

@@ -1,8 +1,8 @@
 {
     "db_conf_file":"db_conf_v6.json",
     "landmask": {
-        "schema": "ib",
-        "table": "landmask",
+        "schema": "au",
+        "table": "administrative_unit_area_1",
         "fields":{
             "country": "country",
             "geometry": "geom"
