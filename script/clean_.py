@@ -38,7 +38,7 @@ def clean(
     distance = conf['data']['operation']['cleaning']['distance'] 
 
     for c in countryCodes:
-        landmask_statement = "SELECT ST_Union(ARRAY(SELECT geom FROM "+ getTableName(conf['landmask']['schema'], conf['landmask']['table']) +" WHERE "+conf['landmask']["fields"]["country"]+"='"+c+" ' AND NOT gcms_detruit))"
+        landmask_statement = "SELECT ST_Union(ARRAY(SELECT geom FROM "+ getTableName(conf['landmask']['schema'], conf['landmask']['table']) +" WHERE "+conf['landmask']["fields"]["country"]+"='"+c+"' AND NOT gcms_detruit))"
 
         w_schema = conf['data']['themes'][theme]['w_schema']
         w_suffix = conf['data']['working']['suffix']
