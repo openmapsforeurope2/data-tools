@@ -101,7 +101,7 @@ def extract_data(
             borders = orderedBorders
 
         for border in borders:
-            border_extract_.run(conf, theme, tables, distance, country, border, boundaryType, fromUp, reset, verbose)
+            border_extract_.run(conf, theme, tables, distance, [country], border, boundaryType, fromUp, reset, verbose)
             reset = False
 
 
