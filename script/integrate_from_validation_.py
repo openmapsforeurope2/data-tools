@@ -65,8 +65,8 @@ def copy_data_in_working_tables(
     prefix = "_".join(sorted(countryCodes)) + "_"
 
     for tableName in tables:
-        correctTableName = getTableName(validation_schema, prefix + tableName + conf['data']['working']['suffix']) + conf['data']['validation']['suffix']['correct']
-        initTableName = getTableName(validation_schema, prefix + tableName + conf['data']['working']['suffix']) + conf['data']['validation']['suffix']['init']
+        correctTableName = getTableName(validation_schema, prefix + tableName) + conf['data']['validation']['suffix']['correct']
+        initTableName = getTableName(validation_schema, prefix + tableName) + conf['data']['validation']['suffix']['init']
         wTableName = getTableName(working_schema, tableName)+conf['data']['working']['suffix']
         wIdsTableName = getTableName(working_schema, tableName)+conf['data']['working']['ids_suffix']
 
