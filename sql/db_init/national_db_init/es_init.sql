@@ -1,4 +1,6 @@
--- ADMINISTRATIVE UNITS theme
+--------------------------------------------------------------------------------------------------
+-- ADMINISTRATIVE UNITS theme                                                                    -
+--------------------------------------------------------------------------------------------------
 
 -- Add a column to all source tables to differentiate between the peninsula/Baleares (es) and Canary islands (ic = ISO code for "Islas Canarias")
 ALTER TABLE au.recintos_autonomicas_inspire_peninbal_etrs89 ADD COLUMN ome2_country character varying DEFAULT 'es';
@@ -97,3 +99,88 @@ SET national_code = 'void_unk',
     w_scale = '10000',
     w_release = 1
 WHERE country = 'es';
+
+
+--------------------------------------------------------------------------------------------------
+-- TRANSPORT NETWORK theme                                                                       -
+--------------------------------------------------------------------------------------------------
+
+-- Source table for road_link
+DROP TABLE IF EXISTS ome2_igr_rt_rt_tramo_l;
+CREATE TABLE ome2_igr_rt_rt_tramo_l AS
+SELECT a.id_tramo, a.tipo_tramo, a.clase, a.calzada, a.acceso, a.firme, a.ncarriles, a.sentido, a.situacion,
+    a.estadofis, a.tipovehic, a.titular, a.orden, a.fuente, a.fecha_alta, a.alta_db, a.version, a.sent_tramo, a.geom,
+    json_agg(json_build_object('id_vial', c.id_vial, 'codigo', c.codigo, 'dgc_via', c.dgc_via, 'tipo_vial', c.tipo_vial, 'nombre', c.nombre, 'nombre_alt', c.nombre_alt, 'fuente', c.fuente)) AS ome2_vial
+FROM igr_rt_rt_tramo_l a
+INNER JOIN igr_rt_rrt_tramo_vial b ON a.id_tramo = b.id_tramo
+INNER JOIN igr_rt_rt_vial_a c ON b.id_vial = c.id_vial
+GROUP BY a.id_tramo, a.tipo_tramo, a.clase, a.calzada, a.acceso, a.firme, a.ncarriles, a.sentido, a.situacion,
+    a.estadofis, a.tipovehic, a.titular, a.orden, a.fuente, a.fecha_alta, a.alta_db, a.version, a.sent_tramo, a.geom;
+
+-- Source table for road_service_area
+DROP TABLE IF EXISTS ome2_igr_rt_rt_areactra_s ;
+CREATE TABLE ome2_igr_rt_rt_areactra_s 
+AS SELECT a.id_ptoctra, a.id_areactr, a.geom,
+    b.nombre, b.tipo_infra
+FROM igr_rt_rt_areactra_s a
+INNER JOIN igr_rt_rt_puntoctra_p b
+ON a.id_ptoctra = b.id_ptoctra;
+
+-- Source table for road /!\ TO-DO
+DROP TABLE IF EXISTS ome2_igr_rt_rt_vial_a;
+
+
+
+-- Source table for railway_link
+DROP TABLE IF EXISTS ome2_igr_rt_rt_tramoffcc_l;
+CREATE TABLE ome2_igr_rt_rt_tramoffcc_l AS
+SELECT a.id_tramo, a.tipo_tramo, a.ancho_via, a.electrific, a.n_vias, a.situacion, a.estadofis, a.titular, a.fuente, a.fecha_alta, a.alta_db, a.version,
+    a.red_tent, a.uso_ppal, a.tipo_linea, a.geom,
+    json_agg(json_build_object('id_lineafc', c.id_lineafc, 'nombre', c.nombre, 'fuente', c.fuente, 'tipo_linea', c.tipo_linea)) AS ome2_lineaffc
+FROM igr_rt_rt_tramoffcc_l a
+INNER JOIN igr_rt_rrt_tramoffcc_lineaffcc b ON a.id_tramo = b.id_tramo
+INNER JOIN igr_rt_rt_lineaffcc_a c ON b.id_lineafc = c.id_lineafc
+GROUP BY a.id_tramo, a.tipo_tramo, a.ancho_via, a.electrific, a.n_vias, a.situacion, a.estadofis, a.titular, a.fuente, a.fecha_alta, a.alta_db, a.version,
+    a.red_tent, a.uso_ppal, a.tipo_linea, a.geom;
+
+-- Source table for railway_station_area
+DROP TABLE IF EXISTS ome2_igr_rt_rt_nodoffcc_p;
+CREATE TABLE ome2_igr_rt_rt_nodoffcc_p AS SELECT * FROM igr_rt_rt_nodoffcc_p;
+ALTER TABLE ome2_igr_rt_rt_nodoffcc_p ADD COLUMN intermodal INTEGER DEFAULT 0;
+UPDATE ome2_igr_rt_rt_nodoffcc_p a SET intermodal = 1
+FROM igr_rt_rt_conexion_a b
+WHERE a.id_nodofc = b.id_nodo1 OR a.id_nodofc = b.id_nodo2;
+
+DROP TABLE IF EXISTS ome2_igr_rt_rt_estacionffcc_p;
+CREATE TABLE ome2_igr_rt_rt_estacionffcc_p AS
+SELECT a.id_estfc, a.nombre, a.tipo_estfc, a.cod_est, a.tipo_uso, a.tipo_linea_est, a.geom,
+    json_agg(json_build_object('id_nodofc', c.id_nodofc, 'tip_nodofc', c.tip_nodofc, 'intermodal', c.intermodal)) AS ome2_nodoffcc
+FROM igr_rt_rt_estacionffcc_p a
+INNER JOIN igr_rt_rrt_nodoffcc_estacionffcc b ON a.id_estfc = b.id_estfc
+INNER JOIN ome2_igr_rt_rt_nodoffcc_p c ON b.id_nodofc = c.id_nodofc
+GROUP BY a.id_estfc, a.nombre, a.tipo_estfc, a.cod_est, a.tipo_uso, a.tipo_linea_est, a.geom;
+
+DROP TABLE IF EXISTS ome2_igr_rt_rt_areaffcc_s;
+CREATE TABLE ome2_igr_rt_rt_areaffcc_s
+AS SELECT a.id_estfc, a.id_areafc, a.fecha_alta, a.alta_db, a.version, a.tip_areafc, a.geom, b.nombre, b.tipo_estfc, b.cod_est, b.tipo_uso, b.ome2_nodoffcc 
+FROM igr_rt_rt_areaffcc_s a
+INNER JOIN ome2_igr_rt_rt_estacionffcc_p b
+ON a.id_estfc = b.id_estfc;
+
+-- Source table for aerodrome_area
+DROP TABLE IF EXISTS ome2_igr_rt_rt_areaaereo_s ;
+CREATE TABLE ome2_igr_rt_rt_areaaereo_s 
+AS SELECT a.id_aerodro, a.id_area, a.tip_area, a.designador, a.longitud, a.anchura, a.comp_sup, a.tip_pista, a.geom,
+    b.nombre, b.cod_iata, b.cod_icao, b.categoria, b.t_aerodro, b.uso,  b.estadofis
+FROM igr_rt_rt_areaaereo_s a
+INNER JOIN igr_rt_rt_aerodromo_p b
+ON a.id_aerodro = b.id_aerodro;
+
+-- Source table for port_area
+DROP TABLE IF EXISTS ome2_igr_rt_rt_areamar_s ;
+CREATE TABLE ome2_igr_rt_rt_areamar_s 
+AS SELECT a.id_puerto, a.id_areamar, a.geom,
+    b.nombre, b.cod_puerto, b.red_tent
+FROM igr_rt_rt_areamar_s a
+INNER JOIN igr_rt_rt_puerto_p b
+ON a.id_puerto = b.id_puerto;
