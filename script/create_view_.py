@@ -89,10 +89,10 @@ def getCreateViewStatement( conf, mcd, theme, tableName ):
 
     statement = "CREATE OR REPLACE VIEW " + viewName + " AS SELECT "
     statement += " "+getViewFields( mcd, theme, tableName )
-    statement += " FROM "+fullTableName+" a "
+    statement += " FROM "+fullTableName+" a WHERE "
     
     if str.find(fields, "geom") != -1: # Tables with life-cycle management system
-        statement += " WHERE NOT a.gcms_detruit;"
+        statement += "NOT a.gcms_detruit AND "
     
-    statement += " AND w_release = 1;"
+    statement += "w_release = 1;"
     return statement
