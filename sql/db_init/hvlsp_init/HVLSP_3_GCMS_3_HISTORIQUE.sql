@@ -389,7 +389,7 @@ BEGIN
 		    IF (NEW.gcms_detruit) THEN
 			    NEW.gcms_date_destruction := now();
 				NEW.end_lifespan_version := now();
-				NEW.w_release := 0;
+				--NEW.w_release := 0; -- On décorrèle w_release de gcms_detruit, pas de passage automatique à 0.
 			    RETURN NEW;
 		    ELSE
 			    NEW.gcms_date_destruction := NULL;
