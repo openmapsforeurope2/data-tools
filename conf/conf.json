@@ -171,7 +171,7 @@
                     "be": ["de", "lu", "nl", "fr"],
                     "ch": ["li", "ch", "de", "fr", "it"],
                     "cz": ["sk", "at", "pl", "de"],
-                    "es": ["gi", "ad", "fr", "pt"],
+                    "es": ["ma", "gi", "ad", "fr", "pt"],
                     "fr": ["ad","mc","lu","it","es","ch","de","be"],
                     "li": ["at", "ch"],
                     "lu": ["fr", "be", "lu"],

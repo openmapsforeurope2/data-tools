@@ -18,11 +18,13 @@ def getPkeyConstraintStatement(fields, targetTableName):
     return q
 
 
-def getAllPkeyConstraintStatement(mcd, theme, tableName, targetTableName):
+def getAllPkeyConstraintStatement(mcd, theme, tableName, targetTableName, isWorkingTable):
     q = getPkeyConstraintStatement(mcd['common']['id_field'], targetTableName)
     q += getPkeyConstraintStatement(mcd['common']['working_fields'], targetTableName)
     q += getPkeyConstraintStatement(mcd['common']['fields'], targetTableName)
     q += getPkeyConstraintStatement(mcd['themes'][theme]['tables'][tableName]['fields'], targetTableName)
+    if isWorkingTable :
+        q += getPkeyConstraintStatement(mcd['work']['working_fields'], targetTableName)
     return q
 
 
@@ -42,11 +44,13 @@ def getCreateIndexStatement(fields, targetTableName):
     return q
 
 
-def getAllCreateIndexStatement(mcd, theme, tableName, targetTableName):
+def getAllCreateIndexStatement(mcd, theme, tableName, targetTableName, isWorkingTable):
     q = getCreateIndexStatement(mcd['common']['id_field'], targetTableName)
     q += getCreateIndexStatement(mcd['common']['working_fields'], targetTableName)
     q += getCreateIndexStatement(mcd['common']['fields'], targetTableName)
     q += getCreateIndexStatement(mcd['themes'][theme]['tables'][tableName]['fields'], targetTableName)
+    if isWorkingTable :
+        q += getCreateIndexStatement(mcd['work']['working_fields'], targetTableName)
     return q
 
 
@@ -54,11 +58,11 @@ def getGrantStatement(tableFullName, user):
     return "GRANT ALL ON " + tableFullName + " TO " + user + ";"
 
 
-def getInitTableStatement( mcd, theme, tableName, sourceTableName, targetTableName, user = None ):
+def getInitTableStatement( mcd, theme, tableName, sourceTableName, targetTableName, isWorkingTable, user = None ):
     q = "DROP TABLE IF EXISTS " + targetTableName + ";"
     q += "CREATE TABLE " + targetTableName + " AS SELECT * FROM " + sourceTableName + ";"
-    q += getAllPkeyConstraintStatement(mcd, theme, tableName, targetTableName)
-    q += getAllCreateIndexStatement(mcd, theme, tableName, targetTableName)
+    q += getAllPkeyConstraintStatement(mcd, theme, tableName, targetTableName, isWorkingTable)
+    q += getAllCreateIndexStatement(mcd, theme, tableName, targetTableName, isWorkingTable)
     if user :
         q += getGrantStatement(targetTableName, user)
     return q
@@ -132,7 +136,7 @@ def init_working_tables(
             wTableName = getTableName(working_schema, tableName)+conf['data']['working']['suffix']
             targetTableName = wTableName + suffix
 
-            q = getInitTableStatement( mcd, theme, tableName, wTableName, targetTableName )
+            q = getInitTableStatement( mcd, theme, tableName, wTableName, targetTableName, True )
 
             # print(u'query: {}'.format(q[:500]), flush=True)
             print(u'query: {}'.format(q), flush=True)
@@ -161,9 +165,9 @@ def init_working_tables(
             targetRefTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['ref']
             targetCorrectTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['correct']
 
-            q = getInitTableStatement( mcd, theme, tableName, sourceInitTableName, targetInitTableName, conf['data']['validation']['user'] )
-            q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetCorrectTableName, conf['data']['validation']['user'] )
-            q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetRefTableName )
+            q = getInitTableStatement( mcd, theme, tableName, sourceInitTableName, targetInitTableName, False, conf['data']['validation']['user'] )
+            q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetCorrectTableName, False, conf['data']['validation']['user'] )
+            q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetRefTableName, False )
 
             # print(u'query: {}'.format(q[:500]), flush=True)
             print(u'query: {}'.format(q), flush=True)
