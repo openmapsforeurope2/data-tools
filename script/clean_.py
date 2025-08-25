@@ -38,7 +38,7 @@ def clean(
     distance = conf['data']['operation']['cleaning']['distance'] 
 
     for c in countryCodes:
-        landmask_statement = "SELECT ST_Union(ARRAY(SELECT geom FROM "+ getTableName(conf['landmask']['schema'], conf['landmask']['table']) +" WHERE "+conf['landmask']["fields"]["country"]+"='"+c+"'))"
+        landmask_statement = "SELECT ST_Union(ARRAY(SELECT geom FROM "+ getTableName(conf['landmask']['schema'], conf['landmask']['table']) +" WHERE "+conf['landmask']["fields"]["country"]+"='"+c+"' AND NOT gcms_detruit))"
 
         w_schema = conf['data']['themes'][theme]['w_schema']
         w_suffix = conf['data']['working']['suffix']
@@ -101,7 +101,7 @@ def extract_data(
             borders = orderedBorders
 
         for border in borders:
-            border_extract_.run(conf, theme, tables, distance, country, border, boundaryType, fromUp, reset, verbose)
+            border_extract_.run(conf, theme, tables, distance, [country], border, boundaryType, fromUp, reset, verbose)
             reset = False
 
 
