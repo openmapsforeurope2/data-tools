@@ -1,9 +1,0 @@
-{
-    "db":{
-        "host":"SMLPOPENMAPS2",
-        "port":"5432",
-        "name":"ome2_hvlsp_v6_20250521",
-        "user":"postgres",
-        "pwd":"s@m!Ch0n_2479"
-    }
-}

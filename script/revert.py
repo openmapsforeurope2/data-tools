@@ -18,7 +18,8 @@ def run(argv):
     try:
         opts, args = getopt.getopt(argv[1:], "c:s:T:t:v", [
         "conf=", "step=", "theme=", "table=", "verbose"])
-    except:
+    except getopt.GetoptError as err:
+        print(err)
         sys.exit(1)
     
     for opt, arg in opts:

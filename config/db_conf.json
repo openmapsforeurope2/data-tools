@@ -1,9 +1,0 @@
-{
-    "db":{
-        "host":"SMLPOPENMAPS2",
-        "port":"5432",
-        "name":"ome2_hvlsp_v4",
-        "user":"ome2_user",
-        "pwd":"0m32_hV7sp_us3r"
-    }
-}

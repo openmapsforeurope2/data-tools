@@ -21,7 +21,8 @@ def run(argv):
     try:
         opts, args = getopt.getopt(argv[1:], "c:T:t:b:iav", [
         "conf=", "theme=", "table=", "border=", "in_dispute", "all", "verbose"])
-    except:
+    except getopt.GetoptError as err:
+        print(err)
         sys.exit(1)
     
     for opt, arg in opts:

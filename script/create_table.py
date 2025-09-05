@@ -12,14 +12,13 @@ def run(argv):
     arg_conf = ""
     arg_theme = ""
     arg_tables = []
-    arg_help = "{0} -c <conf> -o <output> -v".format(argv[0])
     args = ""
     
     try:
         opts, args = getopt.getopt(argv[1:], "hc:T:t:", ["help",
         "conf=", "theme=", "table="])
-    except:
-        print(arg_help)
+    except getopt.GetoptError as err:
+        print(err)
         sys.exit(1)
     
     for opt, arg in opts:
