@@ -140,19 +140,18 @@ Paramètres
 * b [optional] : country code of a border country (several codes can be specified by adding that option as many times as necessary). If this parameter is defined the cleaning will be processed only on the specified border(s).
 * i [optional] : if specified the cleaning is processed around in dispute borders.
 * a [optional] : parameter ti process the cleaning around all borders of the specified country/countries (c.f. arguments). If specified all defined -b parameters will be ignored.
-* d [mandatory] : cleaning distance
 * arguments : codes of country/countries to clean
 
 <br>
 
 Exemple de nettoyage de données françaises autour des frontières avec le luxembourg et la belgique.
 ~~~
-python3 script/clean.py -c path/to/conf.json -d 5 -b lu -b be -T tn -t road_link_w fr
+python3 script/clean.py -c path/to/conf.json -b lu -b be -T tn -t road_link_w fr
 ~~~
 
 Exemple de nettoyage de données françaises autour de l'ensemble des frontières.
 ~~~
-python3 script/clean.py -c path/to/conf.json -d 5 -a -T tn -t road_link_w fr
+python3 script/clean.py -c path/to/conf.json -a -T tn -t road_link_w fr
 ~~~
 
 ### copy_table
