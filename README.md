@@ -146,12 +146,12 @@ Paramètres
 
 Exemple de nettoyage de données françaises autour des frontières avec le luxembourg et la belgique.
 ~~~
-python3 script/clean.py -c path/to/conf.json -b lu -b be -T tn -t road_link_w fr
+python3 script/clean.py -c path/to/conf.json -b lu -b be -T tn -t road_link fr
 ~~~
 
 Exemple de nettoyage de données françaises autour de l'ensemble des frontières.
 ~~~
-python3 script/clean.py -c path/to/conf.json -a -T tn -t road_link_w fr
+python3 script/clean.py -c path/to/conf.json -a -T tn -t road_link fr
 ~~~
 
 ### copy_table
