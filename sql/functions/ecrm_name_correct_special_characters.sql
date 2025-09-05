@@ -1,7 +1,8 @@
 -- Function to replace special characters in jsonb field names
--- 2 queries are applied:
+-- Several queries are applied:
 -- * the first query removes double backslashes
--- * the second query replaces series of characters indicated as keys in the char_conversion jsonb file with the corresponding values.
+-- * then there is a loop on all special characters specified in char_conversion: each replaces series of characters indicated as keys 
+-- in the char_conversion jsonb file with the corresponding values.
 -- PARAMETERS:
 -- cs_name: schema name
 -- table_list: jsonb value with a list of tables to process and, for each, the name field to correct
@@ -24,14 +25,13 @@ DECLARE
 BEGIN
         FOR tb_name, name_att IN SELECT * FROM jsonb_each_text(table_list)
         LOOP
-            FOR _key, _value IN SELECT * FROM jsonb_each_text(char_conversion)
-            LOOP
-                update_query1 := 'UPDATE ' || cs_name || '.' || tb_name || ' SET ' || name_att || ' = REPLACE(' || name_att || '::text, ''\\'', '''' )::json where ' || name_att || '::text like ''%\\%'' AND ' || where_clause || ';';
-                update_query := 'UPDATE ' || cs_name || '.' || tb_name || ' SET ' || name_att || ' = REPLACE(' || name_att || '::text, ''' || _key ||''', ''' || _value ||''' )::json where ' || name_att || '::text like ''%' || _key ||'%'' AND ' || where_clause || ';';
-                
-                RAISE notice 'update_query1 = %', update_query1;
-                EXECUTE update_query1;
+            update_query1 := 'UPDATE ' || cs_name || '.' || tb_name || ' SET ' || name_att || ' = REPLACE(' || name_att || '::text, ''\\'', '''' )::json where ' || name_att || '::text like ''%\\%'' AND ' || where_clause || ';';
+            RAISE notice 'update_query1 = %', update_query1;
+            EXECUTE update_query1;
 
+            FOR _key, _value IN SELECT * FROM jsonb_each_text(char_conversion)
+            LOOP   
+                update_query := 'UPDATE ' || cs_name || '.' || tb_name || ' SET ' || name_att || ' = REPLACE(' || name_att || '::text, ''' || _key ||''', ''' || _value ||''' )::json where ' || name_att || '::text like ''%' || _key ||'%'' AND ' || where_clause || ';';
                 RAISE notice 'update_query = %', update_query;
                 EXECUTE update_query;
             END LOOP;

@@ -147,7 +147,8 @@
                 "themes": {
                     "tn": {
                         "extraction_distance": {
-                            "default": 1000
+                            "default": 1000,
+                            "es": 2000
                         }
                     },
                     "hy": {
