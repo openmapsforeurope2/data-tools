@@ -113,9 +113,8 @@ def integrate(
 ):
     toUp = False
     noHistory = False
-    step = "10" #a mettre dans fichier de conf ?
 
-    integrate_.run(step, conf, theme, tables, toUp, noHistory, verbose)
+    integrate_.run(conf, theme, tables, toUp, noHistory, verbose)
 
 
 def run(

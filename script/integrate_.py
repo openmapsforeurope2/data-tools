@@ -27,13 +27,12 @@ def getIdRank(cursor, idField):
 
 
 def run(
-    step, conf, theme, tables, to_up, nohistory, verbose
+    conf, theme, tables, to_up, nohistory, verbose
 ):
     """
     Ré-intègre les données depuis les tables de travail vers les tables sources correspondantes.
 
     Paramètres:
-    step (int) : numéro d'étape
     conf (objet) : configuration
     theme (str) : thème à intégrer
     tables (array) : tables à ré-intégrer (si le tableau est vide ce sont toutes les tables du thème qui seront ré-intégrées)
@@ -61,30 +60,20 @@ def run(
     # On integre tout un theme si pas d argument sinon on integre les tables passees en argument
     # on recupère tous les objet supprimes ou modifies
         # query = "SELECT id, w_modification_type"
-    # on transfert les anciennes versions de ces objets vers la table historique (+numero de step)
-        # if w_modification_type == "D"
-        # if w_modification_type == "M"
     # on supprime les anciennes versions de ces objets de la table
-    # on transfert les nouvelles versions des bjets supprimes, modifies ou créés de la table de travail vers la table (+numero de step)
+    # on transfert les nouvelles versions des bjets supprimes, modifies ou créés de la table de travail vers la table
 
     deleted = []
-    historized_d = []
-    historized_m = []
     integrated = []
     modified = []
     id_field = conf['data']['common_fields']['id']
     working_schema = conf['data']['themes'][theme]['w_schema']
     theme_schema = conf['data']['themes'][theme]['schema']
     update_schema = conf['data']['themes'][theme]['u_schema']
-    history_schema = conf['data']['themes'][theme]['h_schema']
-    modification_type_field = conf['data']['history']['fields']['modification_type']
-    modification_step_field = conf['data']['history']['fields']['modification_step']
-    step_field = conf['data']['common_fields']['step']
 
     for tb in tables:
         wIdsTableName = getTableName(working_schema, tb)+conf['data']['working']['ids_suffix']
         wTableName = getTableName(working_schema, tb)+conf['data']['working']['suffix']
-        hTableName = getTableName(history_schema, tb)+conf['data']['history']['suffix']
         targetSchema = update_schema if to_up else theme_schema
         if to_up :
             tb += conf['data']['update']['suffix']
@@ -165,13 +154,11 @@ def run(
                     # objet supprime
                     if sub_ids[i] not in w_objects:
                         count_d += 1
-                        historized_d.append(sub_ids_[i])
                         deleted.append(sub_ids_[i])
 
                     # objet modifie
                     elif not array_equal(w_objects[sub_ids[i]], o_objects[sub_ids[i]]):
                         count_m += 1
-                        historized_m.append(sub_ids_[i])
                         modified.append(sub_ids_1[i])
                         if nohistory:
                             deleted.append(sub_ids_[i])
@@ -185,7 +172,6 @@ def run(
     
         print("Nombre d'objets supprimés: "+str(count_d))
         print("Nombre d'objets modifiés: "+str(count_m))
-
 
         # on identifie les objets crees
         q3 = "SELECT a."+id_field+" FROM "+wTableName+" AS a"
@@ -202,36 +188,6 @@ def run(
             integrated.append("'" + nt[0] + "'")
         
         print("Nombre d'objets créés: "+str(len(new_tuples)))
-
-        if not to_up :
-            # on transfère les objets dans la table historique
-            fields = _fields+","+modification_type_field+","+modification_step_field
-
-            if historized_d:
-                values_d = fields.replace(modification_step_field, "'"+step+"'").replace(modification_type_field, "'D'")
-                q4 = "INSERT INTO "+hTableName+" ("+fields+") SELECT "+values_d+" FROM "+tableName
-                q4 += " WHERE "+id_field+" IN ("+",".join(historized_d)+")"
-                print("DELETED ITEMS HISTORIZATION :")
-                print(q4[:500])
-                try:
-                    cursor.execute(q4)
-                except Exception as e:
-                    print(e)
-                    raise
-                conn.commit()
-            
-            if historized_m:
-                values_m = fields.replace(modification_step_field, "'"+step+"'").replace(modification_type_field, "'M'")
-                q5 = "INSERT INTO "+hTableName+" ("+fields+") SELECT "+values_m+" FROM "+tableName
-                q5 += " WHERE "+id_field+" IN ("+",".join(historized_m)+")"
-                print("MODIFIED ITEMS HISTORIZATION :")
-                print(q5[:500])
-                try:
-                    cursor.execute(q5)
-                except Exception as e:
-                    print(e)
-                    raise
-                conn.commit()
 
         # on supprime les objets de la table
         if deleted:
@@ -252,8 +208,7 @@ def run(
 
         # on transfère les nouveaux objets de la table de travail vers la table
         if integrated:
-            values = _fields.replace(step_field, "NULL" if to_up else "'"+step+"'")
-            q7 = "INSERT INTO "+tableName+" ("+_fields+") SELECT "+values+" FROM "+wTableName
+            q7 = "INSERT INTO "+tableName+" ("+_fields+") SELECT "+_fields+" FROM "+wTableName
             q7 += " WHERE "+id_field+" IN ("+",".join(integrated)+")"
             print("ITEMS INTEGRATION:")
             print(q7[:500])
@@ -269,7 +224,7 @@ def run(
             sc_name = tableName[0:tableName.find(".")]
             tb_name = tableName[tableName.find(".")+1:]
             id_list = "'("+",".join(modified)+")'" 
-            q8 = "SELECT ign_update_from_working_table('"+ tb_name +"', '" + sc_name + "', '" + id_field + "', " + id_list + ", '" + step + "' );"
+            q8 = "SELECT ign_update_from_working_table('"+ tb_name +"', '" + sc_name + "', '" + id_field + "', " + id_list + " );"
             print(q8[:500])
             try:
                 cursor.execute(q8)

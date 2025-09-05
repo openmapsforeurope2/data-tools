@@ -9,10 +9,7 @@ import integrate_
 
 def run(argv):
 
-    currentDir = os.path.dirname(os.path.abspath(__file__))
-
     arg_conf = ""
-    arg_step = ""
     arg_theme = ""
     arg_tables = []
     arg_to_up = False
@@ -21,9 +18,8 @@ def run(argv):
     args = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:s:T:t:unv", [
+        opts, args = getopt.getopt(argv[1:], "c:T:t:unv", [
             "conf=",
-            "step=",
             "theme=",
             "table=",
             "to_up",
@@ -36,8 +32,6 @@ def run(argv):
     for opt, arg in opts:
         if opt in ("-c", "--conf"):
             arg_conf = arg
-        elif opt in ("-s", "--step"):
-            arg_step = arg
         elif opt in ("-T", "--theme"):
             arg_theme = arg
         elif opt in ("-t", "--table"):
@@ -49,7 +43,6 @@ def run(argv):
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
-    print('step:', arg_step)
     print('conf:', arg_conf)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
@@ -57,23 +50,19 @@ def run(argv):
     print('no_history:', arg_nohistory)
     print('verbose:', arg_verbose)
 
-    workspace = os.path.dirname(currentDir)+"/"
-
     #conf
-    if not os.path.isfile(workspace+"conf/"+arg_conf):
-        print("le fichier de configuration "+ arg_conf + " n'existe pas.")
+    if not os.path.isfile(arg_conf):
+        print("The configuration file "+ arg_conf + " does not exist.")
         sys.exit(1)
-    arg_conf = workspace+"conf/"+arg_conf
 
     conf = utils.getConf(arg_conf)
 
     #bd conf
-    if not os.path.isfile(workspace+"conf/"+conf["db_conf_file"]):
-        print("le fichier de configuration "+ conf["db_conf_file"] + " n'existe pas.")
+    if not os.path.isfile(conf["db_conf_file"]):
+        print("The db configuration file "+ conf["db_conf_file"] + " does not exist.")
         sys.exit(1)
-    arg_db_conf = workspace+"conf/"+conf["db_conf_file"]
 
-    db_conf = utils.getConf(arg_db_conf)
+    db_conf = utils.getConf(conf["db_conf_file"])
 
     #merge confs
     conf.update(db_conf)
@@ -82,7 +71,7 @@ def run(argv):
     print("[START INTEGRATION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        integrate_.run(arg_step, conf, arg_theme, arg_tables, arg_to_up, arg_nohistory, arg_verbose)
+        integrate_.run(conf, arg_theme, arg_tables, arg_to_up, arg_nohistory, arg_verbose)
     except:
         sys.exit(1)
     

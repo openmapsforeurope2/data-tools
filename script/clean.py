@@ -9,8 +9,6 @@ import clean_
 
 def run(argv):
 
-    currentDir = os.path.dirname(os.path.abspath(__file__))
-
     arg_conf = ""
     arg_theme = ""
     arg_tables = []
@@ -22,7 +20,7 @@ def run(argv):
     
     try:
         opts, args = getopt.getopt(argv[1:], "c:T:t:b:iav", [
-        "conf=", "theme=", "table=", "border=", "in_dispute=", "all", "verbose"])
+        "conf=", "theme=", "table=", "border=", "in_dispute", "all", "verbose"])
     except:
         sys.exit(1)
     
@@ -57,18 +55,17 @@ def run(argv):
 
     #conf
     if not os.path.isfile(arg_conf):
-        print("le fichier de configuration "+ arg_conf + " n'existe pas.")
+        print("The configuration file "+ arg_conf + " does not exist.")
         sys.exit(1)
 
     conf = utils.getConf(arg_conf)
 
     #bd conf
-    arg_db_conf = os.path.join(os.path.dirname(arg_conf), conf["db_conf_file"])
-    if not os.path.isfile(arg_db_conf):
-        print("le fichier de configuration "+ arg_db_conf + " n'existe pas.")
+    if not os.path.isfile(conf["db_conf_file"]):
+        print("The db configuration file "+ conf["db_conf_file"] + " does not exist.")
         sys.exit(1)
 
-    db_conf = utils.getConf(arg_db_conf)
+    db_conf = utils.getConf(conf["db_conf_file"])
 
     #merge confs
     conf.update(db_conf)

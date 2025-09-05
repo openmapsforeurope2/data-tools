@@ -9,18 +9,15 @@ import create_view_
 
 def run(argv):
 
-    currentDir = os.path.dirname(os.path.abspath(__file__))
-
     arg_conf = ""
-    arg_mcd = ""
     arg_theme = ""
     arg_tables = []
     arg_help = "{0} -c <conf> -o <output> -v".format(argv[0])
     args = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "hc:m:T:t:", ["help",
-        "conf=", "mcd=", "theme=", "table="])
+        opts, args = getopt.getopt(argv[1:], "hc:T:t:", ["help",
+        "conf=", "theme=", "table="])
     except:
         print(arg_help)
         sys.exit(1)
@@ -31,43 +28,36 @@ def run(argv):
             sys.exit(1)
         elif opt in ("-c", "--conf"):
             arg_conf = arg
-        elif opt in ("-m", "--mcd"):
-            arg_mcd = arg
         elif opt in ("-T", "--theme"):
             arg_theme = arg
         elif opt in ("-t", "--table"):
             arg_tables.append(arg)
 
     print('conf:', arg_conf)
-    print('mcd:', arg_mcd)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
 
-    workspace = os.path.dirname(currentDir)+"/"
-
-    #mcd
-    if not os.path.isfile(workspace+"conf/"+arg_mcd):
-        print("le fichier de configuration "+ arg_mcd + " n'existe pas.")
-        sys.exit(1)
-    arg_mcd = workspace+"conf/"+arg_mcd
-
-    mcd = utils.getConf(arg_mcd)
-
     #conf
     if not os.path.isfile(workspace+"conf/"+arg_conf):
-        print("le fichier de configuration "+ arg_conf + " n'existe pas.")
+        print("The configuration file "+ arg_conf + " does not exist.")
         sys.exit(1)
     arg_conf = workspace+"conf/"+arg_conf
 
     conf = utils.getConf(arg_conf)
 
-    #bd conf
-    if not os.path.isfile(workspace+"conf/"+conf["db_conf_file"]):
-        print("le fichier de configuration "+ conf["db_conf_file"] + " n'existe pas.")
+    #mcd
+    if not os.path.isfile(conf["mcd_conf_file"]):
+        print("The mcd configuration file "+ conf["mcd_conf_file"] + " does not exist.")
         sys.exit(1)
-    arg_db_conf = workspace+"conf/"+conf["db_conf_file"]
 
-    db_conf = utils.getConf(arg_db_conf)
+    mcd = utils.getConf(conf["mcd_conf_file"])
+
+    #bd conf
+    if not os.path.isfile(conf["db_conf_file"]):
+        print("The db configuration file "+ conf["db_conf_file"] + " does not exist.")
+        sys.exit(1)
+
+    db_conf = utils.getConf(conf["db_conf_file"])
 
     #merge confs
     conf.update(db_conf)

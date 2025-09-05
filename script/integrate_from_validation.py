@@ -9,8 +9,6 @@ import integrate_from_validation_
 
 def run(argv):
 
-    currentDir = os.path.dirname(os.path.abspath(__file__))
-
     arg_conf = ""
     arg_theme = ""
     arg_tables = []
@@ -42,24 +40,19 @@ def run(argv):
     print('country codes:', args)
     print('verbose:', arg_verbose)
 
-    workspace = os.path.dirname(currentDir)+"/"
-
     #conf
-    if not os.path.isfile(workspace+"conf/"+arg_conf):
+    if not os.path.isfile(arg_conf):
         print("The configuration file "+ arg_conf + " does not exist.")
         sys.exit(1)
-    arg_conf = workspace+"conf/"+arg_conf
 
     conf = utils.getConf(arg_conf)
 
     #bd conf
-    print(workspace+"conf/"+conf["db_conf_file"])
-    if not os.path.isfile(workspace+"conf/"+conf["db_conf_file"]):
-        print("The configuration file "+ conf["db_conf_file"] + " does not exist.")
+    if not os.path.isfile(conf["db_conf_file"]):
+        print("The db configuration file "+ conf["db_conf_file"] + " does not exist.")
         sys.exit(1)
-    arg_db_conf = workspace+"conf/"+conf["db_conf_file"]
 
-    db_conf = utils.getConf(arg_db_conf)
+    db_conf = utils.getConf(conf["db_conf_file"])
 
     #merge confs
     conf.update(db_conf)

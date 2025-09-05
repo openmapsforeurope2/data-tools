@@ -41,14 +41,6 @@ CREATE INDEX IF NOT EXISTS target_table_objectid_idx
     ON yy.target_table USING btree
     (objectid ASC NULLS LAST)
     TABLESPACE pg_default;
--- Index: road_link_w_20231109_2_w_step_idx
-
--- DROP INDEX IF EXISTS public.road_link_w_20231109_2_w_step_idx;
-
-CREATE INDEX IF NOT EXISTS target_table_lu_step_idx
-    ON yy.target_table USING btree
-    (w_step ASC NULLS LAST)
-    TABLESPACE pg_default;
     
 CREATE INDEX IF NOT EXISTS target_table_national_identifier_idx
     ON yy.target_table USING btree

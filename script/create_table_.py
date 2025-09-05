@@ -95,10 +95,6 @@ def createTableAndIndexes(conf, mcd, theme, tables):
             raise
         conn.commit()
 
-        # history
-        query_h = getCreateHistoryTableStatement(conf, mcd, theme, tableName)
-        query_h += getCreateHistoryIndexesStatement(conf, mcd, theme, tableName)
-
         print(u'query: {}'.format(query_h), flush=True)
         # print(u'{}'.format(query_h), flush=True)
         try:
@@ -169,15 +165,6 @@ def getWorkingIdsTableFields(mcd, theme, tableName):
     fieldsToCreate = getFields(mcd['working_ids']['id_field'], fieldsToCreate)
     return fieldsToCreate
 
-def getHistoryTableFields(mcd, theme, tableName):
-    fieldsToCreate = ""
-    fieldsToCreate = getFields(mcd['history']['id_field'], fieldsToCreate)
-    fieldsToCreate = getOrderedFields(mcd['common']['fields'], fieldsToCreate)
-    fieldsToCreate = getOrderedFields(mcd['themes'][theme]['tables'][tableName]['fields'], fieldsToCreate)
-    fieldsToCreate = getOrderedFields(mcd['common']['working_fields'], fieldsToCreate)
-    fieldsToCreate = getOrderedFields(mcd['history']['fields'], fieldsToCreate)
-    return fieldsToCreate
-
 def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName
 
@@ -219,14 +206,6 @@ def getCreateWorkingIdsTableStatement( conf, mcd, theme, tableName ):
     statement += " ("+getWorkingIdsTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
     statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
     statement += getWorkingIdsPkeyConstraintStatement( conf, mcd, theme, tableName )
-    return statement
-
-def getCreateHistoryTableStatement( conf, mcd, theme, tableName ):
-    fullTableName = getTableName(conf['data']['themes'][theme]['h_schema'], tableName)+conf['data']['history']['suffix']
-    statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
-    statement += " ("+getHistoryTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
-    statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
-    statement += getHistoryPkeyConstraintStatement( conf, mcd, theme, tableName )
     return statement
 
 def getIndexes(fields, schema, tableName, indexesToCreate):
@@ -292,17 +271,6 @@ def getCreateWorkingIdsIndexesStatement(conf, mcd, theme, tableName):
     indexesToCreate = getIndexes(mcd['working_ids']['id_field'], schema, tableCompleteName, indexesToCreate)
     return indexesToCreate
 
-def getCreateHistoryIndexesStatement(conf, mcd, theme, tableName):
-    tableCompleteName = tableName + conf['data']['history']['suffix']
-    schema = conf['data']['themes'][theme]['h_schema']
-    indexesToCreate = ""
-    indexesToCreate = getIndexes(mcd['history']['id_field'], schema, tableCompleteName, indexesToCreate)
-    indexesToCreate = getIndexes(mcd['common']['working_fields'], schema, tableCompleteName, indexesToCreate)
-    indexesToCreate = getIndexes(mcd['common']['fields'], schema, tableCompleteName, indexesToCreate)
-    indexesToCreate = getIndexes(mcd['themes'][theme]['tables'][tableName]['fields'], schema, tableCompleteName, indexesToCreate)
-    indexesToCreate = getIndexes(mcd['history']['fields'], schema, tableCompleteName, indexesToCreate)
-    return indexesToCreate
-
 def getPkeyConstraintStatement(conf, mcd, theme, tableName):
     schema = conf['data']['themes'][theme]['schema']
 
@@ -356,19 +324,6 @@ def getWorkingIdsPkeyConstraintStatement(conf, mcd, theme, tableName):
 
     pkeyFields = []
     getPkeyFields(mcd['working_ids']['id_field'], pkeyFields)
-
-    return _getPkeyConstraintStatement(getTableName(schema, tableCompleteName), pkeyFields)
-
-def getHistoryPkeyConstraintStatement(conf, mcd, theme, tableName):
-    tableCompleteName = tableName + conf['data']['history']['suffix']
-    schema = conf['data']['themes'][theme]['h_schema']
-
-    pkeyFields = []
-    getPkeyFields(mcd['history']['id_field'], pkeyFields)
-    getPkeyFields(mcd['common']['working_fields'], pkeyFields)
-    getPkeyFields(mcd['common']['fields'], pkeyFields)
-    getPkeyFields(mcd['themes'][theme]['tables'][tableName]['fields'], pkeyFields)
-    getPkeyFields(mcd['history']['fields'], pkeyFields)
 
     return _getPkeyConstraintStatement(getTableName(schema, tableCompleteName), pkeyFields)
 

@@ -15,10 +15,12 @@ Les outils proposés sont les suivants :
 
 - create_table : génére et lance les scripts de création de l'ensemble des tables nécessaires au fonctionnement du projet OME2.
 - border_extract : sert à l'extraction des objets proches d'une frontière d'une table source vers un table cible.
-- integrate : ré-intégrate dans la table source des données extraites et traitées dans la table de travail. Un numéro de 'step' est attribué aux données modifiées et crées.
+- integrate : ré-intégre dans la table source les données extraites et traitées dans la table de travail.
 - revert : annule les modifications correspondant au 'step' indiqué en paramêtre. Toutes les modifications liées aux 'steps' postérieurs sont annulées également.
 - copy_table : copie les tables localisées dans un schéma vers le schéma public.
-- clean : supprime les données hors de leur pays (à partir d'un seuil d'éloignement). Ce nettoyage constitue la première étape des processus de mise en cohérence des données aux frontières.
+- clean : supprime les données hors de leur pays (à partir d'un seuil d'éloignement). Ce nettoyage constitue la première étape des processus de mise en cohérence des données aux frontières. Cette fonction inclut les étapes d'extraction, de nettoyage et d'intégration.
+- integrate_from_validation : met à jour les tables de production en y intégrant les modifications depuis les tables de validation (table initiale et table des données traitées)
+- prepare_data : prépare les données nécessaires au processus de raccordement ou de validation du raccordement.
 
 On trouve également dans ce projet les [scripts SQL](https://github.com/openmapsforeurope2/data-tools/tree/main/sql/db_init) destinés à la mise en place des méchanismes interne de la base OME2 (gestion de l'historique, de la résolution, des identifiants...)
 
@@ -53,25 +55,25 @@ Paramètres
 
 Exemple d'extraction des données d'un pays sur l'ensemble de ses frontières :
 ~~~
-python3 script/border_extract.py -c conf.json -T tn -t road_link -d 4000 nl '#'
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -d 4000 nl '#'
 ~~~
 
 Exemple d'extraction des données de deux pays frontaliers:
 ~~~
-python3 script/border_extract.py -c conf.json -T hy -t watercourse_link -d 1000 be fr
+python3 script/border_extract.py -c path/to/conf.json -T hy -t watercourse_link -d 1000 be fr
 ~~~
 
 Exemple d'extraction de l'ensemble des données d'un pays et des données des pays limitrophes frontière par frontière:
 ~~~
-python3 script/border_extract.py -c conf.json -T tn -t road_link -b false -B international -d 3000 fr
-python3 script/border_extract.py -c conf.json -T tn -t road_link -b ad -d 3000 -n fr
-python3 script/border_extract.py -c conf.json -T tn -t road_link -b mc -d 3000 -n fr
-python3 script/border_extract.py -c conf.json -T tn -t road_link -b lu -d 3000 -n fr
-python3 script/border_extract.py -c conf.json -T tn -t road_link -b it -d 3000 -n fr
-python3 script/border_extract.py -c conf.json -T tn -t road_link -b es -d 3000 -n fr
-python3 script/border_extract.py -c conf.json -T tn -t road_link -b ch -d 3000 -n fr
-python3 script/border_extract.py -c conf.json -T tn -t road_link -b de -d 3000 -n fr
-python3 script/border_extract.py -c conf.json -T tn -t road_link -b be -d 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b false -B international -d 3000 fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b ad -d 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b mc -d 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b lu -d 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b it -d 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b es -d 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b ch -d 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b de -d 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b be -d 3000 -n fr
 ~~~
 > _Note : la première ligne permet d'extraire les données autour des frontières internationales qui ont un code pays simple. Cela correspond aux frontières non reconnues ('in dispute')._
 
@@ -82,13 +84,12 @@ Paramètres
 * c [mandatory] : configuration file
 * T [mandatory] : theme (only one theme can be specified)
 * t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T
-* s [mandatory] : step number
 
 <br>
 
 Exemples d'appel:
 ~~~
-python3 script/integrate.py -c conf.json -T tn -t road_link -s 10
+python3 script/integrate.py -c path/to/conf.json -T tn -t road_link
 ~~~
 
 
@@ -104,7 +105,7 @@ Paramètres
 
 Exemples d'appel:
 ~~~
-python3 script/reverte.py -c conf.json -T au -t administrative_unit_area_3 -s 30
+python3 script/reverte.py -c path/to/conf.json -T au -t administrative_unit_area_3 -s 30
 ~~~
 
 
@@ -116,18 +117,17 @@ Paramètres
 * c [mandatory] : configuration file
 * T [mandatory] : theme (only one theme can be specified)
 * t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T
-* m [mandatory] : conceptual data model configuration file
 
 <br>
 
 Exemples d'appel pour la création de l'ensemble des tables du thème transport :
 ~~~
-python3 script/create_table.py -c conf.json -m mcd.json -T tn
+python3 script/create_table.py -c path/to/conf.json -T tn
 ~~~
 
 Exemples d'appel pour la création d'une seul table :
 ~~~
-python3 script/create_table.py -c conf.json -m mcd.json -T tn -t railway_link
+python3 script/create_table.py -c path/to/conf.json -T tn -t railway_link
 ~~~
 
 
@@ -136,17 +136,24 @@ python3 script/create_table.py -c conf.json -m mcd.json -T tn -t railway_link
 Paramètres
 * c [mandatory] : configuration file
 * T [mandatory] : theme (only one theme can be specified)
-* t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T
+* t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T. If not defined the cleaning will be processed for all the tables of the theme (specified with -T parameter).
+* b [optional] : country code of a border country (several codes can be specified by adding that option as many times as necessary). If this parameter is defined the cleaning will be processed only on the specified border(s).
+* i [optional] : if specified the cleaning is processed around in dispute borders.
+* a [optional] : parameter ti process the cleaning around all borders of the specified country/countries (c.f. arguments). If specified all defined -b parameters will be ignored.
 * d [mandatory] : cleaning distance
 * arguments : codes of country/countries to clean
 
 <br>
 
-Exemples d'appel:
+Exemple de nettoyage de données françaises autour des frontières avec le luxembourg et la belgique.
 ~~~
-python3 script/clean.py -c conf.json -d 5 -T tn -t road_link_w be
+python3 script/clean.py -c path/to/conf.json -d 5 -b lu -b be -T tn -t road_link_w fr
 ~~~
 
+Exemple de nettoyage de données françaises autour de l'ensemble des frontières.
+~~~
+python3 script/clean.py -c path/to/conf.json -d 5 -a -T tn -t road_link_w fr
+~~~
 
 ### copy_table
 
@@ -160,14 +167,43 @@ Paramètres
 
 Exemples d'appel:
 ~~~
-python3 script/copy_table.py -c conf.json au.administrative_unit_area_1 ib.international_boundary_line
+python3 script/copy_table.py -c path/to/conf.json au.administrative_unit_area_1 ib.international_boundary_line
 ~~~
 
 ### integrate_from_validation
+
+Paramètres
+* c [mandatory] : configuration file
+* T [mandatory] : theme (only one theme can be specified)
+* t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T.
+* arguments : codes of the two matched countries to integrate
+
+
+Exemple de mise à jour des tables de production de l'ensemble du thème hydrographie à l'issu du processus de raccordement des données autrichiennes (at) et tchécoslovaques (cz) :
 ~~~
-python3 script/integrate_from_validation.py -c conf.json -T hy at cz
+python3 script/integrate_from_validation.py -c path/to/conf.json -T hy at cz
 ~~~
 
+### prepare_data
+
+Paramètres
+* c [mandatory] : configuration file
+* T [mandatory] : theme (only one theme can be specified)
+* t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T.
+* s [mandatory] : suffix applied for working table naming. Parameter to specify only in case of preparation for matching (c.f. -m option).
+* m [optional] : parameter to specify to prepara data for matching
+* w [optional] : parameter to specify to prepara data for validation
+* arguments : codes of two border countries
+
+Exemple de preparation des données pour le processus de raccordement :
+~~~
+python3 script/prepare_data.py -c path/to/conf.json -m -T tn -t road_link -s 20250904 be fr
+~~~
+
+Exemple de preparation des données pour le processus de validation :
+~~~
+python3 script/prepare_data.py -c path/to/conf.json -w -T tn -t road_link -s 20250904 be fr
+~~~
 
 
 ### Création de la Base de Données OME2
@@ -189,10 +225,10 @@ psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d OME2 -f ./sql/db_init/ome2_reduce_p
 Création de toutes les tables pour l'ensemble des schémas:
 
 ~~~
-python3 script/create_table.py -c conf.json -m mcd.json -T tn
-python3 script/create_table.py -c conf.json -m mcd.json -T hy
-python3 script/create_table.py -c conf.json -m mcd.json -T au
-python3 script/create_table.py -c conf.json -m mcd.json -T ib
+python3 script/create_table.py -c path/to/conf.json -m mcd.json -T tn
+python3 script/create_table.py -c path/to/conf.json -m mcd.json -T hy
+python3 script/create_table.py -c path/to/conf.json -m mcd.json -T au
+python3 script/create_table.py -c path/to/conf.json -m mcd.json -T ib
 ~~~
 
 

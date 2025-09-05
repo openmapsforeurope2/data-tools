@@ -28,11 +28,6 @@
                 "sql_type": "character varying(255)",
                 "rank": 1
             },
-            "w_step": {
-                "sql_type": "integer",
-                "index": "default",
-                "rank": 2
-            },
             "xy_source": {
                 "sql_type": "character varying(255) DEFAULT 'void_unk'",
                 "index": "default",
@@ -67,27 +62,6 @@
         "id_field": {
             "objectid": {
                 "sql_type": "uuid"
-            }
-        }
-    },
-    "history": {
-        "id_field": {
-            "objectid": {
-                "sql_type": "uuid",
-                "index": "default",
-                "pkey": true
-            }
-        },
-        "fields": {
-            "w_modification_step": {
-                "sql_type": "integer",
-                "index": "default",
-                "pkey": true,
-                "rank": 1
-            },
-            "w_modification_type": {
-                "sql_type": "character varying(255)",
-                "rank": 2
             }
         }
     },
