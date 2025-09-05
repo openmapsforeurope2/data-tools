@@ -1,7 +1,13 @@
-CREATE OR REPLACE FUNCTION public.ome2_name_correct_special_characters(
-	cs_name text,
-	table_list jsonb,
-	char_conversion jsonb)
+-- Function to replace special characters in jsonb field names
+-- 2 queries are applied:
+-- * the first query removes double backslashes
+-- * the second query replaces series of characters indicated as keys in the char_conversion jsonb file with the corresponding values.
+-- PARAMETERS:
+-- cs_name: schema name
+-- table_list: jsonb value with a list of tables to process and, for each, the name field to correct
+-- char_conversion: reference jsonb indicating the characters to replace and the values to apply
+-- where_clause: filter the data on which the queries should be applied
+CREATE OR REPLACE FUNCTION public.ecrm_name_correct_special_characters(	cs_name TEXT, table_list jsonb, char_conversion jsonb,  where_clause TEXT = true)
     RETURNS void
     LANGUAGE 'plpgsql'
     COST 100
@@ -20,8 +26,8 @@ BEGIN
         LOOP
             FOR _key, _value IN SELECT * FROM jsonb_each_text(char_conversion)
             LOOP
-                update_query1 := 'UPDATE ' || cs_name || '.' || tb_name || ' SET ' || name_att || ' = REPLACE(' || name_att || '::text, ''\\'', '''' )::json where ' || name_att || '::text like ''%\\%'';';
-                update_query := 'UPDATE ' || cs_name || '.' || tb_name || ' SET ' || name_att || ' = REPLACE(' || name_att || '::text, ''' || _key ||''', ''' || _value ||''' )::json where ' || name_att || '::text like ''%' || _key ||'%'';';
+                update_query1 := 'UPDATE ' || cs_name || '.' || tb_name || ' SET ' || name_att || ' = REPLACE(' || name_att || '::text, ''\\'', '''' )::json where ' || name_att || '::text like ''%\\%'' AND ' || where_clause || ';';
+                update_query := 'UPDATE ' || cs_name || '.' || tb_name || ' SET ' || name_att || ' = REPLACE(' || name_att || '::text, ''' || _key ||''', ''' || _value ||''' )::json where ' || name_att || '::text like ''%' || _key ||'%'' AND ' || where_clause || ';';
                 
                 RAISE notice 'update_query1 = %', update_query1;
                 EXECUTE update_query1;
@@ -37,9 +43,7 @@ $BODY$;
 
 
 
-
-
-
+-- EXAMPLE on the AU theme
 DO $$ DECLARE
     cs_name TEXT := 'au';
 
@@ -57,7 +61,7 @@ DO $$ DECLARE
         "u00a0": " ",
         "u00a1": "¡",
         "u00a5": "¥",
-        "u00a9": "©"
+        "u00a9": "©",
         "u00aa": "ª",
         "u00ad": "",
         "u00b0": "°",
@@ -104,7 +108,7 @@ DO $$ DECLARE
         "u00fa": "ú",
         "u00ff": "ÿ",
         "u0081": "",
-        "u0092": ""
+        "u0092": "",
         "u1ebd": "ẽ",
         "u0105": "ą",
         "u010e": "Ď",
@@ -128,17 +132,9 @@ DO $$ DECLARE
         "u2018": "‘",
         "u2019": "’",
         "u2021": "‡"
-
-
-        
-
-
-        
-        
-
     }';
 BEGIN
-    EXECUTE ome2_name_correct_special_characters (cs_name, table_list, char_conversion);
+    EXECUTE ecrm_name_correct_special_characters (cs_name, table_list, char_conversion, 'country = ''es''');
 END $$;
 
 -- AU theme

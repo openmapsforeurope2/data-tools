@@ -143,6 +143,18 @@ INNER JOIN igr_rt_rt_lineaffcc_a c ON b.id_lineafc = c.id_lineafc
 GROUP BY a.id_tramo, a.tipo_tramo, a.ancho_via, a.electrific, a.n_vias, a.situacion, a.estadofis, a.titular, a.fuente, a.fecha_alta, a.alta_db, a.version,
     a.red_tent, a.uso_ppal, a.tipo_linea, a.geom;
 
+    ----- VERSION 2 (after receiving a new table rt_lineaffcc_a with codigo and nombre separated)
+DROP TABLE IF EXISTS ome2_igr_rt_rt_tramoffcc_l_v2;
+CREATE TABLE ome2_igr_rt_rt_tramoffcc_l_v2 AS
+SELECT a.id_tramo, a.tipo_tramo, a.ancho_via, a.electrific, a.n_vias, a.situacion, a.estadofis, a.titular, a.fuente, a.fecha_alta, a.alta_db, a.version,
+    a.red_tent, a.uso_ppal, a.tipo_linea, a.geom,
+    json_agg(json_build_object('id_lineafc', c.id_lineafc, 'codigo', c.codigo, 'nombre', c.nombre, 'fuente', c.fuente, 'tipo_linea', c.tipo_linea)) AS ome2_lineaffc
+FROM igr_rt_rt_tramoffcc_l a
+INNER JOIN igr_rt_rrt_tramoffcc_lineaffcc b ON a.id_tramo = b.id_tramo
+INNER JOIN rt_lineaffcc_a c ON b.id_lineafc = c.id_lineafc
+GROUP BY a.id_tramo, a.tipo_tramo, a.ancho_via, a.electrific, a.n_vias, a.situacion, a.estadofis, a.titular, a.fuente, a.fecha_alta, a.alta_db, a.version,
+    a.red_tent, a.uso_ppal, a.tipo_linea, a.geom;
+
 -- Source table for railway_station_area
 DROP TABLE IF EXISTS ome2_igr_rt_rt_nodoffcc_p;
 CREATE TABLE ome2_igr_rt_rt_nodoffcc_p AS SELECT * FROM igr_rt_rt_nodoffcc_p;
