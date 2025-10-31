@@ -1,4 +1,5 @@
 import psycopg2
+import create_table_
 
 
 def getTableName(schema , tableName):
@@ -7,12 +8,14 @@ def getTableName(schema , tableName):
 
 def run(
     conf,
+    mcd,
     theme,
     tables,
     distance,
     countryCodes,
     borderCountryCode,
     boundaryType,
+    suffix,
     fromUp,
     reset,
     verbose
@@ -28,6 +31,7 @@ def run(
     countryCodes (array) : codes des pays à extraire
     borderCountryCode (str) : code du pays frontalier (permet de préciser la frontière servant de référence à l'extraction dans le cas ou ce pays ne fait pas partie des données à extraire)
     boundaryType (str) : type de frontières autour desquels extraire les donnèes. Doit être parmi les valeurs : "international","maritime","land_maritime","coastline","inland_water"
+    suffix (str) : suffix appliqué aux noms des tables de travail
     fromUp (bool) : indique si l'extraction doit être réalisée depuis la table de mise à jour
     reset (bool) : indique si la table de travail doit être vidée avant d'extraire 
     verbose (bool) : mode verbeux
@@ -69,8 +73,8 @@ def run(
         tables = conf['data']['themes'][theme]['tables']
         
     for tb in tables:
-        wTableName = getTableName(working_schema, tb)+conf['data']['working']['suffix']
-        wIdsTableName = getTableName(working_schema, tb)+conf['data']['working']['ids_suffix']
+        wTableName = create_table_.createWorkingTable(conf, mcd, theme, tb, suffix)
+        wIdsTableName = create_table_.createWorkingIdsTable(conf, mcd, theme, tb, suffix)
         sourceSchema = update_schema if fromUp else theme_schema
         if fromUp :
             tb += conf['data']['update']['suffix']
@@ -81,10 +85,13 @@ def run(
         print(u'query: {}'.format(q[:500]), flush=True)
         try:
             cursor.execute(q)
-        except Exception as e:
+        except psycopg2.Error as e:
             print(e)
             raise
         fields = cursor.fetchone()[0]
+
+        print("pouet")
+        print(fields)
 
         ids = None
         if not reset :
@@ -93,7 +100,7 @@ def run(
             print(u'query: {}'.format(q3[:500]), flush=True)
             try:
                 cursor.execute(q3)
-            except Exception as e:
+            except psycopg2.Error as e:
                 print(e)
                 raise
             ids = cursor.fetchone()[0]
@@ -122,7 +129,7 @@ def run(
         print(u'query: {}'.format(query[:500]), flush=True)
         try:
             cursor.execute(query)
-        except Exception as e:
+        except psycopg2.Error as e:
             print(e)
             raise
         conn.commit()
@@ -133,7 +140,7 @@ def run(
         print(u'query: {}'.format(q2[:500]), flush=True)
         try:
             cursor.execute(q2)
-        except Exception as e:
+        except psycopg2.Error as e:
             print(e)
             raise
         conn.commit()

@@ -1,5 +1,5 @@
 {
-    "db_conf_file":"/usr/local/src/data-tools/config/db_conf_v6.json",
+    "db_conf_file":"config/db_conf_v6.json",
     "landmask": {
         "schema": "au",
         "table": "administrative_unit_area_1",
@@ -26,7 +26,22 @@
             "geometry": "geom",
             "id": "objectid",
             "scale": "w_scale",
-            "release": "w_release"
+            "release": "w_release",
+            "num_rec": "gcms_numrec"
+        },
+        "history": {
+            "suffix": "_h",
+            "fields": {
+                "num_rec_modif": "gcms_numrecmodif"
+            }
+        },
+        "reconciliation": {
+            "schema": "public",
+            "table": "reconciliations",
+            "fields": {
+                "ordre_fin_evol": "ordrefinevol",
+                "num_rec": "numrec"
+            }
         },
         "working": {
             "ids_suffix": "_w_ids",

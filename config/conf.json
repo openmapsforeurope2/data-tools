@@ -1,6 +1,6 @@
 {
-    "db_conf_file":"/usr/local/src/data-tools/config/db_conf_v6.json",
-    "mcd_conf_file":"/usr/local/src/data-tools/config/mcd.json",
+    "db_conf_file":"config/db_conf.json",
+    "mcd_conf_file":"config/mcd.json",
     "landmask": {
         "schema": "au",
         "table": "administrative_unit_area_1",
@@ -27,7 +27,21 @@
             "geometry": "geom",
             "id": "objectid",
             "scale": "w_scale",
-            "release": "w_release"
+            "release": "w_release",
+            "num_rec": "gcms_numrec"
+        },
+        "history": {
+            "suffix": "_h",
+            "fields": {
+                "num_rec_modif": "gcms_numrecmodif"
+            }
+        },
+        "reconciliation": {
+            "schema": "public",
+            "table": "reconciliations",
+            "fields": {
+                "ordre_fin_evol": "ordrefinevol"
+            }
         },
         "working": {
             "ids_suffix": "_w_ids",
@@ -51,7 +65,7 @@
         "themes": {
             "tn": {
                 "schema": "tn",
-                "h_schema": "tn",
+                "h_schema": "",
                 "w_schema": "",
                 "u_schema": "",
                 "r_schema": "",
@@ -77,8 +91,8 @@
                 ]
             },
             "au": {
-                "schema": "prod",
-                "h_schema": "prod",
+                "schema": "au",
+                "h_schema": "",
                 "w_schema": "",
                 "u_schema": "",
                 "r_schema": "ref",
@@ -97,8 +111,8 @@
                 ]
             },
             "ib": {
-                "schema": "prod",
-                "h_schema": "prod",
+                "schema": "ib",
+                "h_schema": "",
                 "w_schema": "",
                 "u_schema": "",
                 "r_schema": "ref",
@@ -111,7 +125,7 @@
             },
             "hy": {
                 "schema": "hy",
-                "h_schema": "hy",
+                "h_schema": "",
                 "w_schema": "",
                 "u_schema": "",
                 "r_schema": "ref",
@@ -142,6 +156,19 @@
             }
         },
         "operation": {
+            "common":{
+                "neighbors": {
+                    "at": ["li", "ch", "sk", "hu", "cz", "si", "it", "de"],
+                    "be": ["de", "lu", "nl", "fr"],
+                    "ch": ["li", "ch", "de", "fr", "it"],
+                    "cz": ["sk", "at", "pl", "de"],
+                    "es": ["ma", "gi", "ad", "fr", "pt"],
+                    "fr": ["ad", "mc", "lu", "it", "es", "ch", "de", "be"],
+                    "li": ["at", "ch"],
+                    "lu": ["fr", "be", "lu"],
+                    "nl": ["be", "de"]
+                }
+            },
             "cleaning": {
                 "distance": 5,
                 "themes": {
@@ -160,20 +187,38 @@
                             "li": 5000
                         }
                     }
-                },
-                "neighbors": {
-                    "at": ["li", "ch", "sk", "hu", "cz", "si", "it", "de"],
-                    "be": ["de", "lu", "nl", "fr"],
-                    "ch": ["li", "ch", "de", "fr", "it"],
-                    "cz": ["sk", "at", "pl", "de"],
-                    "es": ["ma", "gi", "ad", "fr", "pt"],
-                    "fr": ["ad", "mc", "lu", "it", "es", "ch", "de", "be"],
-                    "li": ["at", "ch"],
-                    "lu": ["fr", "be", "lu"],
-                    "nl": ["be", "de"]
                 }
             },
-            "matching": {
+            "au_matching": {
+                "table_name_prefix": "administrative_unit_area_",
+                "extraction_distance": {
+                    "default": 1000
+                },
+                "lowest_level": {
+                    "be": 5,
+                    "es": 4,
+                    "fr": 6
+                },
+                "final_step": "630"
+            },
+            "area_matching": {
+                "themes": {
+                    "hy": {
+                        "extraction_distance": {
+                            "default": 1000
+                        },
+                        "tables": {
+                            "glacier_snowfield" : {
+                                "final_step": "430"
+                            },
+                            "drainage_basin" : {
+                                "final_step": "430"
+                            }
+                        }
+                    }
+                }
+            },
+            "net_matching": {
                 "themes": {
                     "tn": {
                         "extraction_distance": {

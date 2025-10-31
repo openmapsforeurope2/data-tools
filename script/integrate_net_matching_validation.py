@@ -4,7 +4,7 @@ import getopt
 from datetime import datetime
 import shutil
 import utils
-import prepare_data_
+import integrate_
 
 
 def run(argv):
@@ -12,22 +12,16 @@ def run(argv):
     arg_conf = ""
     arg_theme = ""
     arg_tables = []
-    arg_suffix = ""
     arg_verbose = False
-    arg_operation = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:s:mwv", [
+        opts, args = getopt.getopt(argv[1:], "c:T:t:v", [
             "conf=",
             "theme=",
             "table=",
-            "suffix=",
-            "matching",
-            "validation",
             "verbose"
         ])
-    except getopt.GetoptError as err:
-        print(err)
+    except:
         sys.exit(1)
     
     for opt, arg in opts:
@@ -37,26 +31,13 @@ def run(argv):
             arg_theme = arg
         elif opt in ("-t", "--table"):
             arg_tables.append(arg)
-        elif opt in ("-s", "--suffix"):
-            arg_suffix = arg
-        elif opt in ("-m", "--matching"):
-                arg_operation = "matching" if arg_operation == "" else None
-        elif opt in ("-w", "--validation"):
-                arg_operation = "validation" if arg_operation == "" else None
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
-    #operation
-    if not arg_operation :
-        print("One and only one operation must be chosen from among : matching (-m)")
-        sys.exit(1)
-        
     print('conf:', arg_conf)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
-    print('suffix:', arg_suffix)
     print('country codes:', args)
-    print('operation:', arg_operation)
     print('verbose:', arg_verbose)
 
     #conf
@@ -66,16 +47,9 @@ def run(argv):
 
     conf = utils.getConf(arg_conf)
 
-    #mcd
-    if not os.path.isfile(conf["mcd_conf_file"]):
-        print("The mcd configuration file "+ conf["mcd_conf_file"] + " does not exist.")
-        sys.exit(1)
-
-    mcd = utils.getConf(conf["mcd_conf_file"])
-
     #bd conf
     if not os.path.isfile(conf["db_conf_file"]):
-        print("The configuration file "+ conf["db_conf_file"] + " does not exist.")
+        print("The db configuration file "+ conf["db_conf_file"] + " does not exist.")
         sys.exit(1)
 
     db_conf = utils.getConf(conf["db_conf_file"])
@@ -83,18 +57,16 @@ def run(argv):
     #merge confs
     conf.update(db_conf)
 
-
-    print("[START PREPARE DATA] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("[START INTEGRATE NET MATCHING VALIDATION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        prepare_data_.run(
+        integrate_.integrate_operation(
             conf,
-            mcd,
             arg_theme,
             arg_tables,
-            arg_suffix,
             args,
-            arg_operation,
+            "net_matching_validation",
+            None,
             arg_verbose
         )
 
@@ -102,7 +74,7 @@ def run(argv):
         print(e)
         sys.exit(1)
 
-    print("[END PREPARE DATA] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("[END INTEGRATE NET MATCHING VALIDATION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 
 if __name__ == "__main__":

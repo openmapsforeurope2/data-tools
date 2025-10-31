@@ -10,50 +10,29 @@ import integrate_
 def run(argv):
 
     arg_conf = ""
-    arg_theme = ""
-    arg_tables = []
-    arg_to_up = False
-    arg_nohistory = False # life-cycle management is enabled as default
+    arg_suffix = ""
     arg_verbose = False
-    args = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:s:unv", [
+        opts, args = getopt.getopt(argv[1:], "c:s:v", [
             "conf=",
-            "theme=",
-            "table=",
             "suffix=",
-            "to_up",
-            "no_history",
             "verbose"
         ])
-    except getopt.GetoptError as err:
-        print(err)
+    except:
         sys.exit(1)
     
     for opt, arg in opts:
         if opt in ("-c", "--conf"):
             arg_conf = arg
-        elif opt in ("-T", "--theme"):
-            arg_theme = arg
-        elif opt in ("-t", "--table"):
-            arg_tables.append(arg)
         elif opt in ("-s", "--suffix"):
-            arg_theme = arg
-        elif opt in ("-u", "--to_up"):
-            arg_to_up = True
-        elif opt in ("-n", "--no_history"):
-            arg_nohistory = True
+            arg_suffix = arg
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
     print('conf:', arg_conf)
-    print('theme:', arg_theme)
-    print('tables:', arg_tables)
     print('suffix:', arg_suffix)
-    print('codes:', args)
-    print('to_up:', arg_to_up)
-    print('no_history:', arg_nohistory)
+    print('country codes:', args)
     print('verbose:', arg_verbose)
 
     #conf
@@ -73,16 +52,24 @@ def run(argv):
     #merge confs
     conf.update(db_conf)
 
-
-    print("[START INTEGRATION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("[START INTEGRATE AU MATCHING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        integrate_.integrate(conf, arg_theme, arg_tables, arg_to_up, arg_nohistory, arg_verbose)
+        integrate_.integrate_operation(
+            conf,
+            None,
+            None,
+            args,
+            "au_matching",
+            arg_suffix,
+            arg_verbose
+        )
+
     except Exception as e:
         print(e)
         sys.exit(1)
-    
-    print("[END INTEGRATION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+
+    print("[END INTEGRATE AU MATCHING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 
 if __name__ == "__main__":

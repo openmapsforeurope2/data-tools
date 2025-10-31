@@ -39,7 +39,7 @@ def createViews(conf, mcd, theme, tables):
         # print(u'{}'.format(query), flush=True)
         try:
             cursor.execute(query)
-        except Exception as e:
+        except psycopg2.Error as e:
             print(e)
             raise
         conn.commit()

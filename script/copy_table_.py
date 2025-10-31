@@ -32,7 +32,7 @@ def run(conf, tables):
         print(u'query: {}'.format(query), flush=True)
         try:
             cursor.execute(query)
-        except Exception as e:
+        except psycopg2.Error as e:
             print(e)
             raise
         conn.commit()

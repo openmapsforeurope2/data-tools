@@ -1,5 +1,6 @@
 import psycopg2
 import border_extract_
+import border_extract_with_neighbors_
 
 
 def getTableName(schema , tableName):
@@ -75,6 +76,7 @@ def run(
     tables,
     suffix,
     countryCodes,
+    neighbors,
     operation,
     verbose
 ):
@@ -88,15 +90,18 @@ def run(
     tables (array) : tables à préparer (si le tableau est vide ce sont toutes les tables du thème qui seront préparées)
     suffix (str) : suffix appliqué aux tables préparées
     countryCodes (array) : codes des pays à traiter
-    matching (bool) : indique c'est une préparation à l'étape de raccordement transfrontalier
+    operation (str) : indique la nature de l'operation à réaliser
     verbose (bool) : mode verbeux
     """
-    print("PREPARING...", flush=True)
+
+    if operation == "au_matching":
+        tables = [conf['data']['operation'][operation]["table_name_prefix"]+str(conf['data']['operation'][operation]["lowest_level"][c]) for c in countryCodes]
+        theme = conf['data']["themes"]["au"]["schema"]
 
     if not tables:
-        tables = conf['data']['operation']['matching']['themes'][theme]['tables'].keys()
-
-    extract_data(conf, theme, tables, countryCodes, operation, verbose)
+        tables = conf['data']['operation'][operation]['themes'][theme]['tables'].keys()
+    
+    extract_data(conf, theme, tables, countryCodes, neighbors, operation, verbose)
     init_working_tables(conf, mcd, theme, tables, suffix, countryCodes, operation, verbose)
 
 
@@ -119,7 +124,7 @@ def init_working_tables(
 
     countryCodes = sorted(countryCodes)
 
-    if operation == "matching" :
+    if operation in ["net_matching", "area_matching", "au_matching"] :
         
         suffix = "_" + "_".join(countryCodes) + "_" + suffix
 
@@ -147,7 +152,7 @@ def init_working_tables(
                 raise
             conn.commit()
 
-    elif operation == "validation" :
+    elif operation == "net_matching_validation" :
         prefix = "_".join(countryCodes) + "_"
         suffix = "_" + "_".join(countryCodes) + "_" + suffix
 
@@ -156,7 +161,7 @@ def init_working_tables(
         source_schema = conf['data']['themes'][theme]['w_schema']
 
         for tableName in tables:
-            final_step = conf['data']['operation']['matching']['themes'][theme]['tables'][tableName]['final_step']
+            final_step = conf['data']['operation']['net_matching']['themes'][theme]['tables'][tableName]['final_step']
 
             sourceInitTableName = getTableName(source_schema, tableName) + conf['data']['working']['suffix'] + suffix
             sourceFinalTableName = "_" + final_step + "_" + sourceInitTableName
@@ -181,32 +186,54 @@ def init_working_tables(
     cursor.close()
     conn.close()
 
+def get_extraction_distance(
+    conf,
+    operation,
+    countryCodes,
+    theme = None
+):
+    operation_conf = None
+    if theme is None :
+        operation_conf = conf['data']['operation'][operation]
+    else :
+        operation_conf = conf['data']['operation'][operation]['themes'][theme]
+
+    distance = operation_conf['extraction_distance']['default']
+    for country in  countryCodes:
+        if country in operation_conf['extraction_distance'] :
+            countryDist = operation_conf['extraction_distance'][country]
+            if countryDist > distance:
+                distance = countryDist
+    return distance
 
 def extract_data(
     conf,
     theme,
     tables,
     countryCodes,
+    neighbors,
     operation,
     verbose
 ):
-    if operation == "matching" :
+    if operation in ["net_matching", "area_matching"] :
         borderCountryCode = None
         boundaryType = None
         fromUp = False
         reset = True
+        distance = get_extraction_distance(conf, operation, countryCodes, theme)
 
-        distance = conf['data']['operation'][operation]['themes'][theme]['extraction_distance']['default']
-        for country in  countryCodes:
-            if country in conf['data']['operation'][operation]['themes'][theme]['extraction_distance'] :
-                countryDist = conf['data']['operation'][operation]['themes'][theme]['extraction_distance'][country]
-                if countryDist > distance:
-                    distance = countryDist
+        border_extract_.run(conf, theme, tables, distance, countryCodes, borderCountryCode, boundaryType, fromUp, reset, verbose)
 
-    elif operation == "validation" :
+    elif operation == "au_matching" :
+        inDispute = None
+        all = True if len(neighbors) == 0 else False
+        distance = get_extraction_distance(conf, operation, countryCodes)
+
+        border_extract_with_neighbors_.run(conf, theme, tables, distance, countryCodes, neighbors, inDispute, all, verbose)
+
+    elif operation == "net_matching_validation" :
         return
+
     else :
         raise Exception('Unknown operation: '+operation)
-
-    border_extract_.run(conf, theme, tables, distance, countryCodes, borderCountryCode, boundaryType, fromUp, reset, verbose)
 

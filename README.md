@@ -190,13 +190,14 @@ Paramètres
 * T [mandatory] : theme (only one theme can be specified)
 * t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T.
 * s [mandatory] : suffix applied for working table naming. Parameter to specify only in case of preparation for matching (c.f. -m option).
-* m [optional] : parameter to specify to prepara data for matching
+* n [optional] : parameter to specify to prepara data for net_matching
+* a [optional] : parameter to specify to prepara data for au_matching
 * w [optional] : parameter to specify to prepara data for validation
 * arguments : codes of two border countries
 
 Exemple de preparation des données pour le processus de raccordement :
 ~~~
-python3 script/prepare_data.py -c path/to/conf.json -m -T tn -t road_link -s 20250904 be fr
+python3 script/prepare_data.py -c path/to/conf.json -n -T tn -t road_link -s 20250904 be fr
 ~~~
 
 Exemple de preparation des données pour le processus de validation :

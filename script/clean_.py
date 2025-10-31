@@ -2,18 +2,21 @@ import sys
 from subprocess import call
 import utils
 import psycopg2
-import border_extract_
+import border_extract_with_neighbors_
 import integrate_
+import create_table_
 
 
 def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName
 
-def getWorkingTableName(schema, tableName, w_suffix):
-    return (schema+"." if schema else "") + tableName + w_suffix
-
 def clean(
-    conf, theme, tables, countryCodes, verbose
+    conf,
+    theme,
+    tables,
+    countryCodes,
+    suffix,
+    verbose
 ):  
     """
     Supprime les objets distants de leur pays.
@@ -46,14 +49,14 @@ def clean(
             tables = conf['data']['themes'][theme]['tables']
 
         for tb in tables:
-            query = "DELETE FROM "+getWorkingTableName(w_schema, tb, w_suffix)
+            query = "DELETE FROM "+create_table_.getWorkingTablename(conf, theme, table, suffix)
             query += " WHERE "+conf['data']['common_fields']['country']+"='"+c+"'"
             query += " AND ST_Distance(("+landmask_statement+"), geom) > "+str(distance)
 
             print(u'query: {}'.format(query), flush=True)
             try:
                 cursor.execute(query)
-            except Exception as e:
+            except psycopg2.Error as e:
                 print(e)
                 raise
             conn.commit()
@@ -64,67 +67,32 @@ def clean(
 
 def extract_data(
     conf,
+    mcd,
     theme,
     tables,
     countryCodes,
     borders,
     inDispute,
     all,
+    suffix,
     verbose
 ):    
-    fromUp = False
-    reset = True
-
-    for country in countryCodes:
-        if all :
-            inDispute = True;
-            if country in conf['data']['operation']['cleaning']['neighbors']:
-                borders = conf['data']['operation']['cleaning']['neighbors'][country]
-            else :
-                print("[extract_data] Error : neighbors not defined for country : "+ country)
-                raise
-
-        distance = conf['data']['operation']['cleaning']['themes'][theme]['extraction_distance']['default']
-        if country in conf['data']['operation']['cleaning']['themes'][theme]['extraction_distance']:
-            distance = conf['data']['operation']['cleaning']['themes'][theme]['extraction_distance'][country]
-
-        if inDispute:
-            boundaryType = 'international'
-            border = False
-            border_extract_.run(conf, theme, tables, distance, country, border, boundaryType, fromUp, reset, verbose)
-            reset = False
-
-        boundaryType = None
-        if country in conf['data']['operation']['cleaning']['neighbors']:
-            allNeighbors = conf['data']['operation']['cleaning']['neighbors'][country]
-            orderedBorders = [b for b in allNeighbors if b in borders]
-            borders = orderedBorders
-
-        for border in borders:
-            border_extract_.run(conf, theme, tables, distance, [country], border, boundaryType, fromUp, reset, verbose)
-            reset = False
-
-
-def integrate(
-    conf,
-    theme,
-    tables,
-    verbose
-):
-    toUp = False
-    noHistory = False
-
-    integrate_.run(conf, theme, tables, toUp, noHistory, verbose)
-
+    distance = conf['data']['operation']['cleaning']['themes'][theme]['extraction_distance']['default']
+    if country in conf['data']['operation']['cleaning']['themes'][theme]['extraction_distance']:
+        distance = conf['data']['operation']['cleaning']['themes'][theme]['extraction_distance'][country]
+            
+    border_extract_with_neighbors_.run(conf, mcd, theme, tables, distance, countryCodes, borders, inDispute, all, suffix, verbose)
 
 def run(
-    conf, 
+    conf,
+    mcd,
     theme, 
     tables, 
     countryCodes, 
     borders, 
     inDispute, 
-    all, 
+    all,
+    suffix,
     verbose
 ):
     """
@@ -145,13 +113,15 @@ def run(
         tables = conf['data']['themes'][theme]['tables']
 
     #--
-    extract_data(conf, theme, tables, countryCodes, borders, inDispute, all, verbose)
+    extract_data.run(conf, mcd, theme, tables, countryCodes, borders, inDispute, all, suffix, verbose)
 
     #-- 
-    clean(conf, theme, tables, countryCodes, verbose)
+    clean(conf, theme, tables, countryCodes, suffix, verbose)
 
     #--
-    integrate(conf, theme, tables, verbose)
+    toUp = False
+    noHistory = False
+    integrate_.integrate(conf, theme, tables, toUp, noHistory, verbose)
 
 
 

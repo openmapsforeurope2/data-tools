@@ -32,24 +32,9 @@ def createTableAndIndexes(conf, mcd, theme, tables):
         query += getCreateTrigger(conf, theme, tableName)
 
         print(u'query: {}'.format(query), flush=True)
-        # print(u'{}'.format(query), flush=True)
         try:
             cursor.execute(query)
-        except Exception as e:
-            print(e)
-            raise
-        conn.commit()
-
-        # working
-        query_w = getCreateWorkingTableStatement(conf, mcd, theme, tableName)
-        query_w += getCreateWorkingIndexesStatement(conf, mcd, theme, tableName)
-        query_w += getCreateWorkingTrigger(conf, theme, tableName)
-
-        print(u'query: {}'.format(query_w), flush=True)
-        # print(u'{}'.format(query_w), flush=True)
-        try:
-            cursor.execute(query_w)
-        except Exception as e:
+        except psycopg2.Error as e:
             print(e)
             raise
         conn.commit()
@@ -60,10 +45,9 @@ def createTableAndIndexes(conf, mcd, theme, tables):
         query_u += getCreateUpdateTrigger(conf, theme, tableName)
 
         print(u'query: {}'.format(query_u), flush=True)
-        # print(u'{}'.format(query_w), flush=True)
         try:
             cursor.execute(query_u)
-        except Exception as e:
+        except psycopg2.Error as e:
             print(e)
             raise
         conn.commit()
@@ -74,32 +58,9 @@ def createTableAndIndexes(conf, mcd, theme, tables):
         query_r += getCreateRefTrigger(conf, theme, tableName)
 
         print(u'query: {}'.format(query_r), flush=True)
-        # print(u'{}'.format(query_w), flush=True)
         try:
             cursor.execute(query_r)
-        except Exception as e:
-            print(e)
-            raise
-        conn.commit()
-
-        # ids
-        query_ids = getCreateWorkingIdsTableStatement(conf, mcd, theme, tableName)
-        query_ids += getCreateWorkingIdsIndexesStatement(conf, mcd, theme, tableName)
-
-        print(u'query: {}'.format(query_ids), flush=True)
-        # print(u'{}'.format(query_ids), flush=True)
-        try:
-            cursor.execute(query_ids)
-        except Exception as e:
-            print(e)
-            raise
-        conn.commit()
-
-        print(u'query: {}'.format(query_h), flush=True)
-        # print(u'{}'.format(query_h), flush=True)
-        try:
-            cursor.execute(query_h)
-        except Exception as e:
+        except psycopg2.Error as e:
             print(e)
             raise
         conn.commit()
@@ -107,12 +68,73 @@ def createTableAndIndexes(conf, mcd, theme, tables):
     cursor.close()
     conn.close()
 
+def getWorkingTablename(conf, theme, tableName, suffix):
+    return getTableName(conf['data']['themes'][theme]['w_schema'], tableName)+conf['data']['working']['suffix']+suffix
+
+def getWorkingIdsTablename(conf, theme, tableName, suffix):
+    return getTableName(conf['data']['themes'][theme]['w_schema'], tableName)+conf['data']['working']['ids_suffix']+suffix
+
+def createWorkingTable(conf, mcd, theme, tableName, suffix):
+    conn = psycopg2.connect(    user = conf['db']['user'],
+                                password = conf['db']['pwd'],
+                                host = conf['db']['host'],
+                                port = conf['db']['port'],
+                                database = conf['db']['name'])
+    cursor = conn.cursor()
+
+    print("CREATING WORKING TABLE...", flush=True)
+
+    fullTableName = getWorkingTablename(conf, theme, tableName, suffix)
+    query_w = getCreateWorkingTableStatement(conf, mcd, theme, tableName, suffix)
+    query_w += getCreateWorkingIndexesStatement(conf, mcd, theme, tableName, suffix)
+    query_w += getCreateWorkingTrigger(conf, theme, tableName, suffix)
+
+    print(u'query: {}'.format(query_w), flush=True)
+    try:
+        cursor.execute(query_w)
+    except psycopg2.Error as e:
+        print(e)
+        raise
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return fullTableName
+
+def createWorkingIdsTable(conf, mcd, theme, tableName, suffix):
+    conn = psycopg2.connect(    user = conf['db']['user'],
+                                password = conf['db']['pwd'],
+                                host = conf['db']['host'],
+                                port = conf['db']['port'],
+                                database = conf['db']['name'])
+    cursor = conn.cursor()
+
+    print("CREATING WORKING IDS TABLE...", flush=True)
+
+    fullTableName = getWorkingIdsTablename(conf, theme, tableName, suffix)
+    query_ids = getCreateWorkingIdsTableStatement(conf, mcd, theme, tableName, suffix)
+    query_ids += getCreateWorkingIdsIndexesStatement(conf, mcd, theme, tableName, suffix)
+
+    print(u'query: {}'.format(query_ids), flush=True)
+    try:
+        cursor.execute(query_ids)
+    except psycopg2.Error as e:
+        print(e)
+        raise
+    conn.commit()
+
+    cursor.close()
+    conn.close()
+
+    return fullTableName
+
 def getCreateTrigger(conf, theme, tableName):
     fullTableName = getTableName(conf['data']['themes'][theme]['schema'], tableName)
     return _getCreateTrigger(conf, theme, fullTableName)
 
-def getCreateWorkingTrigger(conf, theme, tableName):
-    fullTableName = getTableName(conf['data']['themes'][theme]['w_schema'], tableName)+conf['data']['working']['suffix']
+def getCreateWorkingTrigger(conf, theme, tableName, suffix):
+    fullTableName = getWorkingTablename(conf, theme, tableName, suffix)
     return _getCreateTrigger(conf, theme, fullTableName)
 
 def getCreateUpdateTrigger(conf, theme, tableName):
@@ -176,8 +198,8 @@ def getCreateTableStatement( conf, mcd, theme, tableName ):
     statement += getPkeyConstraintStatement( conf, mcd, theme, tableName )
     return statement
 
-def getCreateWorkingTableStatement( conf, mcd, theme, tableName ):
-    fullTableName = getTableName(conf['data']['themes'][theme]['w_schema'], tableName)+conf['data']['working']['suffix']
+def getCreateWorkingTableStatement( conf, mcd, theme, tableName, suffix ):
+    fullTableName = getWorkingTablename(conf, theme, tableName, suffix )
     statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
     statement += " ("+getWorkingTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
     statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
@@ -200,8 +222,8 @@ def getCreateRefTableStatement( conf, mcd, theme, tableName ):
     statement += getRefPkeyConstraintStatement( conf, mcd, theme, tableName )
     return statement
 
-def getCreateWorkingIdsTableStatement( conf, mcd, theme, tableName ):
-    fullTableName = getTableName(conf['data']['themes'][theme]['w_schema'], tableName)+conf['data']['working']['ids_suffix']
+def getCreateWorkingIdsTableStatement( conf, mcd, theme, tableName, suffix ):
+    fullTableName = getWorkingIdsTablename(conf, theme, tableName, suffix)
     statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
     statement += " ("+getWorkingIdsTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
     statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
@@ -244,8 +266,8 @@ def getCreateRefIndexesStatement(conf, mcd, theme, tableName):
     indexesToCreate = getIndexes(mcd['themes'][theme]['tables'][tableName]['fields'], schema, tableCompleteName, indexesToCreate)
     return indexesToCreate
 
-def getCreateWorkingIndexesStatement(conf, mcd, theme, tableName):
-    tableCompleteName = tableName + conf['data']['working']['suffix']
+def getCreateWorkingIndexesStatement(conf, mcd, theme, tableName, suffix):
+    tableCompleteName = tableName + conf['data']['working']['suffix']+suffix
     schema = conf['data']['themes'][theme]['w_schema']
     indexesToCreate = ""
     indexesToCreate = getIndexes(mcd['common']['id_field'], schema, tableCompleteName, indexesToCreate)
@@ -264,8 +286,8 @@ def getCreateUpdateIndexesStatement(conf, mcd, theme, tableName):
     indexesToCreate = getIndexes(mcd['themes'][theme]['tables'][tableName]['fields'], schema, tableCompleteName, indexesToCreate)
     return indexesToCreate
 
-def getCreateWorkingIdsIndexesStatement(conf, mcd, theme, tableName):
-    tableCompleteName = tableName + conf['data']['working']['ids_suffix']
+def getCreateWorkingIdsIndexesStatement(conf, mcd, theme, tableName, suffix):
+    tableCompleteName = tableName + conf['data']['working']['ids_suffix']+suffix
     schema = conf['data']['themes'][theme]['w_schema']
     indexesToCreate = ""
     indexesToCreate = getIndexes(mcd['working_ids']['id_field'], schema, tableCompleteName, indexesToCreate)

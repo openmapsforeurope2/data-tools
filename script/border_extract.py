@@ -6,7 +6,6 @@ import shutil
 import utils
 import border_extract_
 
-
 def run(argv):
 
     boundary_types = ["international","maritime","land_maritime","coastline","inland_water"]
@@ -17,18 +16,20 @@ def run(argv):
     arg_dist = None
     arg_bcc = None
     arg_bt = None
+    arg_suffix = ""
     arg_from_up = False
     arg_noreset = False
     arg_verbose = False
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:d:b:B:aunv", [
+        opts, args = getopt.getopt(argv[1:], "c:T:t:d:b:B:s:aunv", [
             "conf=", 
             "theme=", 
             "table=", 
             "distance=", 
             "border_country=", 
-            "boundary_type=", 
+            "boundary_type=",
+            "suffix="
             "in_up_area",
             "from_up",
             "noreset", 
@@ -53,6 +54,8 @@ def run(argv):
                 arg_bcc = False
         elif opt in ("-B", "--boundary_type"):
             arg_bt = arg
+        elif opt in ("-s", "--suffix"):
+            arg_suffix = arg
         elif opt in ("-u", "--from_up"):
             arg_from_up = True
         elif opt in ("-n", "--noreset"):
@@ -66,6 +69,7 @@ def run(argv):
     print('distance:', arg_dist)
     print('border country:', arg_bcc)
     print('boundary type:', arg_bt)
+    print('suffix:', arg_suffix)
     print('from_up:', arg_from_up)
     print('codes:', args)
     print('reset:', (not arg_noreset))
@@ -86,6 +90,13 @@ def run(argv):
 
     conf = utils.getConf(arg_conf)
 
+    #mcd
+    if not os.path.isfile(conf["mcd_conf_file"]):
+        print("The mcd configuration file "+ conf["mcd_conf_file"] + " does not exist.")
+        sys.exit(1)
+
+    mcd = utils.getConf(conf["mcd_conf_file"])
+
     #bd conf
     print(conf["db_conf_file"])
     if not os.path.isfile(conf["db_conf_file"]):
@@ -102,12 +113,14 @@ def run(argv):
     try:
         border_extract_.run(
             conf,
+            mcd,
             arg_theme,
             arg_tables,
             arg_dist,
             args,
             arg_bcc,
             arg_bt,
+            arg_suffix,
             arg_from_up,
             (not arg_noreset),
             arg_verbose
