@@ -1,3 +1,15 @@
+-- AU THEME
+
+DROP TABLE IF EXISTS au.ome2_au_administrative_unit;
+CREATE TABLE au.ome2_au_administrative_unit AS SELECT * FROM au.au_administrative_unit;
+ALTER TABLE au.ome2_au_administrative_unit ADD COLUMN ome2_upperlevelcode character varying(15);
+
+UPDATE au.ome2_au_administrative_unit a
+SET ome2_upperlevelcode = b.nationalcode
+FROM au.au_administrative_unit b
+WHERE a.upperlevelunit = b.inspireid;
+
+
 ---------------------------------------------
 -- AIR TRANSPORT
 ---------------------------------------------
