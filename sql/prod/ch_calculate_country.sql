@@ -1,3 +1,9 @@
+--TO-DO: use release.au_administrative_unit_area_1 to filter out destroyed objects
+
+-- For simple feature classes where objects are either in or out
+UPDATE hy.dam_area a SET country = 'li' 
+FROM release.au_administrative_unit_area_1 b WHERE b.country = 'li' AND ST_Within(a.geom, b.geom);
+
 -- Used on road_link, watercourse_link, watercourse_area, standing_water
 
 DROP TABLE IF EXISTS road_link_ch_li;

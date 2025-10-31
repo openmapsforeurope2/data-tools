@@ -36,11 +36,10 @@ def run(argv):
     print('theme:', arg_theme)
     print('tables:', arg_tables)
 
-    #conf
-    if not os.path.isfile(workspace+"conf/"+arg_conf):
+#conf
+    if not os.path.isfile(arg_conf):
         print("The configuration file "+ arg_conf + " does not exist.")
         sys.exit(1)
-    arg_conf = workspace+"conf/"+arg_conf
 
     conf = utils.getConf(arg_conf)
 
