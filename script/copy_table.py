@@ -11,9 +11,10 @@ def run(argv):
     
     arg_conf = ""
     args = ""
+    arg_with_history = True
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:", ["conf="])
+        opts, args = getopt.getopt(argv[1:], "c:n", ["conf="])
     except getopt.GetoptError as err:
         print(err)
         sys.exit(1)
@@ -21,8 +22,11 @@ def run(argv):
     for opt, arg in opts:
         if opt in ("-c", "--conf"):
             arg_conf = arg
+        if opt in ("-n", "--nohistory"):
+            arg_with_history = False
 
     print('conf:', arg_conf)
+    print('with history:', str(args))
     print('tables:', args)
 
     #conf
@@ -46,7 +50,7 @@ def run(argv):
     print("[START TABLE COPY] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        copy_table_.run(conf, args)
+        copy_table_.run(conf, args, arg_with_history)
     except:
         sys.exit(1)
 

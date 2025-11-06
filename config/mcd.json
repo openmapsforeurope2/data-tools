@@ -31,22 +31,22 @@
             "xy_source": {
                 "sql_type": "character varying(255) DEFAULT 'void_unk'",
                 "index": "default",
-                "rank": 3
+                "rank": 2
             },
             "z_source": {
                 "sql_type": "character varying(255) DEFAULT 'void_unk'",
                 "index": "default",
-                "rank": 4
+                "rank": 3
             },
             "w_scale": {
                 "sql_type": "character varying(80) DEFAULT 'void_unk'",
                 "index": "default",
-                "rank": 5
+                "rank": 4
             },
             "w_release": {
                 "sql_type": "integer DEFAULT 1",
                 "index": "default",
-                "rank": 6
+                "rank": 5
             }
         }
     },
@@ -192,6 +192,10 @@
                         "form_of_road_node":{
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
+                        },
+                        "label": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 4
                         }
                     }
                 },               

@@ -1,7 +1,7 @@
 import psycopg2
 
 
-def run(conf, tables):
+def run(conf, tables, withHistory):
     """
     Fonction utilitaire pour la copy de table.
 
@@ -27,7 +27,10 @@ def run(conf, tables):
             print(u'Nothing to do, the table '+tableName+' is already in the schema "public"', flush=True)
             continue
 
-        query = "DROP TABLE IF EXISTS "+targetTableName+"; CREATE TABLE "+targetTableName+" AS SELECT * FROM "+tableName+" WHERE NOT gcms_detruit;"
+        query = "DROP TABLE IF EXISTS "+targetTableName+"; CREATE TABLE "+targetTableName+" AS SELECT * FROM "+tableName
+        if withHistory:
+            query += " WHERE NOT gcms_detruit"
+        query += ";"
 
         print(u'query: {}'.format(query), flush=True)
         try:

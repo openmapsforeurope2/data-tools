@@ -90,9 +90,6 @@ def run(
             raise
         fields = cursor.fetchone()[0]
 
-        print("pouet")
-        print(fields)
-
         ids = None
         if not reset :
             # on recupere tout les ids deja extraits pour ne pas les extraires a nouveau

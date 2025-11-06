@@ -1,5 +1,5 @@
 import psycopg2
-
+import create_table_
 
 def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName
@@ -26,7 +26,7 @@ def getIdRank(cursor, idField):
     return -1
 
 def getNumRec(cursor, numRec):
-    if numRec < 0:
+    if len(numRec) == 0:
         # On récupère le numéro de réconciliation
         q = "SELECT nextval('seqnumrec');"
         try:
@@ -34,10 +34,10 @@ def getNumRec(cursor, numRec):
         except psycopg2.Error as e:
             print(e)
             raise
-        numRec = str(cursor.fetchall()[0][0])
+        numRec.append(str(cursor.fetchall()[0][0]))
     return numRec
 
-def integrate_table_(conf, cursor, wTableName, wIdsTableName):
+def integrate_table_(conf, cursor, currentNumrec, theme, table, wTableName, wIdsTableName, toUp, noHistory):
     #--
     id_field = conf['data']['common_fields']['id']
     # numrec_field = conf['data']['common_fields']['num_rec']
@@ -48,13 +48,13 @@ def integrate_table_(conf, cursor, wTableName, wIdsTableName):
     deleted = []
     integrated = []
     modified = []
-    targetSchema = update_schema if to_up else theme_schema
-    if to_up :
-        tb += conf['data']['update']['suffix']
-    tableName = getTableName(targetSchema, tb)
+    targetSchema = update_schema if toUp else theme_schema
+    if toUp :
+        table += conf['data']['update']['suffix']
+    targetTableName = getTableName(targetSchema, table)
 
     # on recupere les noms des champs
-    q0 = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name not like '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+targetSchema+"'") if targetSchema else ""
+    q0 = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name not like '%gcms%' and table_name = '"+table+"' "+ ("AND table_schema = '"+targetSchema+"'") if targetSchema else ""
     try:
         cursor.execute(q0)
     except psycopg2.Error as e:
@@ -105,7 +105,7 @@ def integrate_table_(conf, cursor, wTableName, wIdsTableName):
                 w_objects[w_t[w_idRank]] = w_t
 
             # on recupere les objets dans la table principale
-            q2_bis = "SELECT "+_fields+" FROM "+tableName
+            q2_bis = "SELECT "+_fields+" FROM "+targetTableName
             q2_bis += " WHERE "+id_field+" IN ("+",".join(sub_ids_)+")"
             print("GETTING MAIN TABLE ITEMS :")
             print(q2_bis[:500])
@@ -132,7 +132,7 @@ def integrate_table_(conf, cursor, wTableName, wIdsTableName):
                 elif not array_equal(w_objects[sub_ids[i]], o_objects[sub_ids[i]]):
                     count_m += 1
                     modified.append(sub_ids_[i])
-                    if nohistory:
+                    if noHistory:
                         deleted.append(sub_ids_[i])
                         integrated.append(sub_ids_[i])
 
@@ -164,21 +164,21 @@ def integrate_table_(conf, cursor, wTableName, wIdsTableName):
     table_nb_obj = count_d+count_m+len(new_tuples)
 
     if table_nb_obj == 0 :
-        continue
+        return 0
 
     # pour éviter de d'incrémenter la séquence de numrec si la réconciliation est finalement abandonnée (pour cause de pas de modifs)
-    currentNumrec = getNumRec(cursor, currentNumrec)
+    getNumRec(cursor, currentNumrec)
 
     # on supprime les objets de la table
     if deleted:
-        if nohistory:
-            q7 = "DELETE FROM "+tableName
+        if noHistory:
+            q7 = "DELETE FROM "+targetTableName
         else:
             # déplacement dans la table historique des objets avant mise à jour
             deleted_escaped = [ "'"+d+"'" for d in deleted ]
             deteled_id_list = "'("+",".join(deleted_escaped)+")'"
 
-            # q6 = "SELECT ign_add_to_history_table('"+tableName+"', "+deteled_id_list+", "+currentNumrec+")"
+            # q6 = "SELECT ign_add_to_history_table('"+targetTableName+"', "+deteled_id_list+", "+currentNumrec+")"
             # print(q6[:500])
             # try:
             #     cursor.execute(q6)
@@ -187,8 +187,8 @@ def integrate_table_(conf, cursor, wTableName, wIdsTableName):
             #     raise
 
             #Preparation pour historisation
-            # q7 = "UPDATE "+tableName+" SET gcms_detruit = true, "+numrec_field+" = "+currentNumrec+", end_lifespan_version = NOW(), gcms_date_destruction = NOW()"
-            q7 = "UPDATE "+tableName+" SET gcms_detruit = true"
+            # q7 = "UPDATE "+targetTableName+" SET gcms_detruit = true, "+numrec_field+" = "+currentNumrec+", end_lifespan_version = NOW(), gcms_date_destruction = NOW()"
+            q7 = "UPDATE "+targetTableName+" SET gcms_detruit = true"
         
         q7 += " WHERE "+id_field+" IN ("+",".join(deleted)+")"
         print("ITEMS DELETION:")
@@ -202,9 +202,9 @@ def integrate_table_(conf, cursor, wTableName, wIdsTableName):
     # on transfère les nouveaux objets de la table de travail vers la table
     if integrated:
         # _values = _fields.replace("begin_lifespan_version", "now()")
-        # q8 = "INSERT INTO "+tableName+" ("+_fields+", "+numrec_field+", gcms_date_creation ) SELECT "+_values+","+currentNumrec+", NOW() FROM "+wTableName
-        # q8 = "INSERT INTO "+tableName+" ("+_fields+") SELECT "+_values+" FROM "+wTableName
-        q8 = "INSERT INTO "+tableName+" ("+_fields+") SELECT "+_fields+" FROM "+wTableName
+        # q8 = "INSERT INTO "+targetTableName+" ("+_fields+", "+numrec_field+", gcms_date_creation ) SELECT "+_values+","+currentNumrec+", NOW() FROM "+wTableName
+        # q8 = "INSERT INTO "+targetTableName+" ("+_fields+") SELECT "+_values+" FROM "+wTableName
+        q8 = "INSERT INTO "+targetTableName+" ("+_fields+") SELECT "+_fields+" FROM "+wTableName
         q8 += " WHERE "+id_field+" IN ("+",".join(integrated)+")"
         print("ITEMS INTEGRATION:")
         print(q8[:500])
@@ -215,13 +215,13 @@ def integrate_table_(conf, cursor, wTableName, wIdsTableName):
             raise
     
     # on transfère les objets modifiés de la table de travail vers la table
-    if modified and not(nohistory):
+    if modified and not(noHistory):
         # déplacement dans la table historique des objets avant mise à jour
         modified_escaped = [ "'"+m+"'" for m in modified ]
         id_list = "'("+",".join(modified_escaped)+")'"
 
 
-        # q9 = "SELECT ign_add_to_history_table('"+tableName+"', "+id_list+", "+currentNumrec+")"
+        # q9 = "SELECT ign_add_to_history_table('"+targetTableName+"', "+id_list+", "+currentNumrec+")"
         # print(q9[:500])
         # try:
         #     cursor.execute(q9)
@@ -230,7 +230,7 @@ def integrate_table_(conf, cursor, wTableName, wIdsTableName):
         #     raise
 
         # mise à jour
-        q10 = "UPDATE "+tableName+" SET "
+        q10 = "UPDATE "+targetTableName+" SET "
         for field in _fields.split(","):
             value = wTableName+"."+field
             if field == id_field:
@@ -245,7 +245,7 @@ def integrate_table_(conf, cursor, wTableName, wIdsTableName):
         # q10 += numrec_field+" = "+currentNumrec+","
         # q10 += "gcms_date_modification = NOW(),"
         # q10 += "gcms_date_destruction = NULL "
-        q10 = q10[:-1] + " FROM "+wTableName+" WHERE "+tableName+"."+id_field+" = "+wTableName+"."+id_field+" AND "+tableName+"."+id_field+" IN ("+",".join(modified)+")"
+        q10 = q10[:-1] + " FROM "+wTableName+" WHERE "+targetTableName+"."+id_field+" = "+wTableName+"."+id_field+" AND "+targetTableName+"."+id_field+" IN ("+",".join(modified)+")"
         print("ITEMS MODIFICATION:")
         print(q10[:500])
         try:
@@ -254,21 +254,18 @@ def integrate_table_(conf, cursor, wTableName, wIdsTableName):
             print(e)
             raise
 
-    rec_nb_obj += table_nb_obj
+    return table_nb_obj
 
-def integrate_from_validation(
-    conf, theme, tables, verbose
-):
 
-def integrate(
+def integrate_operation(
     conf,
     theme,
     tables,
-    suffix,
     countryCodes,
     operation,
-    to_up,
-    nohistory,
+    suffix,
+    toUp,
+    noHistory,
     verbose
 ):
     """
@@ -278,10 +275,21 @@ def integrate(
     conf (objet) : configuration
     theme (str) : thème à intégrer
     tables (array) : tables à ré-intégrer (si le tableau est vide ce sont toutes les tables du thème qui seront ré-intégrées)
-    to_up (bool) : indique si les données doivent être intégrées dans la table de mise à jour et non dans la table source
-    nohistory (bool) : indique si la table cible gère l'historique (dans une table historisée les objets supprimés sont tagués et non supprimés de la table)
+    toUp (bool) : indique si les données doivent être intégrées dans la table de mise à jour et non dans la table source
+    noHistory (bool) : indique si la table cible gère l'historique (dans une table historisée les objets supprimés sont tagués et non supprimés de la table)
     verbose (bool) : mode verbeux
     """
+    
+    if operation == 'au_matching':
+        theme = 'au'
+        tables = [ conf['data']['operation'][operation]['table_name_prefix'] + str(conf['data']['operation'][operation]['lowest_level'][cc]) for cc in countryCodes ]
+    elif operation == 'net_point_matching':
+        #TODO a supprimer gestion des tables si tables=empty
+        debug_pouet=True
+    else:
+        operation_ = 'matching' if operation == 'net_matching_validation' else operation
+        if not tables:
+            tables = conf['data']['operation'][operation_]['themes'][theme]['tables'].keys()
 
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
@@ -291,12 +299,12 @@ def integrate(
     conn.set_session(isolation_level='REPEATABLE READ')
     cursor = conn.cursor()
 
-    if to_up :
-        nohistory = True
+    if toUp :
+        noHistory = True
 
     print("INTEGRATING...", flush=True)
 
-    currentNumrec = -1
+    currentNumrec = []
 
     # On revert tout un theme si pas d argument sinon on revert les tables passees en argument
     if not tables :
@@ -310,6 +318,7 @@ def integrate(
 
     validation_schema = conf['data']['themes'][theme]['v_schema']
     countryStr = "_".join(sorted(countryCodes)) + "_"
+    suffix = "_" + countryStr + suffix
     rec_nb_obj = 0
     
     for tb in tables:
@@ -320,17 +329,21 @@ def integrate(
             wIdsTableName = getTableName(validation_schema, countryStr + tableName) + conf['data']['validation']['suffix']['init']
             wTableName = getTableName(validation_schema, countryStr + tableName) + conf['data']['validation']['suffix']['correct']
         else:
-            wIdsTableName = create_table_.getWorkingIdsTablename(conf, theme, tb, countryStr+suffix)
-            wTableName = create_table_.getWorkingTablename(conf, theme, tb, countryStr+suffix)
+            wIdsTableName = create_table_.getWorkingIdsTablename(conf, theme, tb, suffix)
+            wTableName = create_table_.getWorkingTablename(conf, theme, tb, suffix)
 
-        table_nb_obj = integrate_table_(conf, cursor, wTableName, wIdsTableName)
+            if operation == "net_point_matching":
+                prefix = "_" + conf['data']['operation']['net_matching']['themes'][theme]['tables'][tb]['final_step'] + "_"
+                wTableName = prefix + wTableName
+            
+        table_nb_obj = integrate_table_(conf, cursor, currentNumrec, theme, tb, wTableName, wIdsTableName, toUp, noHistory)
         rec_nb_obj += table_nb_obj
 
     if rec_nb_obj == 0 :
         print("Aucune modification, abandon de la réconciliation", flush=True)
         return
-    
-    print("Enregistrement de la réconciliation "+currentNumrec , flush=True)
+
+    print("Enregistrement de la réconciliation "+currentNumrec[0] , flush=True)
 
     # python3 script/integrate.py -c config/conf_v6.json -T tn -t railway_link
     # python3 script/border_extract.py -c config/conf_v6.json -T tn -t railway_link -b ch -d 400 de
@@ -353,7 +366,7 @@ def integrate(
         #groupe/profil
         #source --> DEFAULT NULL
     q10 = "SELECT ign_gcms_finalize_transaction(" \
-            +currentNumrec+',' \
+            +currentNumrec[0]+',' \
             "-1," \
             "'"+",".join(tables)+"'," \
             "NULL," \
@@ -376,94 +389,67 @@ def integrate(
     cursor.close()
     conn.close()
 
+# def copy_data_in_working_tables(
+#     conf,
+#     theme,
+#     tables,
+#     countryCodes,
+#     operation,
+#     suffix,
+#     verbose
+# ):
+#     conn = psycopg2.connect(    user = conf['db']['user'],
+#                                 password = conf['db']['pwd'],
+#                                 host = conf['db']['host'],
+#                                 port = conf['db']['port'],
+#                                 database = conf['db']['name'])
+#     cursor = conn.cursor()
 
-def integrate_operation(
-    conf,
-    theme,
-    tables,
-    countryCodes,
-    operation,
-    suffix,
-    verbose
-):
-    if operation == 'au_matching':
-        theme = 'au'
-        tables = [ conf['data']['operation'][operation]['table_name_prefix'] + str(conf['data']['operation'][operation]['lowest_level'][cc]) for cc in countryCodes ]
-    else:
-        operation_ = 'matching' if operation == 'net_matching_validation' else operation
-        if not tables:
-            tables = conf['data']['operation'][operation_]['themes'][theme]['tables'].keys()
+#     validation_schema = conf['data']['themes'][theme]['v_schema']
+#     working_schema = conf['data']['themes'][theme]['w_schema']
 
-    #--
-    copy_data_in_working_tables(conf, theme, tables, countryCodes, operation, suffix, verbose)
+#     countryStr = "_".join(sorted(countryCodes)) + "_"
 
-    #--
-    toUp = False
-    noHistory = False
-    integrate(conf, theme, tables, toUp, noHistory, verbose)
+#     for tableName in tables:
+#         initTableName = ""
+#         finalTableName = ""
 
+#         if operation in ["area_matching", "au_matching", "net_point_matching"]:
+#             finalStep = conf['data']['operation'][operation]["final_step"] if "final_step" in conf['data']['operation'][operation] else conf['data']['operation'][operation]['themes'][theme]['tables'][tableName]["final_step"]
+#             initTableName = getTableName(working_schema, tableName) + conf['data']['working']['suffix'] + "_" + countryStr + suffix
+#             finalTableName = "_" + str(finalStep) + "_" + initTableName
 
-def copy_data_in_working_tables(
-    conf,
-    theme,
-    tables,
-    countryCodes,
-    operation,
-    suffix,
-    verbose
-):
-    conn = psycopg2.connect(    user = conf['db']['user'],
-                                password = conf['db']['pwd'],
-                                host = conf['db']['host'],
-                                port = conf['db']['port'],
-                                database = conf['db']['name'])
-    cursor = conn.cursor()
+#         elif operation == "net_matching_validation":
+#             finalTableName = getTableName(validation_schema, countryStr + tableName) + conf['data']['validation']['suffix']['correct']
+#             initTableName = getTableName(validation_schema, countryStr + tableName) + conf['data']['validation']['suffix']['init']
 
-    validation_schema = conf['data']['themes'][theme]['v_schema']
-    working_schema = conf['data']['themes'][theme]['w_schema']
+#         else:
+#             print("unknown operation '"+operation+"'")
+#             raise
 
-    countryStr = "_".join(sorted(countryCodes)) + "_"
+#         wTableName = getTableName(working_schema, tableName) + conf['data']['working']['suffix']
+#         wIdsTableName = getTableName(working_schema, tableName) + conf['data']['working']['ids_suffix']
 
-    for tableName in tables:
-        initTableName = ""
-        finalTableName = ""
-
-        if operation in ["area_matching", "au_matching"]:
-            finalStep = conf['data']['operation'][operation]["final_step"] if "final_step" in conf['data']['operation'][operation] else conf['data']['operation'][operation]['themes'][theme]['tables'][tableName]["final_step"]
-            initTableName = getTableName(working_schema, tableName) + conf['data']['working']['suffix'] + "_" + countryStr + suffix
-            finalTableName = "_" + str(finalStep) + "_" + initTableName
-
-        elif operation == "net_matching_validation":
-            finalTableName = getTableName(validation_schema, countryStr + tableName) + conf['data']['validation']['suffix']['correct']
-            initTableName = getTableName(validation_schema, countryStr + tableName) + conf['data']['validation']['suffix']['init']
-
-        else:
-            print("unknown operation '"+operation+"'")
-            raise
-
-        wTableName = getTableName(working_schema, tableName) + conf['data']['working']['suffix']
-        wIdsTableName = getTableName(working_schema, tableName) + conf['data']['working']['ids_suffix']
-
-        #--
-        q1 = "DELETE FROM " + wTableName + ";"
-        q1 += "INSERT INTO " + wTableName + " SELECT * FROM " + finalTableName + ";"
+#         #--
+#         q1 = "DELETE FROM " + wTableName + ";"
+#         q1 += "INSERT INTO " + wTableName + " SELECT * FROM " + finalTableName + ";"
         
-        print(u'query: {}'.format(q1), flush=True)
-        try:
-            cursor.execute(q1)
-        except psycopg2.Error as e:
-            print(e)
-            raise
-        conn.commit()
+#         print(u'query: {}'.format(q1), flush=True)
+#         try:
+#             cursor.execute(q1)
+#         except psycopg2.Error as e:
+#             print(e)
+#             raise
+#         conn.commit()
 
-        #--
-        q2 = "DELETE FROM " + wIdsTableName + ";"
-        q2 += "INSERT INTO " + wIdsTableName + " SELECT " + conf['data']['common_fields']['id'] + " FROM " + initTableName + ";"
+#         #--
+#         q2 = "DELETE FROM " + wIdsTableName + ";"
+#         q2 += "INSERT INTO " + wIdsTableName + " SELECT " + conf['data']['common_fields']['id'] + " FROM " + initTableName + ";"
         
-        print(u'query: {}'.format(q2), flush=True)
-        try:
-            cursor.execute(q2)
-        except psycopg2.Error as e:
-            print(e)
-            raise
-        conn.commit()
+#         print(u'query: {}'.format(q2), flush=True)
+#         try:
+#             cursor.execute(q2)
+#         except psycopg2.Error as e:
+#             print(e)
+#             raise
+#         conn.commit()

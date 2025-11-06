@@ -156,6 +156,7 @@ def getOrderedFields(fields, fieldsToCreate):
     orderedFields= [u""] * nbFields
     for fieldTarget, fieldProps in fields.items():
         orderedFields[fieldProps['rank']-1] = fieldTarget
+
     for field in orderedFields:
         if 'sql_type' in fields[field]:
             fieldsToCreate += ("," if fieldsToCreate else "") + field + " " + fields[field]['sql_type']
@@ -203,7 +204,7 @@ def getCreateWorkingTableStatement( conf, mcd, theme, tableName, suffix ):
     statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
     statement += " ("+getWorkingTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
     statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
-    statement += getWorkingPkeyConstraintStatement( conf, mcd, theme, tableName )
+    statement += getWorkingPkeyConstraintStatement( conf, mcd, theme, tableName, suffix )
     return statement
 
 def getCreateUpdateTableStatement( conf, mcd, theme, tableName ):
@@ -316,8 +317,8 @@ def getRefPkeyConstraintStatement(conf, mcd, theme, tableName):
 
     return _getPkeyConstraintStatement(getTableName(schema, tableCompleteName), pkeyFields)
 
-def getWorkingPkeyConstraintStatement(conf, mcd, theme, tableName):
-    tableCompleteName = tableName + conf['data']['working']['suffix']
+def getWorkingPkeyConstraintStatement(conf, mcd, theme, tableName, suffix):
+    tableCompleteName = tableName + conf['data']['working']['suffix']+suffix
     schema = conf['data']['themes'][theme]['w_schema']
 
     pkeyFields = []

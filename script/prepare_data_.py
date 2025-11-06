@@ -94,6 +94,9 @@ def run(
     verbose (bool) : mode verbeux
     """
 
+    countryCodes = sorted(countryCodes)
+    suffix = "_" + "_".join(countryCodes) + "_" + suffix
+
     if operation == "au_matching":
         tables = [conf['data']['operation'][operation]["table_name_prefix"]+str(conf['data']['operation'][operation]["lowest_level"][c]) for c in countryCodes]
         theme = conf['data']["themes"]["au"]["schema"]
@@ -101,8 +104,9 @@ def run(
     if not tables:
         tables = conf['data']['operation'][operation]['themes'][theme]['tables'].keys()
     
-    extract_data(conf, theme, tables, countryCodes, neighbors, operation, verbose)
-    init_working_tables(conf, mcd, theme, tables, suffix, countryCodes, operation, verbose)
+    extract_data(conf, mcd, theme, tables, suffix, countryCodes, neighbors, operation, verbose)
+    # init_working_tables(conf, mcd, theme, tables, suffix, countryCodes, operation, verbose)
+    # TODO gerer le cas net_matching_validation
 
 
 def init_working_tables(
@@ -208,8 +212,10 @@ def get_extraction_distance(
 
 def extract_data(
     conf,
+    mcd,
     theme,
     tables,
+    suffix,
     countryCodes,
     neighbors,
     operation,
@@ -222,14 +228,14 @@ def extract_data(
         reset = True
         distance = get_extraction_distance(conf, operation, countryCodes, theme)
 
-        border_extract_.run(conf, theme, tables, distance, countryCodes, borderCountryCode, boundaryType, fromUp, reset, verbose)
+        border_extract_.run(conf, mcd, theme, tables, distance, countryCodes, borderCountryCode, boundaryType, suffix, fromUp, reset, verbose)
 
     elif operation == "au_matching" :
         inDispute = None
         all = True if len(neighbors) == 0 else False
         distance = get_extraction_distance(conf, operation, countryCodes)
 
-        border_extract_with_neighbors_.run(conf, theme, tables, distance, countryCodes, neighbors, inDispute, all, verbose)
+        border_extract_with_neighbors_.run(conf, mcd, theme, tables, distance, countryCodes, neighbors, inDispute, all, suffix, verbose)
 
     elif operation == "net_matching_validation" :
         return

@@ -230,6 +230,9 @@
                             },
                             "railway_link" : {
                                 "final_step": "280"
+                            },
+                            "road_node" : {
+                                "final_step": "520"
                             }
                         }
                     },
@@ -246,6 +249,9 @@
                             },
                             "standing_water" : {
                                 "final_step": "399"
+                            },
+                            "hydro_node" : {
+                                "final_step": "520"
                             }
                         }
                     }
