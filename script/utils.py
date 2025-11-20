@@ -33,3 +33,19 @@ def getConf(confFile):
 
         return json.loads(confString)
     return None
+
+
+def getDbConfFromEnv():
+    """
+    Fonction utilitaire pour récupérer la configuration de la connection à la BDD depuis les variables d'environnement
+
+    Retourne:
+    objet : configuration de la BDD
+    """
+    conf = {"db":{}}
+    conf["db"]["host"]=os.environ["PGHOST"]
+    conf["db"]["port"]=os.environ["PGPORT"]
+    conf["db"]["name"]=os.environ["PGDATABASE_NAT"]
+    conf["db"]["user"]=os.environ["PGUSER"]
+    conf["db"]["pwd"]=os.environ["PGPASSWORD"]
+    return conf

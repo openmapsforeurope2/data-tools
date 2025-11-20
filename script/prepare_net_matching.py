@@ -62,11 +62,12 @@ def run(argv):
     mcd = utils.getConf(conf["mcd_conf_file"])
 
     #bd conf
+    db_conf = {}
     if not os.path.isfile(conf["db_conf_file"]):
-        print("The configuration file "+ conf["db_conf_file"] + " does not exist.")
-        sys.exit(1)
-
-    db_conf = utils.getConf(conf["db_conf_file"])
+        print("The configuration file "+ conf["db_conf_file"] + " does not exist, loading DB conf from environment variables...")
+        db_conf = utils.getDbConfFromEnv()
+    else:
+        db_conf = utils.getConf(conf["db_conf_file"])
 
     #merge confs
     conf.update(db_conf)

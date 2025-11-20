@@ -27,4 +27,8 @@ echo $PROJECT_NAME
 echo $GIT_BRANCH
 echo $DOCKER_TAG
 
-docker build --no-cache -t $PROJECT_NAME:$DOCKER_TAG -f Dockerfile ./..
+docker build \
+    --label org.opencontainers.image.source=https://github.com/openmapsforeurope2/$PROJECT_NAME \
+    --no-cache \
+    -t $PROJECT_NAME:$DOCKER_TAG \
+    -f Dockerfile ./..
