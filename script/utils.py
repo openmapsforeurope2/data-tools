@@ -1,3 +1,4 @@
+import os
 import json
 import re
 import sys
@@ -45,7 +46,7 @@ def getDbConfFromEnv():
     conf = {"db":{}}
     conf["db"]["host"]=os.environ["PGHOST"]
     conf["db"]["port"]=os.environ["PGPORT"]
-    conf["db"]["name"]=os.environ["PGDATABASE_NAT"]
+    conf["db"]["name"]=os.environ["PGDATABASE"]
     conf["db"]["user"]=os.environ["PGUSER"]
     conf["db"]["pwd"]=os.environ["PGPASSWORD"]
     return conf
