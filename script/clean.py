@@ -95,7 +95,8 @@ def run(argv):
 
     try:
         clean_.run(conf, mcd, arg_theme, arg_tables, args, arg_borders, arg_in_dispute, arg_all, suffix, arg_verbose)
-    except:
+    except Exception as e:
+        print(e)
         sys.exit(1)
     
     print("[END CLEANING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
