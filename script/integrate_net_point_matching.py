@@ -38,6 +38,10 @@ def run(argv):
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
+    if len(args) != 2 :
+        print("deux et seulement deux codes pays doivent être renseignés en arguments")
+        sys.exit(1)
+
     print('conf:', arg_conf)
     print('theme:', arg_theme)
     print('tables:', arg_tables)

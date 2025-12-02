@@ -234,8 +234,10 @@ def extract_data(
         inDispute = None
         all = True if len(neighbors) == 0 else False
         distance = get_extraction_distance(conf, operation, countryCodes)
+        if len(countryCodes) != 1:
+            raise Exception('One and only one country allowed for operation: '+operation)
 
-        border_extract_with_neighbors_.run(conf, mcd, theme, tables, distance, countryCodes, neighbors, inDispute, all, suffix, verbose)
+        border_extract_with_neighbors_.run(conf, mcd, theme, tables, distance, countryCodes[0], neighbors, inDispute, all, suffix, verbose)
 
     elif operation == "net_matching_validation" :
         return

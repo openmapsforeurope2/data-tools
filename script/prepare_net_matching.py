@@ -14,7 +14,6 @@ def run(argv):
     arg_tables = []
     arg_suffix = ""
     arg_verbose = False
-    arg_operation = ""
     
     try:
         opts, args = getopt.getopt(argv[1:], "c:T:t:s:v", [
@@ -39,13 +38,18 @@ def run(argv):
             arg_suffix = arg
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
-        
+
     print('conf:', arg_conf)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
     print('suffix:', arg_suffix)
     print('country codes:', args)
     print('verbose:', arg_verbose)
+
+    #country
+    if len(args) != 2:
+        print("Two and only two country must be specified in arguments")
+        sys.exit(1)
 
     #conf
     if not os.path.isfile(arg_conf):

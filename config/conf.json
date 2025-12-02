@@ -1,5 +1,5 @@
 {
-    "db_conf_file":"config/db_conf.json",
+    "db_conf_file":"config/db_conf_v6.json",
     "mcd_conf_file":"config/mcd.json",
     "landmask": {
         "schema": "au",

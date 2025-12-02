@@ -43,13 +43,11 @@ def clean(
     for c in countryCodes:
         landmask_statement = "SELECT ST_Union(ARRAY(SELECT geom FROM "+ getTableName(conf['landmask']['schema'], conf['landmask']['table']) +" WHERE "+conf['landmask']["fields"]["country"]+"='"+c+"' AND NOT gcms_detruit))"
 
-        w_schema = conf['data']['themes'][theme]['w_schema']
-        w_suffix = conf['data']['working']['suffix']
         if not tables:
             tables = conf['data']['themes'][theme]['tables']
 
         for tb in tables:
-            query = "DELETE FROM "+create_table_.getWorkingTablename(conf, theme, table, suffix)
+            query = "DELETE FROM "+create_table_.getWorkingTablename(conf, theme, tb, suffix)
             query += " WHERE "+conf['data']['common_fields']['country']+"='"+c+"'"
             query += " AND ST_Distance(("+landmask_statement+"), geom) > "+str(distance)
 
@@ -70,7 +68,7 @@ def extract_data(
     mcd,
     theme,
     tables,
-    countryCodes,
+    country,
     borders,
     inDispute,
     all,
@@ -80,15 +78,15 @@ def extract_data(
     distance = conf['data']['operation']['cleaning']['themes'][theme]['extraction_distance']['default']
     if country in conf['data']['operation']['cleaning']['themes'][theme]['extraction_distance']:
         distance = conf['data']['operation']['cleaning']['themes'][theme]['extraction_distance'][country]
-            
-    border_extract_with_neighbors_.run(conf, mcd, theme, tables, distance, countryCodes, borders, inDispute, all, suffix, verbose)
+
+    border_extract_with_neighbors_.run(conf, mcd, theme, tables, distance, country, borders, inDispute, all, suffix, verbose)
 
 def run(
     conf,
     mcd,
     theme, 
     tables, 
-    countryCodes, 
+    country, 
     borders, 
     inDispute, 
     all,
@@ -102,7 +100,7 @@ def run(
     conf (objet) : configuration
     theme (str) : thème à traiter
     tables (array) : tables à traiter (si le tableau est vide ce sont toutes les tables du thème qui seront traitées)
-    countryCodes (array) : codes des pays à traiter
+    country (str) : code du pays à traiter
     borders (array) : codes des pays frontaliers (à préciser dans le cas où l'on ne souhaite pas nettoyer l'ensemble des frontières du pays à traiter)
     inDispute (bool) : indique si l'on traite les zones 'in dipute'
     verbose (bool) : mode verbeux
@@ -112,11 +110,13 @@ def run(
     if not tables:
         tables = conf['data']['themes'][theme]['tables']
 
+    suffix = "_" + country + "_" + suffix
+
     #--
-    extract_data.run(conf, mcd, theme, tables, countryCodes, borders, inDispute, all, suffix, verbose)
+    extract_data(conf, mcd, theme, tables, country, borders, inDispute, all, suffix, verbose)
 
     #-- 
-    clean(conf, theme, tables, countryCodes, suffix, verbose)
+    clean(conf, theme, tables, country, suffix, verbose)
 
     #--
     toUp = False

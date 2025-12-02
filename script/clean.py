@@ -2,7 +2,6 @@ import os
 import sys
 import getopt
 from datetime import datetime
-import shutil
 import utils
 import clean_
 
@@ -55,6 +54,10 @@ def run(argv):
     if arg_all and arg_borders:
         print("les paramètres -a et -b ne peuvent pas être utilisés simultanément")
         sys.exit(1)
+    
+    if len(args) != 1 :
+        print("un et un seul code pays doit être renseigné en argument")
+        sys.exit(1)
 
     print('conf:', arg_conf)
     print('theme:', arg_theme)
@@ -64,7 +67,7 @@ def run(argv):
     print('in dispute:', arg_in_dispute)
     print('all:', arg_all)
     print('verbose:', arg_verbose)
-    print('country codes:', args)
+    print('country code:', args[0])
 
     #conf
     if not os.path.isfile(arg_conf):
@@ -94,7 +97,7 @@ def run(argv):
     print("[START CLEANING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        clean_.run(conf, mcd, arg_theme, arg_tables, args, arg_borders, arg_in_dispute, arg_all, arg_suffix, arg_verbose)
+        clean_.run(conf, mcd, arg_theme, arg_tables, args[0], arg_borders, arg_in_dispute, arg_all, arg_suffix, arg_verbose)
     except Exception as e:
         print(e)
         sys.exit(1)

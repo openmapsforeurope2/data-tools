@@ -40,6 +40,11 @@ def run(argv):
     print('country codes:', args)
     print('verbose:', arg_verbose)
 
+    #country
+    if len(args) != 2:
+        print("Two and only two country must be specified in arguments")
+        sys.exit(1)
+
     #conf
     if not os.path.isfile(arg_conf):
         print("The configuration file "+ arg_conf + " does not exist.")

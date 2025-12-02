@@ -13,7 +13,6 @@ def run(argv):
     arg_borders = []
     arg_suffix = ""
     arg_verbose = False
-    arg_operation = ""
     
     try:
         opts, args = getopt.getopt(argv[1:], "c:b:s:v", [
@@ -35,11 +34,15 @@ def run(argv):
             arg_suffix = arg
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
+
+    if len(args) != 1 :
+        print("un et un seul code pays doit être renseigné en argument")
+        sys.exit(1)
         
     print('conf:', arg_conf)
     print('borders:', arg_borders)
     print('suffix:', arg_suffix)
-    print('country codes:', args)
+    print('country code:', args)
     print('verbose:', arg_verbose)
 
     #country

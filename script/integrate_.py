@@ -282,7 +282,9 @@ def integrate_operation(
     
     if operation == 'au_matching':
         theme = 'au'
-        tables = [ conf['data']['operation'][operation]['table_name_prefix'] + str(conf['data']['operation'][operation]['lowest_level'][cc]) for cc in countryCodes ]
+        if len(countryCodes) != 1:
+            raise Exception('One and only one country allowed for operation: '+operation)
+        tables = [ conf['data']['operation'][operation]['table_name_prefix'] + str(conf['data']['operation'][operation]['lowest_level'][countryCodes[0]]) ]
     elif operation == 'net_point_matching':
         #TODO a supprimer gestion des tables si tables=empty
         debug_pouet=True
@@ -326,8 +328,8 @@ def integrate_operation(
         wTableName = ""
         
         if operation == "net_matching_validation":
-            wIdsTableName = getTableName(validation_schema, countryStr + tableName) + conf['data']['validation']['suffix']['init']
-            wTableName = getTableName(validation_schema, countryStr + tableName) + conf['data']['validation']['suffix']['correct']
+            wIdsTableName = getTableName(validation_schema, countryStr + tb) + conf['data']['validation']['suffix']['init']
+            wTableName = getTableName(validation_schema, countryStr + tb) + conf['data']['validation']['suffix']['correct']
         else:
             wIdsTableName = create_table_.getWorkingIdsTablename(conf, theme, tb, suffix)
             wTableName = create_table_.getWorkingTablename(conf, theme, tb, suffix)
