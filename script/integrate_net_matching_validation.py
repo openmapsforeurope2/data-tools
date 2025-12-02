@@ -73,6 +73,8 @@ def run(argv):
             args,
             "net_matching_validation",
             None,
+            False,
+            False,
             arg_verbose
         )
 

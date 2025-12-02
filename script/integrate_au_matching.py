@@ -68,6 +68,8 @@ def run(argv):
             args,
             "au_matching",
             arg_suffix,
+            False,
+            False,
             arg_verbose
         )
 

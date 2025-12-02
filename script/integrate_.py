@@ -319,8 +319,6 @@ def integrate_operation(
     # on transfert les nouvelles versions des bjets supprimes, modifies ou créés de la table de travail vers la table
 
     validation_schema = conf['data']['themes'][theme]['v_schema']
-    countryStr = "_".join(sorted(countryCodes)) + "_"
-    suffix = "_" + countryStr + suffix
     rec_nb_obj = 0
     
     for tb in tables:
@@ -328,6 +326,7 @@ def integrate_operation(
         wTableName = ""
         
         if operation == "net_matching_validation":
+            countryStr = "_".join(sorted(countryCodes)) + "_"
             wIdsTableName = getTableName(validation_schema, countryStr + tb) + conf['data']['validation']['suffix']['init']
             wTableName = getTableName(validation_schema, countryStr + tb) + conf['data']['validation']['suffix']['correct']
         else:

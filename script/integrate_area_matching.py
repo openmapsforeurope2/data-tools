@@ -78,6 +78,8 @@ def run(argv):
             args,
             "area_matching",
             arg_suffix,
+            False,
+            False,
             arg_verbose
         )
 
