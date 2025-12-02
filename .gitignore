@@ -1,6 +1,6 @@
 /script/__pycache__
 /script/*.pyc
-config/*
-!config/db_conf.ini.template
-!config/mcd.json
-!config/conf.json
+conf/*
+config/db_conf.ini.template
+config/mcd.json
+config/conf_v6.json

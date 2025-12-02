@@ -1,8 +1,8 @@
 **/.classpath
 **/.dockerignore
 **/.env
-# **/.git
-# **/.gitignore
+**/.git
+**/.gitignore
 **/.project
 **/.settings
 **/.toolstarget
@@ -26,3 +26,6 @@ README.md
 core
 gmon.out
 log.txt
+conf/*
+config/db_conf.ini.template
+config/conf_v6.json

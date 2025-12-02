@@ -93,6 +93,17 @@ def run(argv):
 
     print("[START CLEANING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
+    print('conf:', conf)
+    print('theme:', mcd)
+    print('tables:', arg_theme)
+    print('tables:', arg_tables)
+    print('borders:', arg_borders)
+    print('suffix:', suffix)
+    print('in dispute:', arg_in_dispute)
+    print('all:', arg_all)
+    print('verbose:', arg_verbose)
+    print('country codes:', args)
+
     try:
         clean_.run(conf, mcd, arg_theme, arg_tables, args, arg_borders, arg_in_dispute, arg_all, suffix, arg_verbose)
     except Exception as e:
