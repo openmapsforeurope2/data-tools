@@ -26,6 +26,7 @@ README.md
 core
 gmon.out
 log.txt
-conf/*
-config/db_conf.ini.template
-config/conf_v6.json
+config/*
+!config/db_conf.ini.template
+!config/mcd.json
+!config/conf.json
