@@ -67,7 +67,12 @@ def run(argv):
     print('in dispute:', arg_in_dispute)
     print('all:', arg_all)
     print('verbose:', arg_verbose)
-    print('country code:', args[0])
+    print('country code:', args)
+
+    #country
+    if len(args) != 1:
+        print("One and only one country must be specified in arguments")
+        sys.exit(1)
 
     #conf
     if not os.path.isfile(arg_conf):
