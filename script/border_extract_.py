@@ -62,11 +62,10 @@ def run(
     where_statement_boundary += (" AND " if where_statement_boundary else "") + " NOT gcms_detruit"
     
     boundary_statement = "ST_Union(ARRAY((SELECT "+conf['boundary']['fields']['geometry']+" FROM "+getTableName(conf['boundary']['schema'], conf['boundary']['table'])+" WHERE "+where_statement_boundary+")))"
-    boundary_buffer_statement = "SELECT ST_Buffer(("+boundary_statement+"),"+ str(distance)+")" if distance is not None else None
+    boundary_buffer_statement = "SELECT ST_SetSRID(ST_Buffer(("+boundary_statement+"),"+ str(distance)+"),3035)" if distance is not None else None
 
     
     theme_schema = conf['data']['themes'][theme]['schema']
-    working_schema = conf['data']['themes'][theme]['w_schema']
     update_schema = conf['data']['themes'][theme]['u_schema']
     
     if not tables:
