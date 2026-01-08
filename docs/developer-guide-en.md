@@ -9,13 +9,14 @@ The data-tools repository contains all the features of the OME2 project that inv
 The tools provided are as follows:
 
 - `create_table`: generates and runs the scripts to create all the tables required of the OME2 central large-scale database.
+- `create_view`: generates and runs the scripts to create the release views of the OME2 central large-scale database.
 - `border_extract`: used to extract objects around an international boundary from a source table to a target work table for further processing.
+- `clean`: removes data outside a country' extent (starting from a distance threshold). This cleanup is the first step of the data harmonization process along borders. This function includes extraction, cleaning, and integration steps.
 - `integrate`: reintegrates into the source table the data extracted and processed in the work table.
+- `prepare_data`: prepares the data required for the edge-matching or validation (after the edge-matching) processes.
+- `integrate_from_validation`: updates the production tables by integrating changes from the validation tables (initial table and processed data table).
 - `revert`: undoes the changes corresponding to the 'step' specified as a parameter. All changes linked to subsequent 'steps' are also undone.
 - `copy_table`: copies tables located in a schema into the public schema.
-- `clean`: removes data outside a country' extent (starting from a distance threshold). This cleanup is the first step of the data harmonization process along borders. This function includes extraction, cleaning, and integration steps.
-- `integrate_from_validation`: updates the production tables by integrating changes from the validation tables (initial table and processed data table).
-- `prepare_data`: prepares the data required for the edge-matching or validation (after the edge-matching) processes.
 
 This project also includes [SQL scripts](https://github.com/openmapsforeurope2/data-tools/tree/main/sql/db_init) intended to set up the internal mechanisms of the OME2 database (life-cycle management, resolution, identifiers, etc.).
 
@@ -112,37 +113,6 @@ python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b be -
 ~~~
 > _Note: The first line allows extraction of data around international borders that have a simple country code. This corresponds to disputed borders._
 
-### integrate
-
-Parameters
-* c [mandatory]: configuration file
-* T [mandatory]: theme (only one theme can be specified)
-* t [optional]: table (multiple tables can be specified by repeating this option as necessary). Tables must belong to theme T
-
-<br>
-
-Example usage:
-~~~
-python3 script/integrate.py -c path/to/conf.json -T tn -t road_link
-~~~
-
-### revert
-
-Parameters
-* c [mandatory]: configuration file
-* T [mandatory]: theme (only one theme can be specified)
-* t [optional]: table (multiple tables can be specified by repeating this option as necessary). Tables must belong to theme T
-* s [mandatory]: step number
-
-<br>
-
-Example usage:
-~~~
-python3 script/reverte.py -c path/to/conf.json -T au -t administrative_unit_area_3 -s 30
-~~~
-
-
-
 ### clean
 
 Parameters
@@ -166,32 +136,18 @@ Example of cleaning French data around all borders:
 python3 script/clean.py -c path/to/conf.json -a -T tn -t road_link fr
 ~~~
 
-### copy_table
-
-This function allows you to copy the schema.table into public.schema_table.
+### integrate
 
 Parameters
 * c [mandatory]: configuration file
-* arguments: table(s) to copy
+* T [mandatory]: theme (only one theme can be specified)
+* t [optional]: table (multiple tables can be specified by repeating this option as necessary). Tables must belong to theme T
 
 <br>
 
 Example usage:
 ~~~
-python3 script/copy_table.py -c path/to/conf.json au.administrative_unit_area_1 ib.international_boundary_line
-~~~
-
-### integrate_from_validation
-
-Parameters
-* c [mandatory]: configuration file
-* T [mandatory]: theme (only one theme can be specified)
-* t [optional]: table (multiple tables can be specified by repeating this option as necessary). Tables must belong to theme T.
-* arguments: codes of the two matched countries to integrate
-
-Example of updating the production tables for the entire hydrography theme after the data matching process between Austria (at) and Czechoslovakia (cz):
-~~~
-python3 script/integrate_from_validation.py -c path/to/conf.json -T hy at cz
+python3 script/integrate.py -c path/to/conf.json -T tn -t road_link
 ~~~
 
 ### prepare_data
@@ -214,6 +170,50 @@ python3 script/prepare_data.py -c path/to/conf.json -n -T tn -t road_link -s 202
 Example of data preparation for the validation process:
 ~~~
 python3 script/prepare_data.py -c path/to/conf.json -w -T tn -t road_link -s 20250904 be fr
+~~~
+
+### integrate_from_validation
+
+Parameters
+* c [mandatory]: configuration file
+* T [mandatory]: theme (only one theme can be specified)
+* t [optional]: table (multiple tables can be specified by repeating this option as necessary). Tables must belong to theme T.
+* arguments: codes of the two matched countries to integrate
+
+Example of updating the production tables for the entire hydrography theme after the data matching process between Austria (at) and Czechoslovakia (cz):
+~~~
+python3 script/integrate_from_validation.py -c path/to/conf.json -T hy at cz
+~~~
+
+### revert
+
+Parameters
+* c [mandatory]: configuration file
+* T [mandatory]: theme (only one theme can be specified)
+* t [optional]: table (multiple tables can be specified by repeating this option as necessary). Tables must belong to theme T
+* s [mandatory]: step number
+
+<br>
+
+Example usage:
+~~~
+python3 script/reverte.py -c path/to/conf.json -T au -t administrative_unit_area_3 -s 30
+~~~
+
+
+### copy_table
+
+This function allows you to copy the schema.table into public.schema_table.
+
+Parameters
+* c [mandatory]: configuration file
+* arguments: table(s) to copy
+
+<br>
+
+Example usage:
+~~~
+python3 script/copy_table.py -c path/to/conf.json au.administrative_unit_area_1 ib.international_boundary_line
 ~~~
 
 ### OME2 Database Creation
