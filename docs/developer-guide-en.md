@@ -15,8 +15,9 @@ The tools provided are as follows:
 - `integrate`: reintegrates into the source table the data extracted and processed in the work table.
 - `prepare_data`: prepares the data required for the edge-matching process or validation phase (after the edge-matching).
 - `integrate_from_validation`: updates the production tables by integrating changes from the validation tables (initial table and processed data table).
-- `revert`: undoes the changes corresponding to the 'step' specified as a parameter. All changes linked to subsequent 'steps' are also undone.
 - `copy_table`: copies tables located in a schema into the public schema.
+- `revert`: /!\ DEPRECATED - undoes the changes corresponding to the 'step' specified as a parameter. All changes linked to subsequent 'steps' are also undone.
+
 
 This project also includes [SQL scripts](https://github.com/openmapsforeurope2/data-tools/tree/main/sql/db_init) intended to set up the internal mechanisms of the OME2 database (life-cycle management, resolution, identifiers, etc.).
 
@@ -197,6 +198,21 @@ Example of updating the production tables for the entire hydrography theme after
 python3 script/integrate_from_validation.py -c path/to/conf.json -T hy at cz
 ~~~
 
+### copy_table
+
+This function allows to copy the schema.table into public.schema_table.
+
+Parameters
+* c [mandatory]: configuration file
+* arguments: table(s) to copy
+
+<br>
+
+Example usage:
+~~~
+python3 script/copy_table.py -c path/to/conf.json au.administrative_unit_area_1 ib.international_boundary_line
+~~~
+
 ### revert
 /!\ DEPRECATED
 This function undoes the changes corresponding to the 'step' specified as a parameter. All changes linked to subsequent 'steps' are also undone.
@@ -212,52 +228,4 @@ Parameters
 Example usage:
 ~~~
 python3 script/reverte.py -c path/to/conf.json -T au -t administrative_unit_area_3 -s 30
-~~~
-
-
-### copy_table
-
-This function allows you to copy the schema.table into public.schema_table.
-
-Parameters
-* c [mandatory]: configuration file
-* arguments: table(s) to copy
-
-<br>
-
-Example usage:
-~~~
-python3 script/copy_table.py -c path/to/conf.json au.administrative_unit_area_1 ib.international_boundary_line
-~~~
-
-### OME2 Database Creation
-
-Below is the ordered list of commands to run to create the OME2 database.
-
-#### Structure Initialization
-~~~
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d OME2 -f ./sql/db_init/HVLSP_0_GCMS_0_ADMIN.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d OME2 -f ./sql/db_init/HVLSP_1_CREATE_SCHEMAS.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d OME2 -f ./sql/db_init/ome2_reduce_precision_3d_trigger_function.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d OME2 -f ./sql/db_init/ome2_reduce_precision_2d_trigger_function.sql
-~~~
-
-#### Table Creation
-
-Create all tables for all schemas:
-
-~~~
-python3 script/create_table.py -c path/to/conf.json -m mcd.json -T tn
-python3 script/create_table.py -c path/to/conf.json -m mcd.json -T hy
-python3 script/create_table.py -c path/to/conf.json -m mcd.json -T au
-python3 script/create_table.py -c path/to/conf.json -m mcd.json -T ib
-~~~
-
-#### Table History Management
-~~~
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -f ./sql/db_init/HVLSP_2_GCMS_1_COMMON.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -f ./sql/db_init/HVLSP_3_GCMS_3_HISTORIQUE.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -f ./sql/db_init/ign_gcms_history_trigger_function.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -f ./sql/db_init/HVLSP_4_GCMS_4_OME2_ADD_HISTORY.sql
-psql -h SMLPOPENMAPS2 -p 5432 -U postgres -d ome2_test_cd -c "ALTER SEQUENCE public.seqnumrec OWNER TO g_ome2_user;"
 ~~~
