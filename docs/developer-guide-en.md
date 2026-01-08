@@ -198,6 +198,8 @@ python3 script/integrate_from_validation.py -c path/to/conf.json -T hy at cz
 ~~~
 
 ### revert
+/!\ DEPRECATED
+This function undoes the changes corresponding to the 'step' specified as a parameter. All changes linked to subsequent 'steps' are also undone.
 
 Parameters
 * c [mandatory]: configuration file
