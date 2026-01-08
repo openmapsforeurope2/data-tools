@@ -79,8 +79,7 @@ python3 script/create_view.py -c path/to/conf.json -T tn -t railway_link
 
 ### border_extract
 
-This function extracts data located in a buffer along one or more international boundaries for one country or for two neighbouring countries. The data is extracted for
-one table or for a whole theme.
+This function extracts data located in a buffer along one or more international boundaries for one country or for two neighbouring countries. The data is extracted for one table or for a whole theme.
 
 Parameters
 * c [mandatory]: configuration file
