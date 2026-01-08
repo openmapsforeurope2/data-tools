@@ -11,9 +11,9 @@ The tools provided are as follows:
 - `create_table`: generates and runs the scripts to create all the tables required of the OME2 central large-scale database.
 - `create_view`: generates and runs the scripts to create the release views of the OME2 central large-scale database.
 - `border_extract`: used to extract objects around an international boundary from a source table to a target work table for further processing.
-- `clean`: removes data outside a country' extent (starting from a distance threshold). This cleanup is the first step of the data harmonization process along borders. This function includes extraction, cleaning, and integration steps.
+- `clean`: removes data outside a country's extent (starting from a distance threshold). This cleanup is the first step of the data harmonization process along borders. This function includes extraction, cleaning, and integration steps.
 - `integrate`: reintegrates into the source table the data extracted and processed in the work table.
-- `prepare_data`: prepares the data required for the edge-matching or validation (after the edge-matching) processes.
+- `prepare_data`: prepares the data required for the edge-matching process or validation phase (after the edge-matching).
 - `integrate_from_validation`: updates the production tables by integrating changes from the validation tables (initial table and processed data table).
 - `revert`: undoes the changes corresponding to the 'step' specified as a parameter. All changes linked to subsequent 'steps' are also undone.
 - `copy_table`: copies tables located in a schema into the public schema.
@@ -118,11 +118,13 @@ python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b be -
 
 ### clean
 
+This function removes national data located outside a country's extent (starting from a distance threshold). This cleanup is the first step of the data harmonization process along borders. It includes extraction, cleaning, and integration steps.
+
 Parameters
 * c [mandatory]: configuration file
 * T [mandatory]: theme (only one theme can be specified)
 * t [optional]: table (multiple tables can be specified by repeating this option as necessary). Tables must belong to theme T. If not defined, the cleaning will be processed for all tables of the theme (specified with the -T parameter).
-* b [optional]: country code for a border country (multiple codes can be specified by repeating this option as many times as necessary). If this parameter is defined, the cleaning will be processed only on the specified border(s).
+* b [optional]: country code for a neighbouring country (multiple codes can be specified by repeating this option as many times as necessary). If this parameter is defined, the cleaning will be processed only on the specified border(s).
 * i [optional]: if specified, the cleaning is performed around disputed borders.
 * a [optional]: parameter to process cleaning around all borders of the specified country/countries (see "arguments"). If specified, all defined -b parameters will be ignored.
 * arguments: codes of country/countries to clean
@@ -141,6 +143,8 @@ python3 script/clean.py -c path/to/conf.json -a -T tn -t road_link fr
 
 ### integrate
 
+This function reintegrates the data which was extracted and processed in the work table into the original source table.
+
 Parameters
 * c [mandatory]: configuration file
 * T [mandatory]: theme (only one theme can be specified)
@@ -154,6 +158,8 @@ python3 script/integrate.py -c path/to/conf.json -T tn -t road_link
 ~~~
 
 ### prepare_data
+
+This function prepares the data required for the edge-matching process or validation phase (after the edge-matching).
 
 Parameters
 * c [mandatory]: configuration file
@@ -176,6 +182,9 @@ python3 script/prepare_data.py -c path/to/conf.json -w -T tn -t road_link -s 202
 ~~~
 
 ### integrate_from_validation
+
+Once the edge-matching has been performed on a theme between two countries, the results are copied into "validation" tables. These tables are manually
+reviewed and corrected by data experts. This function updates the source tables by integrating changes from the validation tables.
 
 Parameters
 * c [mandatory]: configuration file
