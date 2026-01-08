@@ -30,7 +30,50 @@ The configuration files are located in the [configuration folder](https://github
 
 ## Usage
 
-All tools are used via command line.
+All the tools should be used on the OME2 production platform. They can also be used via command lines.
+
+### create_table
+
+This function creates a table or all tables of a theme, for example when a new OME2 database is set up.
+
+Parameters
+* c [mandatory]: configuration file
+* T [mandatory]: theme (only one theme can be specified)
+* t [optional]: table (multiple tables can be specified by repeating this option as necessary). Tables must belong to theme T
+
+<br>
+
+Example for creating all tables for the Transport theme:
+~~~
+python3 script/create_table.py -c path/to/conf.json -T tn
+~~~
+
+Example for creating a single table:
+~~~
+python3 script/create_table.py -c path/to/conf.json -T tn -t railway_link
+~~~
+
+### create_view
+
+This function creates view(s) of a table or all tables of a theme in the "release" schema, for example when a new OME2 database is set up.
+These views will only contain "live" objects (not destroyed objects i.e. objects for which end_lifespan_version is NULL).
+
+Parameters
+* c [mandatory]: configuration file
+* T [mandatory]: theme (only one theme can be specified)
+* t [optional]: table (multiple tables can be specified by repeating this option as necessary). Tables must belong to theme T
+
+<br>
+
+Example for creating view corresponding to all tables for the Transport theme:
+~~~
+python3 script/create_view.py -c path/to/conf.json -T tn
+~~~
+
+Example for creating a view corresponding to a single table:
+~~~
+python3 script/create_view.py -c path/to/conf.json -T tn -t railway_link
+~~~
 
 ### border_extract
 
@@ -98,26 +141,7 @@ Example usage:
 python3 script/reverte.py -c path/to/conf.json -T au -t administrative_unit_area_3 -s 30
 ~~~
 
-### create_table
 
-This function creates a table or all tables of a theme.
-
-Parameters
-* c [mandatory]: configuration file
-* T [mandatory]: theme (only one theme can be specified)
-* t [optional]: table (multiple tables can be specified by repeating this option as necessary). Tables must belong to theme T
-
-<br>
-
-Examples for creating all tables for the transport theme:
-~~~
-python3 script/create_table.py -c path/to/conf.json -T tn
-~~~
-
-Examples for creating a single table:
-~~~
-python3 script/create_table.py -c path/to/conf.json -T tn -t railway_link
-~~~
 
 ### clean
 
