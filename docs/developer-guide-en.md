@@ -35,7 +35,7 @@ All the tools should be used on the OME2 production platform. They can also be u
 
 ### create_table
 
-This function creates a table or all tables of a theme, for example when a new OME2 database is set up.
+This function creates a table or all of a theme's tables, for example when a new OME2 database is set up.
 
 Parameters
 * c [mandatory]: configuration file
@@ -56,7 +56,7 @@ python3 script/create_table.py -c path/to/conf.json -T tn -t railway_link
 
 ### create_view
 
-This function creates view(s) of a table or all tables of a theme in the "release" schema, for example when a new OME2 database is set up.
+This function creates one or more views corresponding to a table or to all of a theme's tables in the "release" schema, for example when a new OME2 database is set up.
 These views will only contain "live" objects (not destroyed objects i.e. objects for which end_lifespan_version is NULL).
 
 Parameters
@@ -77,6 +77,9 @@ python3 script/create_view.py -c path/to/conf.json -T tn -t railway_link
 ~~~
 
 ### border_extract
+
+This function extracts data located in a buffer along one or more international boundaries for one country or for two neighbouring countries. The data is extracted for
+one table or for a whole theme.
 
 Parameters
 * c [mandatory]: configuration file
@@ -99,7 +102,7 @@ Example for extracting data from two neighboring countries:
 python3 script/border_extract.py -c path/to/conf.json -T hy -t watercourse_link -d 1000 be fr
 ~~~
 
-Example for extracting all data of a country and data from neighboring countries border by border:
+Example for extracting all data of a country and data from neighboring countries border by border (this can be useful for countries with long boundaries):
 ~~~
 python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b false -B international -d 3000 fr
 python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b ad -d 3000 -n fr
