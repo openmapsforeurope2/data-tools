@@ -214,6 +214,7 @@ python3 script/copy_table.py -c path/to/conf.json au.administrative_unit_area_1 
 
 ### revert
 /!\ DEPRECATED
+
 This function undoes the changes corresponding to the 'step' specified as a parameter. All changes linked to subsequent 'steps' are also undone.
 
 Parameters
@@ -226,5 +227,5 @@ Parameters
 
 Example usage:
 ~~~
-python3 script/reverte.py -c path/to/conf.json -T au -t administrative_unit_area_3 -s 30
+python3 script/revert.py -c path/to/conf.json -T au -t administrative_unit_area_3 -s 30
 ~~~
