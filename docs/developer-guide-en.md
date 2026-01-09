@@ -4,7 +4,7 @@
 
 ## Description
 
-The data-tools repository contains all the features of the OME2 project that involve executing SQL scripts to manage the central database.
+The data-tools utility tools based on SQL scripts to manage the central OME2 database.
 
 The tools provided are as follows:
 
