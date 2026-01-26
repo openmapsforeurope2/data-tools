@@ -30,3 +30,4 @@ config/*
 !config/db_conf.ini.template
 !config/mcd.json
 !config/conf.json
+docker
