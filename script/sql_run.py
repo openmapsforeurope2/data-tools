@@ -8,7 +8,7 @@ import psycopg2
 
 def run(argv):
 
-    arg_conf = ""
+    arg_conf = None
     arg_sql_file = ""
     arg_db_host = None
     arg_db_port = None
@@ -52,11 +52,6 @@ def run(argv):
 
     if not os.path.isfile(arg_sql_file):
         print("The sql file "+ arg_sql_file + " does not exist.")
-        sys.exit(1)
-
-    #conf param
-    if arg_conf is not None and not os.path.isfile(arg_conf):
-        print("The configuration file "+ arg_conf + " does not exist.")
         sys.exit(1)
 
     #conf initialization

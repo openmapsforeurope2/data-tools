@@ -1,7 +1,6 @@
 import os
 import json
 import re
-import sys
 
 
 def getConf(confFile):

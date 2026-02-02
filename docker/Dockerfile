@@ -23,4 +23,6 @@ RUN apt update \
 
 COPY --from=build /usr/local/ /usr/local/
 
-WORKDIR /usr/local/src/data-tools
+ENV APP_DIR_SRC=/usr/local/src/data-tools/
+
+WORKDIR $APP_DIR_SRC
