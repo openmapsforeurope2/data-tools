@@ -33,8 +33,8 @@ BEGIN
 END;
 $BODY$;
 
-ALTER FUNCTION public.ome2_reduce_precision_2d_trigger_function()
-    OWNER TO postgres;
+--ALTER FUNCTION public.ome2_reduce_precision_2d_trigger_function()
+--    OWNER TO postgres;
 
 
 
@@ -66,6 +66,6 @@ BEGIN
 END;
 $BODY$;
 
-ALTER FUNCTION public.ome2_reduce_precision_3d_trigger_function()
-    OWNER TO postgres;
+--ALTER FUNCTION public.ome2_reduce_precision_3d_trigger_function()
+--    OWNER TO postgres;
 
