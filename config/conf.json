@@ -95,7 +95,7 @@
                 "h_schema": "",
                 "w_schema": "",
                 "u_schema": "",
-                "r_schema": "ref",
+                "r_schema": "public",
                 "v_schema": "validation",
                 "tables": [
                     "administrative_boundary",
@@ -115,7 +115,7 @@
                 "h_schema": "",
                 "w_schema": "",
                 "u_schema": "",
-                "r_schema": "ref",
+                "r_schema": "public",
                 "v_schema": "validation",
                 "tables": [
                     "international_boundary_line",
@@ -128,7 +128,7 @@
                 "h_schema": "",
                 "w_schema": "",
                 "u_schema": "",
-                "r_schema": "ref",
+                "r_schema": "public",
                 "v_schema": "validation",
                 "tables": [
                     "watercourse_link",
