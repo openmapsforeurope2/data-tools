@@ -15,17 +15,14 @@ def run(argv):
     args = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "hc:T:t:d:", ["help",
+        opts, args = getopt.getopt(argv[1:], "c:T:t:d:", [
         "conf=", "theme=", "table=", "dbname="])
     except getopt.GetoptError as err:
         print(err)
         sys.exit(1)
     
     for opt, arg in opts:
-        if opt in ("-h", "--help"):
-            print(arg_help)  # print the help message
-            sys.exit(1)
-        elif opt in ("-c", "--conf"):
+        if opt in ("-c", "--conf"):
             arg_conf = arg
         elif opt in ("-T", "--theme"):
             arg_theme = arg
@@ -60,7 +57,6 @@ def run(argv):
     else:
         db_conf = utils.getConf(conf["db_conf_file"])
 
-    #--
     if arg_db_name is not None:
         db_conf["db"]["name"] = arg_db_name
 
