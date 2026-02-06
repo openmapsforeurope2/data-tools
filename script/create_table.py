@@ -2,7 +2,6 @@ import os
 import sys
 import getopt
 from datetime import datetime
-import shutil
 import utils
 import create_table_
 
@@ -12,11 +11,12 @@ def run(argv):
     arg_conf = ""
     arg_theme = ""
     arg_tables = []
+    arg_db_name = None
     args = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "hc:T:t:", ["help",
-        "conf=", "theme=", "table="])
+        opts, args = getopt.getopt(argv[1:], "hc:T:t:d:", ["help",
+        "conf=", "theme=", "table=", "dbname="])
     except getopt.GetoptError as err:
         print(err)
         sys.exit(1)
@@ -31,6 +31,8 @@ def run(argv):
             arg_theme = arg
         elif opt in ("-t", "--table"):
             arg_tables.append(arg)
+        elif opt in ("-d", "--dbname"):
+            arg_db_name = arg
 
     print('conf:', arg_conf)
     print('theme:', arg_theme)
@@ -57,6 +59,10 @@ def run(argv):
         db_conf = utils.getDbConfFromEnv()
     else:
         db_conf = utils.getConf(conf["db_conf_file"])
+
+    #--
+    if arg_db_name is not None:
+        db_conf["db"]["name"] = arg_db_name
 
     #merge confs
     conf.update(db_conf)

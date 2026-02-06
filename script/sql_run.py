@@ -55,39 +55,33 @@ def run(argv):
         sys.exit(1)
 
     #conf initialization
-    conf = {"db":{}}
-    if arg_conf is not None:
-        conf = utils.getConf(arg_conf)
+    conf = {}
+    if arg_conf is not None and os.path.isfile(arg_conf):
+        conf = utils.getConf(conf["db_conf_file"])
+    else:
+        print("Loading DB conf from environment variables...")
+        conf = utils.getDbConfFromEnv()
+            
     #--
     if arg_db_host is None:
         if "host" in conf["db"] and conf["db"]["host"]:
             arg_db_host = conf["db"]["host"]
-        else:
-            arg_db_host = os.environ["PGHOST"]
     #--
     if arg_db_port is None:
         if "port" in conf["db"] and conf["db"]["port"]:
             arg_db_port = conf["db"]["port"]
-        else:
-            arg_db_port = os.environ["PGPORT"]
     #--
     if arg_db_name is None:
         if "name" in conf["db"] and conf["db"]["name"]:
             arg_db_name = conf["db"]["name"]
-        else:
-            arg_db_name = os.environ["PGDATABASE2CREATE"]
     #--
     if arg_db_user is None:
         if "user" in conf["db"] and conf["db"]["user"]:
             arg_db_user = conf["db"]["user"]
-        else:
-            arg_db_user = os.environ["PGUSER"]
     #--
     if arg_db_password is None:
         if "pwd" in conf["db"] and conf["db"]["pwd"]:
             arg_db_password = conf["db"]["pwd"]
-        else:
-            arg_db_password = os.environ["PGPASSWORD"]
 
     print('conf file:', arg_conf)
     print('sql file:', arg_sql_file)
