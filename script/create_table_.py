@@ -39,31 +39,31 @@ def createTableAndIndexes(conf, mcd, theme, tables):
             raise
         conn.commit()
 
-        # up
-        query_u = getCreateUpdateTableStatement(conf, mcd, theme, tableName)
-        query_u += getCreateUpdateIndexesStatement(conf, mcd, theme, tableName)
-        query_u += getCreateUpdateTrigger(conf, theme, tableName)
+        # # up
+        # query_u = getCreateUpdateTableStatement(conf, mcd, theme, tableName)
+        # query_u += getCreateUpdateIndexesStatement(conf, mcd, theme, tableName)
+        # query_u += getCreateUpdateTrigger(conf, theme, tableName)
 
-        print(u'query: {}'.format(query_u), flush=True)
-        try:
-            cursor.execute(query_u)
-        except psycopg2.Error as e:
-            print(e)
-            raise
-        conn.commit()
+        # print(u'query: {}'.format(query_u), flush=True)
+        # try:
+        #     cursor.execute(query_u)
+        # except psycopg2.Error as e:
+        #     print(e)
+        #     raise
+        # conn.commit()
 
-        # ref
-        query_r = getCreateRefTableStatement(conf, mcd, theme, tableName)
-        query_r += getCreateRefIndexesStatement(conf, mcd, theme, tableName)
-        query_r += getCreateRefTrigger(conf, theme, tableName)
+        # # ref
+        # query_r = getCreateRefTableStatement(conf, mcd, theme, tableName)
+        # query_r += getCreateRefIndexesStatement(conf, mcd, theme, tableName)
+        # query_r += getCreateRefTrigger(conf, theme, tableName)
 
-        print(u'query: {}'.format(query_r), flush=True)
-        try:
-            cursor.execute(query_r)
-        except psycopg2.Error as e:
-            print(e)
-            raise
-        conn.commit()
+        # print(u'query: {}'.format(query_r), flush=True)
+        # try:
+        #     cursor.execute(query_r)
+        # except psycopg2.Error as e:
+        #     print(e)
+        #     raise
+        # conn.commit()
         
     cursor.close()
     conn.close()
@@ -193,8 +193,8 @@ def getTableName(schema , tableName):
 
 def getCreateTableStatement( conf, mcd, theme, tableName ):
     fullTableName = getTableName(conf['data']['themes'][theme]['schema'], tableName)
-    statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
-    statement += " ("+getTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
+    # statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
+    # statement += " ("+getTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
     statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
     statement += getPkeyConstraintStatement( conf, mcd, theme, tableName )
     return statement
