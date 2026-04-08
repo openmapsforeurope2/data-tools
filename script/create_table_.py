@@ -193,8 +193,8 @@ def getTableName(schema , tableName):
 
 def getCreateTableStatement( conf, mcd, theme, tableName ):
     fullTableName = getTableName(conf['data']['themes'][theme]['schema'], tableName)
-    # statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
-    # statement += " ("+getTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
+    statement = "DROP TABLE IF EXISTS "+fullTableName+"; CREATE TABLE "+fullTableName
+    statement += " ("+getTableFields( mcd, theme, tableName )+") WITH (OIDS=FALSE);"
     statement += "ALTER TABLE "+fullTableName+" OWNER TO "+conf['db']['user']+";"
     statement += getPkeyConstraintStatement( conf, mcd, theme, tableName )
     return statement

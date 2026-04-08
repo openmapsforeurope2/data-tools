@@ -68,11 +68,11 @@ def run(argv):
 
     try:
         create_table_.createTableAndIndexes(conf, mcd, arg_theme, arg_tables)
-    except:
+    except ValueError as e:
+        print("Erreur :", e)
         sys.exit(1)
 
     print("[END TABLE CREATION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-
 
 if __name__ == "__main__":
     run(sys.argv)

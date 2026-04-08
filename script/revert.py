@@ -2,7 +2,6 @@ import os
 import sys
 import getopt
 from datetime import datetime
-import shutil
 import utils
 import revert_
 import revert_historized_
@@ -82,7 +81,7 @@ def run(argv):
         if arg_historize == "false" :
             revert_.run(arg_numrec, conf, arg_theme, arg_tables, arg_only=="true", arg_verbose)
         else :
-            revert_historized.run(arg_numrec, conf, arg_theme, arg_tables, arg_only=="true", arg_verbose)
+            revert_historized_.run(arg_numrec, conf, arg_theme, arg_tables, arg_only=="true", arg_verbose)
         
     except Exception as e:
         print(e)
