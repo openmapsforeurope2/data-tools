@@ -29,7 +29,7 @@ def createTableAndIndexes(conf, mcd, theme, tables):
         print(u'table: {}'.format(tableName), flush=True)
         query = getCreateTableStatement(conf, mcd, theme, tableName)
         query += getCreateIndexesStatement(conf, mcd, theme, tableName)
-        query += getCreateTrigger(conf, theme, tableName)
+        query += getCreateTrigger(conf, mcd, theme, tableName)
 
         print(u'query: {}'.format(query), flush=True)
         try:
@@ -129,29 +129,56 @@ def createWorkingIdsTable(conf, mcd, theme, tableName, suffix):
 
     return fullTableName
 
-def getCreateTrigger(conf, theme, tableName):
+def getCreateTrigger(conf, mcd, theme, tableName):
     fullTableName = getTableName(conf['data']['themes'][theme]['schema'], tableName)
-    return _getCreateTrigger(conf, theme, fullTableName)
+    return _getCreateTrigger(mcd, theme, tableName, fullTableName)
 
-def getCreateWorkingTrigger(conf, theme, tableName, suffix):
+def getCreateWorkingTrigger(conf, mcd, theme, tableName, suffix):
     fullTableName = getWorkingTablename(conf, theme, tableName, suffix)
-    return _getCreateTrigger(conf, theme, fullTableName)
+    return _getCreateTrigger(mcd, theme, tableName, fullTableName)
 
-def getCreateUpdateTrigger(conf, theme, tableName):
+def getCreateUpdateTrigger(conf, mcd, theme, tableName):
     fullTableName = getTableName(conf['data']['themes'][theme]['u_schema'], tableName)+conf['data']['update']['suffix']
-    return _getCreateTrigger(conf, theme, fullTableName)
+    return _getCreateTrigger(mcd, theme, tableName, fullTableName)
 
-def getCreateRefTrigger(conf, theme, tableName):
+def getCreateRefTrigger(conf, mcd, theme, tableName):
     fullTableName = getTableName(conf['data']['themes'][theme]['r_schema'], tableName)+conf['data']['reference']['suffix']
-    return _getCreateTrigger(conf, theme, fullTableName)
+    return _getCreateTrigger(mcd, theme, tableName, fullTableName)
 
-def _getCreateTrigger(conf, theme, fullTableName):
-        if fullTableName.endswith('administrative_hierarchy'):
-            return ""
-        elif theme == "au" or theme == "ib" or fullTableName.endswith('drainage_basin'):
-            return "CREATE TRIGGER ome2_reduce_precision_2d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_2d_trigger_function();"
-        else:    
-            return "CREATE TRIGGER ome2_reduce_precision_3d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_3d_trigger_function();"
+def _getCreateTrigger(mcd, theme, tableName, fullTableName):
+    geometryFieldName = _getGeometryField(mcd, theme, tableName)
+
+    if geometryFieldName is None :
+        return ""
+
+    geometryDimension = _getGeometryDimension(mcd['themes'][theme]['tables'][tableName]['fields'][geometryFieldName]['sql_type'])
+
+    if geometryDimension == 2 :
+        return "CREATE TRIGGER ome2_reduce_precision_2d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_2d_trigger_function();"
+    elif geometryDimension == 3 :    
+        return "CREATE TRIGGER ome2_reduce_precision_3d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_3d_trigger_function();"
+    else :
+        return ""
+        
+def _getGeometryDimension(sqlGeometryType):
+    type3d = [
+        'pointz',
+        'linestringz',
+        'polygonz',
+        'multipointz',
+        'multilinestringz',
+        'multipolygonz'
+    ]
+
+    if any(t in sqlGeometryType.lower() for t in type3d):
+        return 3
+    return 2
+        
+def _getGeometryField(mcd, theme, tableName):
+    for fieldName, fieldProps in mcd['themes'][theme]['tables'][tableName]['fields'].items():
+        if 'geometry' in fieldProps['sql_type'].lower():
+            return fieldName
+    return None
 
 def getOrderedFields(fields, fieldsToCreate):  
     nbFields = len(fields)
