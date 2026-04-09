@@ -146,7 +146,9 @@ def getCreateRefTrigger(conf, theme, tableName):
     return _getCreateTrigger(conf, theme, fullTableName)
 
 def _getCreateTrigger(conf, theme, fullTableName):
-        if theme == "au" or theme == "ib" or fullTableName.endswith('drainage_basin'):
+        if fullTableName.endswith('administrative_hierarchy'):
+            return ""
+        elif theme == "au" or theme == "ib" or fullTableName.endswith('drainage_basin'):
             return "CREATE TRIGGER ome2_reduce_precision_2d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_2d_trigger_function();"
         else:    
             return "CREATE TRIGGER ome2_reduce_precision_3d_trigger BEFORE INSERT OR UPDATE ON "+fullTableName+" FOR EACH ROW EXECUTE PROCEDURE public.ome2_reduce_precision_3d_trigger_function();"
