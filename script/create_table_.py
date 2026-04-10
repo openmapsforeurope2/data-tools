@@ -131,24 +131,25 @@ def createWorkingIdsTable(conf, mcd, theme, tableName, suffix):
 
 def getCreateTrigger(conf, mcd, theme, tableName):
     fullTableName = getTableName(conf['data']['themes'][theme]['schema'], tableName)
-    return _getCreateTrigger(mcd, theme, tableName, fullTableName)
+    return _getCreateTrigger(conf, mcd, theme, tableName, fullTableName)
 
 def getCreateWorkingTrigger(conf, mcd, theme, tableName, suffix):
     fullTableName = getWorkingTablename(conf, theme, tableName, suffix)
-    return _getCreateTrigger(mcd, theme, tableName, fullTableName)
+    return _getCreateTrigger(conf, mcd, theme, tableName, fullTableName)
 
 def getCreateUpdateTrigger(conf, mcd, theme, tableName):
     fullTableName = getTableName(conf['data']['themes'][theme]['u_schema'], tableName)+conf['data']['update']['suffix']
-    return _getCreateTrigger(mcd, theme, tableName, fullTableName)
+    return _getCreateTrigger(conf, mcd, theme, tableName, fullTableName)
 
 def getCreateRefTrigger(conf, mcd, theme, tableName):
     fullTableName = getTableName(conf['data']['themes'][theme]['r_schema'], tableName)+conf['data']['reference']['suffix']
-    return _getCreateTrigger(mcd, theme, tableName, fullTableName)
+    return _getCreateTrigger(conf, mcd, theme, tableName, fullTableName)
 
-def _getCreateTrigger(mcd, theme, tableName, fullTableName):
-    geometryFieldName = _getGeometryField(mcd, theme, tableName)
+def _getCreateTrigger(conf, mcd, theme, tableName, fullTableName):
+    geometryFieldNames = _getGeometryFields(mcd, theme, tableName)
 
-    if geometryFieldName is None :
+    geometryFieldName = conf['data']['common_fields']['geometry']
+    if geometryFieldName not in geometryFieldNames :
         return ""
 
     geometryDimension = _getGeometryDimension(mcd['themes'][theme]['tables'][tableName]['fields'][geometryFieldName]['sql_type'])
@@ -174,11 +175,12 @@ def _getGeometryDimension(sqlGeometryType):
         return 3
     return 2
         
-def _getGeometryField(mcd, theme, tableName):
+def _getGeometryFields(mcd, theme, tableName):
+    geometryNames = []
     for fieldName, fieldProps in mcd['themes'][theme]['tables'][tableName]['fields'].items():
         if 'geometry' in fieldProps['sql_type'].lower():
-            return fieldName
-    return None
+            geometryNames.append(fieldName)
+    return geometryNames
 
 def getOrderedFields(fields, fieldsToCreate):  
     nbFields = len(fields)
