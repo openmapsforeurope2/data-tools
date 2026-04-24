@@ -26,8 +26,6 @@
             "country": "country",
             "geometry": "geom",
             "id": "objectid",
-            "scale": "w_scale",
-            "release": "w_release",
             "num_rec": "gcms_numrec"
         },
         "history": {

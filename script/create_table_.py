@@ -87,7 +87,7 @@ def createWorkingTable(conf, mcd, theme, tableName, suffix):
     fullTableName = getWorkingTablename(conf, theme, tableName, suffix)
     query_w = getCreateWorkingTableStatement(conf, mcd, theme, tableName, suffix)
     query_w += getCreateWorkingIndexesStatement(conf, mcd, theme, tableName, suffix)
-    query_w += getCreateWorkingTrigger(conf, theme, tableName, suffix)
+    query_w += getCreateWorkingTrigger(conf, mcd, theme, tableName, suffix)
 
     print(u'query: {}'.format(query_w), flush=True)
     try:
