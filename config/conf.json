@@ -143,12 +143,10 @@
                     "lock_area",
                     "lock_line",
                     "lock_point",
-                    "falls_area",
                     "falls_line",
                     "falls_point",
                     "glacier_snowfield",
                     "wetland",
-                    "shoreline_construction_area",
                     "shoreline_construction_line"
                 ]
             }

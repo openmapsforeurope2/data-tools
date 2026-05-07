@@ -1407,23 +1407,6 @@
                         }
                     }
                 },
-                "falls_area": {
-                    "fields": {
-                        "geom": {
-                            "sql_type": "geometry(MultiPolygonZ,${srid})",
-                            "index": "gist",
-                            "rank": 1
-                        },
-                        "name": {
-                            "sql_type": "jsonb DEFAULT '{}'::json",
-                            "rank": 2
-                        },
-                        "label": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 3
-                        }
-                    }
-                },
                 "falls_line": {
                     "fields": {
                         "geom": {
@@ -1493,27 +1476,6 @@
                         "tidal": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
-                        }
-                    }
-                },
-                "shoreline_construction_area": {
-                    "fields": {
-                        "geom": {
-                            "sql_type": "geometry(MultiPolygonZ,${srid})",
-                            "index": "gist",
-                            "rank": 1
-                        },
-                        "shoreline_construction_type": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 2
-                        },
-                        "name": {
-                            "sql_type": "jsonb DEFAULT '{}'::json",
-                            "rank": 3
-                        },
-                        "label": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 4
                         }
                     }
                 },
