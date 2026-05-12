@@ -153,31 +153,6 @@
                         }
                     }
                 },
-                "road": {
-                    "fields": {
-                        "geom": {
-                            "sql_type": "geometry(MultiLineStringZ,${srid})",
-                            "index": "gist",
-                            "rank": 1
-                        },
-                        "national_road_code": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 2
-                        },
-                        "european_route_number": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 3
-                        },
-                        "road_name": {
-                            "sql_type": "jsonb DEFAULT '{}'::json",
-                            "rank": 4
-                        },
-                        "road_label": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 5
-                        }
-                    }
-                },
                 "road_node": {
                     "fields": {
                         "geom": {
@@ -339,27 +314,6 @@
                         }
                     }
                 },
-                "railway_line": {
-                    "fields": {
-                        "geom": {
-                            "sql_type": "geometry(MultiLineStringZ,${srid})",
-                            "index": "gist",
-                            "rank": 1
-                        },
-                        "railway_line_code": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 2
-                        },
-                        "railway_line_name": {
-                            "sql_type": "jsonb DEFAULT '{}'::json",
-                            "rank": 3
-                        },
-                        "railway_line_label": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 4
-                        }
-                    }
-                },
                 "railway_station_area": {
                     "fields": {
                         "geom": {
@@ -512,19 +466,6 @@
                     "fields": {
                         "geom": {
                             "sql_type": "geometry(MultiPolygonZ,${srid})",
-                            "index": "gist",
-                            "rank": 1
-                        },
-                        "surface_composition": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 2
-                        }    
-                    }
-                },
-                "runway_line": {
-                    "fields": {
-                        "geom": {
-                            "sql_type": "geometry(MultiLineStringZ,${srid})",
                             "index": "gist",
                             "rank": 1
                         },
@@ -1107,27 +1048,6 @@
                         "width_upper_range": {
                             "sql_type": "character varying(255) DEFAULT '-32768'",
                             "rank": 16
-                        }
-                    }
-                },
-                "watercourse": {
-                    "fields": {
-                        "geom": {
-                            "sql_type": "geometry(MultiLineStringZ,${srid})",
-                            "index": "gist",
-                            "rank": 1
-                        },
-                        "hydro_identifier": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 2
-                        },
-                        "name": {
-                            "sql_type": "jsonb DEFAULT '{}'::json",
-                            "rank": 3
-                        },
-                        "label": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 4
                         }
                     }
                 },
