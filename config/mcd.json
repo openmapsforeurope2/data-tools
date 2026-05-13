@@ -135,11 +135,11 @@
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 16
                         },
-                        "road_national_road_code": {
+                        "national_road_code": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 17
                         },
-                        "road_european_route_number": {
+                        "european_route_number": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 18
                         },
