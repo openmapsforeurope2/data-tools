@@ -102,22 +102,22 @@ def run(
         theme = conf['data']["themes"]["au"]["schema"]
 
     if not tables:
-        tables = conf['data']['operation'][operation]['themes'][theme]['tables'].keys()
+        operationTmp = "net_matching" if operation == "net_matching_validation" else operation
+        tables = conf['data']['operation'][operationTmp]['themes'][theme]['tables'].keys()
     
-    extract_data(conf, mcd, theme, tables, suffix, countryCodes, neighbors, operation, verbose)
-    # init_working_tables(conf, mcd, theme, tables, suffix, countryCodes, operation, verbose)
-    # TODO gerer le cas net_matching_validation
+    if operation == "net_matching_validation":
+        prepare_net_matching_validation(conf, mcd, theme, tables, suffix, countryCodes)
+    else:
+        extract_data(conf, mcd, theme, tables, suffix, countryCodes, neighbors, operation, verbose)
 
 
-def init_working_tables(
+def prepare_net_matching_validation(
     conf,
     mcd,
     theme,
     tables,
     suffix,
-    countryCodes,
-    operation,
-    verbose
+    countryCodes
 ):
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
@@ -128,67 +128,37 @@ def init_working_tables(
 
     countryCodes = sorted(countryCodes)
 
-    if operation in ["net_matching", "area_matching", "au_matching"] :
-        
-        suffix = "_" + "_".join(countryCodes) + "_" + suffix
+    prefix = "_".join(countryCodes) + "_"
 
-        borderCode = "#".join(countryCodes)
+    target_schema = conf['data']['themes'][theme]['v_schema']
+    source_schema = conf['data']['themes'][theme]['w_schema']
 
-        where_statement = ""
-        for country in countryCodes:
-            where_statement += (" OR " if where_statement else "") + conf['data']['common_fields']['country'] + " LIKE '%" + country + "%'"
-        where_statement = "("+where_statement+")"
-        
-        working_schema = conf['data']['themes'][theme]['w_schema']
-            
-        for tableName in tables:
-            wTableName = getTableName(working_schema, tableName)+conf['data']['working']['suffix']
-            targetTableName = wTableName + suffix
+    for tableName in tables:
+        final_step = conf['data']['operation']['net_matching']['themes'][theme]['tables'][tableName]['final_step']
 
-            q = getInitTableStatement( mcd, theme, tableName, wTableName, targetTableName, True )
+        sourceInitTableName = getTableName(source_schema, tableName) + conf['data']['working']['suffix'] + suffix
+        sourceFinalTableName = "_" + final_step + "_" + sourceInitTableName
 
-            # print(u'query: {}'.format(q[:500]), flush=True)
-            print(u'query: {}'.format(q), flush=True)
-            try:
-                cursor.execute(q)
-            except Exception as e:
-                print(e)
-                raise
-            conn.commit()
+        targetInitTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['init']
+        targetRefTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['ref']
+        targetCorrectTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['correct']
 
-    elif operation == "net_matching_validation" :
-        prefix = "_".join(countryCodes) + "_"
-        suffix = "_" + "_".join(countryCodes) + "_" + suffix
+        q = getInitTableStatement( mcd, theme, tableName, sourceInitTableName, targetInitTableName, False, conf['data']['validation']['user'] )
+        q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetCorrectTableName, False, conf['data']['validation']['user'] )
+        q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetRefTableName, False )
 
-
-        target_schema = conf['data']['themes'][theme]['v_schema']
-        source_schema = conf['data']['themes'][theme]['w_schema']
-
-        for tableName in tables:
-            final_step = conf['data']['operation']['net_matching']['themes'][theme]['tables'][tableName]['final_step']
-
-            sourceInitTableName = getTableName(source_schema, tableName) + conf['data']['working']['suffix'] + suffix
-            sourceFinalTableName = "_" + final_step + "_" + sourceInitTableName
-
-            targetInitTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['init']
-            targetRefTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['ref']
-            targetCorrectTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['correct']
-
-            q = getInitTableStatement( mcd, theme, tableName, sourceInitTableName, targetInitTableName, False, conf['data']['validation']['user'] )
-            q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetCorrectTableName, False, conf['data']['validation']['user'] )
-            q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetRefTableName, False )
-
-            # print(u'query: {}'.format(q[:500]), flush=True)
-            print(u'query: {}'.format(q), flush=True)
-            try:
-                cursor.execute(q)
-            except Exception as e:
-                print(e)
-                raise
-            conn.commit()
+        # print(u'query: {}'.format(q[:500]), flush=True)
+        print(u'query: {}'.format(q), flush=True)
+        try:
+            cursor.execute(q)
+        except Exception as e:
+            print(e)
+            raise
+        conn.commit()
 
     cursor.close()
     conn.close()
+
 
 def get_extraction_distance(
     conf,
@@ -209,6 +179,7 @@ def get_extraction_distance(
             if countryDist > distance:
                 distance = countryDist
     return distance
+
 
 def extract_data(
     conf,
@@ -244,4 +215,3 @@ def extract_data(
 
     else :
         raise Exception('Unknown operation: '+operation)
-
