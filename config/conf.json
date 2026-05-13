@@ -70,18 +70,15 @@
                 "v_schema": "validation",
                 "tables": [
                     "road_link",
-                    "road",
                     "road_node",
                     "road_service_point",
                     "road_service_area",
                     "marker_post",
                     "railway_link",
-                    "railway_line",
                     "railway_station_point",
                     "railway_station_area",
                     "aerodrome_point",
                     "aerodrome_area",
-                    "runway_line",
                     "runway_area",
                     "ferry_crossing",
                     "port_point",
@@ -130,7 +127,6 @@
                 "v_schema": "validation",
                 "tables": [
                     "watercourse_link",
-                    "watercourse",
                     "hydro_node",
                     "watercourse_area",
                     "standing_water",
@@ -143,12 +139,10 @@
                     "lock_area",
                     "lock_line",
                     "lock_point",
-                    "falls_area",
                     "falls_line",
                     "falls_point",
                     "glacier_snowfield",
                     "wetland",
-                    "shoreline_construction_area",
                     "shoreline_construction_line"
                 ]
             }
