@@ -167,10 +167,6 @@
                         "form_of_road_node":{
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 3
-                        },
-                        "label": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 4
                         }
                     }
                 },               
