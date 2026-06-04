@@ -79,6 +79,9 @@ def run(argv):
     print("[START PREPARE AREA MATCHING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
+        if not arg_tables:
+            arg_tables = conf['data']['operation']['area_matching']['themes'][arg_theme]['tables'].keys()
+
         prepare_data_.run(
             conf,
             mcd,
