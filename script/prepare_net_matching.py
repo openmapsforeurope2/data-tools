@@ -79,6 +79,9 @@ def run(argv):
     print("[START PREPARE NET MATCHING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
+        if not arg_tables:
+            arg_tables = conf['data']['operation']['net_matching']['themes'][arg_theme]['tables'].keys()
+            
         prepare_data_.run(
             conf,
             mcd,

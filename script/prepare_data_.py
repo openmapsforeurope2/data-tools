@@ -96,10 +96,6 @@ def run(
 
     countryCodes = sorted(countryCodes)
     suffix = "_" + "_".join(countryCodes) + "_" + suffix
-
-    if not tables:
-        operationTmp = "net_matching" if operation == "net_matching_validation" else operation
-        tables = conf['data']['operation'][operationTmp]['themes'][theme]['tables'].keys()
     
     if operation == "net_matching_validation":
         prepare_net_matching_validation(conf, mcd, theme, tables, suffix, countryCodes)
