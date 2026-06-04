@@ -150,12 +150,15 @@
         "operation": {
             "common":{
                 "neighbors": {
+                    "ad": ["es","fr"],
                     "at": ["li", "ch", "sk", "hu", "cz", "si", "it", "de"],
                     "be": ["de", "lu", "nl", "fr"],
                     "ch": ["li", "ch", "de", "fr", "it"],
                     "cz": ["sk", "at", "pl", "de"],
+                    "dk": ["de"],
                     "es": ["ma", "gi", "ad", "fr", "pt"],
                     "fr": ["ad", "mc", "lu", "it", "es", "ch", "de", "be"],
+                    "fi": ["no", "ru", "se"],
                     "li": ["at", "ch"],
                     "lu": ["fr", "be", "lu"],
                     "nl": ["be", "de"]
@@ -187,9 +190,18 @@
                     "default": 1000
                 },
                 "lowest_level": {
+                    "ad": 1,
+                    "at": 5,
                     "be": 5,
+                    "ch": 4,
+                    "cz": 4,
+                    "dk": 3,
                     "es": 4,
-                    "fr": 6
+                    "fi": 5,
+                    "fr": 6,
+                    "li": 2,
+                    "lu": 3,
+                    "nl": 3
                 },
                 "final_step": "630"
             },

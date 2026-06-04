@@ -2,7 +2,7 @@
 -- Create function to correct country codes for area tables when data was provided by one 
 -- producer for several countries/territories (e.g. Liechtenstein provided by Switzerland, 
 -- Andorra provided by Spain).
--- The function creates an temporary table in the public schema and deletes it at the end
+-- The function creates a temporary table in the public schema and deletes it at the end
 -- of the process.
 -- Params:
 -- - tb_name: table to be processed with schema (e.g. 'hy.watercourse_area)
