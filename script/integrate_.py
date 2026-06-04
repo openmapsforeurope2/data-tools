@@ -38,12 +38,20 @@ def getNumRec(cursor, numRec):
     return numRec
 
 def integrate_table_(conf, cursor, currentNumrec, theme, table, wTableName, wIdsTableName, toUp, noHistory):
+    # étape préliminaire de suppression des objets possédant des géométries nulles
+    q00 = "DELETE FROM "+wTableName+" WHERE "+conf['data']['common_fields']['geometry']+" IS NULL"
+    try:
+        cursor.execute(q00)
+    except psycopg2.Error as e:
+        print(e)
+        raise
+
     #--
     id_field = conf['data']['common_fields']['id']
     # numrec_field = conf['data']['common_fields']['num_rec']
     theme_schema = conf['data']['themes'][theme]['schema']
     update_schema = conf['data']['themes'][theme]['u_schema']
-    
+
     #--
     deleted = []
     integrated = []
@@ -279,19 +287,6 @@ def integrate_operation(
     noHistory (bool) : indique si la table cible gère l'historique (dans une table historisée les objets supprimés sont tagués et non supprimés de la table)
     verbose (bool) : mode verbeux
     """
-    
-    if operation == 'au_matching':
-        theme = 'au'
-        if len(countryCodes) != 1:
-            raise Exception('One and only one country allowed for operation: '+operation)
-        tables = [ conf['data']['operation'][operation]['table_name_prefix'] + str(conf['data']['operation'][operation]['lowest_level'][countryCodes[0]]) ]
-    elif operation == 'net_point_matching':
-        #TODO a supprimer gestion des tables si tables=empty
-        debug_pouet=True
-    else:
-        operation_ = 'matching' if operation == 'net_matching_validation' else operation
-        if not tables:
-            tables = conf['data']['operation'][operation_]['themes'][theme]['tables'].keys()
 
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
@@ -307,18 +302,8 @@ def integrate_operation(
     print("INTEGRATING...", flush=True)
 
     currentNumrec = []
-
-    # On revert tout un theme si pas d argument sinon on revert les tables passees en argument
-    if not tables :
-        tables = conf['data']['themes'][theme]["tables"]
-
-    # On integre tout un theme si pas d argument sinon on integre les tables passees en argument
-    # on recupère tous les objet supprimes ou modifies
-        # query = "SELECT id, w_modification_type"
-    # on supprime les anciennes versions de ces objets de la table
-    # on transfert les nouvelles versions des bjets supprimes, modifies ou créés de la table de travail vers la table
-
     validation_schema = conf['data']['themes'][theme]['v_schema']
+
     rec_nb_obj = 0
     
     for tb in tables:
@@ -330,12 +315,20 @@ def integrate_operation(
             wIdsTableName = getTableName(validation_schema, countryStr + tb) + conf['data']['validation']['suffix']['init']
             wTableName = getTableName(validation_schema, countryStr + tb) + conf['data']['validation']['suffix']['correct']
         else:
-            wIdsTableName = create_table_.getWorkingIdsTablename(conf, theme, tb, suffix)
-            wTableName = create_table_.getWorkingTablename(conf, theme, tb, suffix)
+            prefix = ""
+            if operation in "net_point_matching":
+                prefix = conf['data']['operation']['net_matching']['themes'][theme]['tables'][tb]['final_step']
+            elif operation in ["area_matching"]:
+                prefix = conf['data']['operation'][operation]['themes'][theme]['tables'][tb]['final_step']
+            else :
+                # cas : au_merging, au_matching, cleaning
+                prefix = conf['data']['operation'][operation]['final_step']
 
-            if operation == "net_point_matching":
-                prefix = "_" + conf['data']['operation']['net_matching']['themes'][theme]['tables'][tb]['final_step'] + "_"
-                wTableName = prefix + wTableName
+            if prefix :
+                prefix = "_" + prefix + "_"
+
+            wIdsTableName = create_table_.getWorkingIdsTablename(conf, theme, tb, suffix)
+            wTableName = prefix + create_table_.getWorkingTablename(conf, theme, tb, suffix)
             
         table_nb_obj = integrate_table_(conf, cursor, currentNumrec, theme, tb, wTableName, wIdsTableName, toUp, noHistory)
         rec_nb_obj += table_nb_obj

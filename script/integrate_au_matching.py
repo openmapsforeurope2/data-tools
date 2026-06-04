@@ -2,7 +2,6 @@ import os
 import sys
 import getopt
 from datetime import datetime
-import shutil
 import utils
 import integrate_
 
@@ -11,6 +10,7 @@ def run(argv):
 
     arg_conf = ""
     arg_suffix = ""
+    arg_level = None
     arg_verbose = False
     
     try:
@@ -27,6 +27,8 @@ def run(argv):
             arg_conf = arg
         elif opt in ("-s", "--suffix"):
             arg_suffix = arg
+        elif opt in ("-l", "--level"):
+            arg_level = arg
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
@@ -61,12 +63,21 @@ def run(argv):
     print("[START INTEGRATE AU MATCHING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
+        arg_suffix = "_" + "_".join(sorted(args)) + "_" + arg_suffix
+
+        lowest_level = str(conf['data']['operation']['au_matching']['lowest_level'][args[0]])
+        arg_level = lowest_level if arg_level is None else arg_level
+        table = [ conf['data']['operation']['au_matching']['table_name_prefix'] + arg_level ]
+
+        # a revoir si besoin de faire du matching sur un niveau autre que lowest_level
+        operation = "au_matching" if arg_level == lowest_level else "au_merging"
+
         integrate_.integrate_operation(
             conf,
-            None,
-            None,
+            'au',
+            table,
             args,
-            "au_matching",
+            operation,
             arg_suffix,
             False,
             False,

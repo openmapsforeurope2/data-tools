@@ -66,6 +66,9 @@ def run(argv):
     print("[START INTEGRATE NET MATCHING VALIDATION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
+        if not arg_tables:
+            arg_tables = conf['data']['operation']['net_matching']['themes'][arg_theme]['tables'].keys()
+
         integrate_.integrate_operation(
             conf,
             arg_theme,

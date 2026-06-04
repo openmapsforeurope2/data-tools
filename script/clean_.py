@@ -1,6 +1,3 @@
-import sys
-from subprocess import call
-import utils
 import psycopg2
 import border_extract_with_neighbors_
 import integrate_

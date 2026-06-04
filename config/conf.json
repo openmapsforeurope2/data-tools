@@ -182,7 +182,8 @@
                             "li": 5000
                         }
                     }
-                }
+                },
+                "final_step": ""
             },
             "au_matching": {
                 "table_name_prefix": "administrative_unit_area_",
@@ -204,6 +205,9 @@
                     "nl": 3
                 },
                 "final_step": "630"
+            },
+            "au_merging": {
+                "final_step": ""
             },
             "area_matching": {
                 "themes": {

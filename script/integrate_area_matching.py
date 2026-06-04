@@ -70,6 +70,11 @@ def run(argv):
     print("[START INTEGRATE AREA MATCHING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
+        arg_suffix = "_" + "_".join(sorted(args)) + "_" + arg_suffix
+
+        if not arg_tables:
+            arg_tables = conf['data']['operation']['area_matching']['themes'][arg_theme]['tables'].keys()
+
         integrate_.integrate_operation(
             conf,
             arg_theme,
