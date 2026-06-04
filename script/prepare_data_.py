@@ -97,10 +97,6 @@ def run(
     countryCodes = sorted(countryCodes)
     suffix = "_" + "_".join(countryCodes) + "_" + suffix
 
-    if operation == "au_matching":
-        tables = [conf['data']['operation'][operation]["table_name_prefix"]+str(conf['data']['operation'][operation]["lowest_level"][c]) for c in countryCodes]
-        theme = conf['data']["themes"]["au"]["schema"]
-
     if not tables:
         operationTmp = "net_matching" if operation == "net_matching_validation" else operation
         tables = conf['data']['operation'][operationTmp]['themes'][theme]['tables'].keys()

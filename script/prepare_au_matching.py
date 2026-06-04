@@ -2,7 +2,6 @@ import os
 import sys
 import getopt
 from datetime import datetime
-import shutil
 import utils
 import prepare_data_
 
@@ -13,12 +12,14 @@ def run(argv):
     arg_borders = []
     arg_suffix = ""
     arg_verbose = False
+    arg_level = None
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:b:s:v", [
+        opts, args = getopt.getopt(argv[1:], "c:b:s:l:v", [
             "conf=",
             "border=",
             "suffix=",
+            "level="
             "verbose"
         ])
     except getopt.GetoptError as err:
@@ -32,6 +33,8 @@ def run(argv):
             arg_borders.append(arg)
         elif opt in ("-s", "--suffix"):
             arg_suffix = arg
+        elif opt in ("-l", "--level"):
+            arg_level = arg
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
@@ -42,6 +45,7 @@ def run(argv):
     print('conf:', arg_conf)
     print('borders:', arg_borders)
     print('suffix:', arg_suffix)
+    print('level:', arg_level)
     print('country code:', args)
     print('verbose:', arg_verbose)
 
@@ -79,11 +83,27 @@ def run(argv):
     print("[START PREPARE AU MATCHING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
+        # theme
+        theme = conf['data']["themes"]["au"]["schema"]
+        
+        # tables
+        tables = set([])
+        for country in args:
+            if country not in conf['data']['operation']['au_matching']["lowest_level"]:
+                raise "lowest_level not defined in conf file for country '"+country+"'"
+            
+            levels = [arg_level] if arg_level is not None else list(range(1, conf['data']['operation']['au_matching']["lowest_level"][country] + 1))
+
+            for level in levels:
+                tables.add(conf['data']['operation']['au_matching']["table_name_prefix"]+str(level))
+        tables = list(tables)
+    
+        # prepare
         prepare_data_.run(
             conf,
             mcd,
-            None,
-            None,
+            theme,
+            tables,
             arg_suffix,
             args,
             arg_borders,
