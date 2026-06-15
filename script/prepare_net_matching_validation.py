@@ -81,7 +81,12 @@ def run(argv):
 
     try:
         if not arg_tables:
-            arg_tables = conf['data']['operation']['net_matching']['themes'][arg_theme]['tables'].keys()
+            tables = conf['data']['operation']['net_matching']['themes'][arg_theme]['tables']
+            arg_tables = [
+                name
+                for name, prop in tables.items()
+                if 'validation' in prop and prop['validation']
+            ]
 
         prepare_data_.run(
             conf,

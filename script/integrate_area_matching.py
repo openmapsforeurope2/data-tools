@@ -22,7 +22,8 @@ def run(argv):
             "suffix=",
             "verbose"
         ])
-    except:
+    except getopt.GetoptError as err:
+        print(err)
         sys.exit(1)
     
     for opt, arg in opts:

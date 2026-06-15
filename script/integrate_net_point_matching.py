@@ -23,7 +23,8 @@ def run(argv):
             "suffix=",
             "verbose"
         ])
-    except:
+    except getopt.GetoptError as err:
+        print(err)
         sys.exit(1)
     
     for opt, arg in opts:
@@ -70,6 +71,15 @@ def run(argv):
     print("[START INTEGRATE AREA MATCHING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
+        if not arg_tables:
+            tables = conf['data']['operation']['net_matching']['themes'][arg_theme]['tables']
+
+            arg_tables = [
+                name
+                for name, prop in tables.items()
+                if 'type_node' in prop and prop['type_node'] and ('validation' not in prop or not prop['validation'])
+            ]
+            
         integrate_.integrate_operation(
             conf,
             arg_theme,

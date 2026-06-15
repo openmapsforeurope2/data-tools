@@ -234,13 +234,16 @@
                         },
                         "tables": {
                             "road_link" : {
-                                "final_step": "280"
+                                "final_step": "280",
+                                "validation": "True"
                             },
                             "railway_link" : {
-                                "final_step": "280"
+                                "final_step": "280",
+                                "validation": "True"
                             },
                             "road_node" : {
-                                "final_step": "520"
+                                "final_step": "520",
+                                "node_type": "True"
                             }
                         }
                     },
@@ -250,16 +253,20 @@
                         },
                         "tables": {
                             "watercourse_link" : {
-                                "final_step": "280"
+                                "final_step": "280",
+                                "validation": "True"
                             },
                             "watercourse_area" : {
-                                "final_step": "399"
+                                "final_step": "399",
+                                "validation": "True"
                             },
                             "standing_water" : {
-                                "final_step": "399"
+                                "final_step": "399",
+                                "validation": "True"
                             },
                             "hydro_node" : {
-                                "final_step": "520"
+                                "final_step": "520",
+                                "node_type": "True"
                             }
                         }
                     }

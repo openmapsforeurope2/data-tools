@@ -8,7 +8,6 @@ import integrate_
 
 
 def run(argv):
-
     arg_conf = ""
     arg_theme = ""
     arg_tables = []
@@ -21,7 +20,8 @@ def run(argv):
             "table=",
             "verbose"
         ])
-    except:
+    except getopt.GetoptError as err:
+        print(err)
         sys.exit(1)
     
     for opt, arg in opts:
@@ -67,7 +67,13 @@ def run(argv):
 
     try:
         if not arg_tables:
-            arg_tables = conf['data']['operation']['net_matching']['themes'][arg_theme]['tables'].keys()
+            tables = conf['data']['operation']['net_matching']['themes'][arg_theme]['tables']
+
+            arg_tables = [
+                name
+                for name, prop in tables.items()
+                if 'validation' in prop and prop['validation']
+            ]
 
         integrate_.integrate_operation(
             conf,
