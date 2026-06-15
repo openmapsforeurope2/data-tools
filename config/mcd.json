@@ -118,38 +118,62 @@
                         "access_restriction": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 12
-                        },
-                        "restriction_for_vehicles": {
-                            "sql_type": "jsonb DEFAULT '{}'::json",
+                        },   
+                        "maximum_height": {
+                            "sql_type": "character varying(255) DEFAULT '-32768'",
                             "rank": 13
-                        },                       
-                        "speed_limit": {
+                        },    
+                        "maximum_length": {
                             "sql_type": "character varying(255) DEFAULT '-32768'",
                             "rank": 14
+                        },              
+                        "maximum_width": {
+                            "sql_type": "character varying(255) DEFAULT '-32768'",
+                            "rank": 15
+                        },
+                        "maximum_total_weight": {
+                            "sql_type": "character varying(255) DEFAULT '-32768'",
+                            "rank": 16
+                        },
+                        "maximum_single_axle_weight": {
+                            "sql_type": "character varying(255) DEFAULT '-32768'",
+                            "rank": 17
+                        },
+                        "maximum_double_axle_weight": {
+                            "sql_type": "character varying(255) DEFAULT '-32768'",
+                            "rank": 18
+                        },
+                        "maximum_triple_axle_weight": {
+                            "sql_type": "character varying(255) DEFAULT '-32768'",
+                            "rank": 19
+                        },
+                        "speed_limit": {
+                            "sql_type": "character varying(255) DEFAULT '-32768'",
+                            "rank": 20
                         },
                         "condition_of_facility": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 15
+                            "rank": 21
                         },                     
                         "link_to_road": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 16
+                            "rank": 22
                         },
                         "national_road_code": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 17
+                            "rank": 23
                         },
                         "european_route_number": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 18
+                            "rank": 24
                         },
                         "road_name": {
                             "sql_type": "jsonb DEFAULT '{}'::json",
-                            "rank": 19
+                            "rank": 25
                         },
                         "road_label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 20
+                            "rank": 26
                         }
                     }
                 },
