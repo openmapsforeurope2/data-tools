@@ -155,25 +155,21 @@
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 21
                         },                     
-                        "link_to_road": {
+                        "national_road_code": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 22
                         },
-                        "national_road_code": {
+                        "european_route_number": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 23
                         },
-                        "european_route_number": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 24
-                        },
                         "road_name": {
                             "sql_type": "jsonb DEFAULT '{}'::json",
-                            "rank": 25
+                            "rank": 24
                         },
                         "road_label": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 26
+                            "rank": 25
                         }
                     }
                 },
