@@ -239,21 +239,13 @@
                             "index": "gist",
                             "rank": 1
                         },
-                        "link_to_road": {
+                        "code": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 2
                         },
-                        "code": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 3
-                        },
                         "distance": {
                             "sql_type": "character varying(255) DEFAULT '-32768'",
-                            "rank": 4
-                        },
-                        "w_link_to_national_road": {
-                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
-                            "rank": 5
+                            "rank": 3
                         }
                     }
                 },
