@@ -16,7 +16,7 @@ def run(argv):
     
     try:
         opts, args = getopt.getopt(argv[1:], "c:T:t:d:", [
-        "conf=", "theme=", "table=", "dbname="])
+        "conf=", "theme=", "table=", "db_name="])
     except getopt.GetoptError as err:
         print(err)
         sys.exit(1)
@@ -28,10 +28,11 @@ def run(argv):
             arg_theme = arg
         elif opt in ("-t", "--table"):
             arg_tables.append(arg)
-        elif opt in ("-d", "--dbname"):
+        elif opt in ("-d", "--db_name"):
             arg_db_name = arg
 
     print('conf:', arg_conf)
+    print('db_name:', arg_db_name)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
 
