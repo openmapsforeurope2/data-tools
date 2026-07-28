@@ -2,7 +2,6 @@ import os
 import sys
 import getopt
 from datetime import datetime
-import shutil
 import utils
 import copy_table_
 
@@ -10,11 +9,15 @@ import copy_table_
 def run(argv):
     
     arg_conf = ""
+    arg_db_name = None
     args = ""
     arg_with_history = True
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:n", ["conf="])
+        opts, args = getopt.getopt(argv[1:], "c:d:n", [
+            "conf=",
+            "dbname="
+        ])
     except getopt.GetoptError as err:
         print(err)
         sys.exit(1)
@@ -22,10 +25,13 @@ def run(argv):
     for opt, arg in opts:
         if opt in ("-c", "--conf"):
             arg_conf = arg
+        elif opt in ("-d", "--dbname"):
+            arg_db_name = arg
         if opt in ("-n", "--nohistory"):
             arg_with_history = False
 
     print('conf:', arg_conf)
+    print('db name:', arg_db_name)
     print('with history:', str(args))
     print('tables:', args)
 
@@ -43,6 +49,9 @@ def run(argv):
         db_conf = utils.getDbConfFromEnv()
     else:
         db_conf = utils.getConf(conf["db_conf_file"])
+
+    if arg_db_name is not None:
+        db_conf["db"]["name"] = arg_db_name
 
     #merge confs
     conf.update(db_conf)

@@ -12,14 +12,16 @@ def run(argv):
     arg_conf = ""
     arg_theme = ""
     arg_tables = []
+    arg_db_name = None
     arg_suffix = ""
     arg_verbose = False
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:s:v", [
+        opts, args = getopt.getopt(argv[1:], "c:T:t:d:s:v", [
             "conf=",
             "theme=",
             "table=",
+            "dbname=",
             "suffix=",
             "verbose"
         ])
@@ -34,6 +36,8 @@ def run(argv):
             arg_theme = arg
         elif opt in ("-t", "--table"):
             arg_tables.append(arg)
+        elif opt in ("-d", "--dbname"):
+            arg_db_name = arg
         elif opt in ("-s", "--suffix"):
             arg_suffix = arg
         elif opt in ("-v", "--verbose"):
@@ -46,6 +50,7 @@ def run(argv):
     print('conf:', arg_conf)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
+    print('db name:', arg_db_name)
     print('suffix:', arg_suffix)
     print('country codes:', args)
     print('verbose:', arg_verbose)
@@ -64,6 +69,9 @@ def run(argv):
         db_conf = utils.getDbConfFromEnv()
     else:
         db_conf = utils.getConf(conf["db_conf_file"])
+
+    if arg_db_name is not None:
+        db_conf["db"]["name"] = arg_db_name
 
     #merge confs
     conf.update(db_conf)

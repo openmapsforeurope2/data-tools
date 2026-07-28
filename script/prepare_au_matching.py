@@ -10,14 +10,16 @@ def run(argv):
 
     arg_conf = ""
     arg_borders = []
+    arg_db_name = None
     arg_suffix = ""
     arg_verbose = False
     arg_level = None
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:b:s:l:v", [
+        opts, args = getopt.getopt(argv[1:], "c:b:d:s:l:v", [
             "conf=",
             "border=",
+            "dbname=",
             "suffix=",
             "level="
             "verbose"
@@ -31,6 +33,8 @@ def run(argv):
             arg_conf = arg
         elif opt in ("-b", "--border"):
             arg_borders.append(arg)
+        elif opt in ("-d", "--dbname"):
+            arg_db_name = arg
         elif opt in ("-s", "--suffix"):
             arg_suffix = arg
         elif opt in ("-l", "--level"):
@@ -44,6 +48,7 @@ def run(argv):
         
     print('conf:', arg_conf)
     print('borders:', arg_borders)
+    print('db name:', arg_db_name)
     print('suffix:', arg_suffix)
     print('level:', arg_level)
     print('country code:', args)
@@ -75,6 +80,9 @@ def run(argv):
         db_conf = utils.getDbConfFromEnv()
     else:
         db_conf = utils.getConf(conf["db_conf_file"])
+
+    if arg_db_name is not None:
+        db_conf["db"]["name"] = arg_db_name
 
     #merge confs
     conf.update(db_conf)
