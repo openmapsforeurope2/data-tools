@@ -11,6 +11,7 @@ def run(argv):
     arg_conf = ""
     arg_theme = ""
     arg_tables = []
+    arg_db_name = None
     arg_borders = []
     arg_in_dispute = False
     arg_suffix = ""
@@ -19,10 +20,11 @@ def run(argv):
     args = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:b:s:iav", [
+        opts, args = getopt.getopt(argv[1:], "c:T:t:d:b:s:iav", [
             "conf=",
             "theme=",
             "table=",
+            "dbname",
             "border=",
             "suffix=",
             "in_dispute",
@@ -40,6 +42,8 @@ def run(argv):
             arg_theme = arg
         elif opt in ("-t", "--table"):
             arg_tables.append(arg)
+        elif opt in ("-d", "--dbname"):
+            arg_db_name = arg
         elif opt in ("-b", "--border"):
             arg_borders.append(arg)
         elif opt in ("-s", "--suffix"):
@@ -62,6 +66,7 @@ def run(argv):
     print('conf:', arg_conf)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
+    print('db name:', arg_db_name)
     print('borders:', arg_borders)
     print('suffix:', arg_suffix)
     print('in dispute:', arg_in_dispute)
@@ -95,6 +100,9 @@ def run(argv):
         db_conf = utils.getDbConfFromEnv()
     else:
         db_conf = utils.getConf(conf["db_conf_file"])
+
+    if arg_db_name is not None:
+        db_conf["db"]["name"] = arg_db_name
 
     #merge confs
     conf.update(db_conf)

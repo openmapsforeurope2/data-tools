@@ -17,7 +17,11 @@ def run(argv):
     
     try:
         opts, args = getopt.getopt(argv[1:], "c:T:t:d:", [
-        "conf=", "theme=", "table=", "dbname="])
+            "conf=",
+            "theme=",
+            "table=",
+            "dbname="
+        ])
     except getopt.GetoptError as err:
         print(err)
         sys.exit(1)
@@ -35,6 +39,7 @@ def run(argv):
     print('conf:', arg_conf)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
+    print('db name:', arg_db_name)
 
 #conf
     if not os.path.isfile(arg_conf):
