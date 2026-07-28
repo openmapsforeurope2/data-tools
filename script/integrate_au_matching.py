@@ -15,9 +15,10 @@ def run(argv):
     arg_verbose = False
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:d:s:v", [
+        opts, args = getopt.getopt(argv[1:], "c:d:l:s:v", [
             "conf=",
             "dbname=",
+            "level=",
             "suffix=",
             "verbose"
         ])
