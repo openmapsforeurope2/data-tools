@@ -49,4 +49,29 @@ GRANT ALL ON ALL TABLES IN SCHEMA release TO ome2;
 GRANT ALL ON ALL TABLES IN SCHEMA public TO ome2;
 GRANT ALL ON ALL TABLES IN SCHEMA validation TO ome2;
 
+-- Grant permissions
+GRANT ALL ON SCHEMA au TO pgadmin_ecrm_user;
+GRANT ALL ON SCHEMA hy TO pgadmin_ecrm_user;
+GRANT ALL ON SCHEMA tn TO pgadmin_ecrm_user;
+GRANT ALL ON SCHEMA ib TO pgadmin_ecrm_user;
+GRANT ALL ON SCHEMA release TO pgadmin_ecrm_user;
+GRANT ALL ON SCHEMA public TO pgadmin_ecrm_user;
+GRANT ALL ON SCHEMA validation TO pgadmin_ecrm_user;
+
+ALTER DEFAULT PRIVILEGES IN SCHEMA au GRANT ALL ON tables TO pgadmin_ecrm_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA hy GRANT ALL ON tables TO pgadmin_ecrm_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA tn GRANT ALL ON tables TO pgadmin_ecrm_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA ib GRANT ALL ON tables TO pgadmin_ecrm_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA release GRANT ALL ON tables TO pgadmin_ecrm_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA public GRANT ALL ON tables TO pgadmin_ecrm_user;
+ALTER DEFAULT PRIVILEGES IN SCHEMA validation GRANT ALL ON tables TO pgadmin_ecrm_user;
+
+GRANT ALL ON ALL TABLES IN SCHEMA au TO pgadmin_ecrm_user;
+GRANT ALL ON ALL TABLES IN SCHEMA hy TO pgadmin_ecrm_user;
+GRANT ALL ON ALL TABLES IN SCHEMA tn TO pgadmin_ecrm_user;
+GRANT ALL ON ALL TABLES IN SCHEMA ib TO pgadmin_ecrm_user;
+GRANT ALL ON ALL TABLES IN SCHEMA release TO pgadmin_ecrm_user;
+GRANT ALL ON ALL TABLES IN SCHEMA public TO pgadmin_ecrm_user;
+GRANT ALL ON ALL TABLES IN SCHEMA validation TO pgadmin_ecrm_user;
+
 -- TO-DO: user ome2_validation on schema validation
