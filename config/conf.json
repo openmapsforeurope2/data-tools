@@ -53,7 +53,7 @@
             "area_suffix": "_up_area"
         },
         "validation": {
-            "user": "ome2_validation",
+            "user": "ome2",
             "suffix": {
                 "init": "_init",
                 "ref": "_ref",
