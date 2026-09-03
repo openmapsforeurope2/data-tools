@@ -95,11 +95,14 @@ def run(
     """
 
     countryCodes = sorted(countryCodes)
-    suffix = "_" + "_".join(countryCodes) + "_" + suffix
     
     if operation == "net_matching_validation":
-        prepare_net_matching_validation(conf, mcd, theme, tables, suffix, countryCodes)
+        validation_prefix = "_".join(countryCodes) + "_"
+        validation_suffix = "_" + suffix
+        source_suffix = "_" + "_".join(countryCodes) + "_" + suffix
+        prepare_net_matching_validation(conf, mcd, theme, tables, source_suffix, validation_prefix, validation_suffix)
     else:
+        suffix = "_" + "_".join(countryCodes) + "_" + suffix
         extract_data(conf, mcd, theme, tables, suffix, countryCodes, neighbors, operation, verbose)
 
 
@@ -108,8 +111,9 @@ def prepare_net_matching_validation(
     mcd,
     theme,
     tables,
-    suffix,
-    countryCodes
+    source_suffix,
+    validation_prefix,
+    validation_suffix
 ):
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
@@ -118,22 +122,18 @@ def prepare_net_matching_validation(
                                 database = conf['db']['name'])
     cursor = conn.cursor()
 
-    countryCodes = sorted(countryCodes)
-
-    prefix = "_".join(countryCodes) + "_"
-
     target_schema = conf['data']['themes'][theme]['v_schema']
     source_schema = conf['data']['themes'][theme]['w_schema']
 
     for tableName in tables:
         final_step = conf['data']['operation']['net_matching']['themes'][theme]['tables'][tableName]['final_step']
 
-        sourceInitTableName = getTableName(source_schema, tableName) + conf['data']['working']['suffix'] + suffix
+        sourceInitTableName = getTableName(source_schema, tableName) + conf['data']['working']['suffix'] + source_suffix
         sourceFinalTableName = "_" + final_step + "_" + sourceInitTableName
 
-        targetInitTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['init']
-        targetRefTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['ref']
-        targetCorrectTableName = getTableName(target_schema, prefix + tableName) + conf['data']['validation']['suffix']['correct']
+        targetInitTableName = getTableName(target_schema, validation_prefix + tableName) + validation_suffix + conf['data']['validation']['suffix']['init']
+        targetRefTableName = getTableName(target_schema, validation_prefix + tableName) + validation_suffix + conf['data']['validation']['suffix']['ref']
+        targetCorrectTableName = getTableName(target_schema, validation_prefix + tableName) + validation_suffix + conf['data']['validation']['suffix']['correct']
 
         q = getInitTableStatement( mcd, theme, tableName, sourceInitTableName, targetInitTableName, False, conf['data']['validation']['user'] )
         q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetCorrectTableName, False, conf['data']['validation']['user'] )

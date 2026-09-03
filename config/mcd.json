@@ -588,7 +588,11 @@
                         "boundary_source": {
                             "sql_type": "character varying(255) DEFAULT 'void_unk'",
                             "rank": 5
-                        }
+                        },
+                        "boundary_status_type": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 6
+                        }                        
                     }
                 },
                 "international_boundary_node": {

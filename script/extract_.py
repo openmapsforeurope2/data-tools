@@ -5,18 +5,17 @@ import create_table_
 def getTableName(schema , tableName):
     return (schema+"." if schema else "") + tableName
 
-
 def run(
     conf,
     mcd,
     theme,
     tables,
-    distance,
     countryCodes,
-    borderCountryCode,
-    boundaryType,
     suffix,
-    fromUp,
+    xmin,
+    xmax,
+    ymin,
+    ymax,
     reset,
     verbose
 ):
@@ -45,28 +44,13 @@ def run(
 
     print("EXTRACTING...", flush=True)
 
-    where_statement_boundary = ""
     where_statement_data = ""
     for country in  countryCodes:
-        where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['data']['common_fields']['country'] + (" = '"+country+"'" if borderCountryCode == False else " LIKE '%"+country+"%'")
-        if country != "#":
-            where_statement_data += (" OR " if where_statement_data else "") + conf['data']['common_fields']['country'] + (" = '"+country+"'" if borderCountryCode == False else " LIKE '%"+country+"%'")
+        where_statement_data += (" OR " if where_statement_data else "") + conf['data']['common_fields']['country'] + " LIKE '%"+country+"%'"
     where_statement_data = "("+where_statement_data+")"
 
-    if borderCountryCode :
-        where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['data']['common_fields']['country'] + " LIKE '%"+borderCountryCode+"%'"
-
-    if boundaryType == "international":
-        where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['boundary']['fields']['type'] + " = '" + conf['boundary']['boundary_type_values']['international'] + "'"
-
-    where_statement_boundary += (" AND " if where_statement_boundary else "") + " NOT gcms_detruit"
-    
-    boundary_statement = "ST_Union(ARRAY((SELECT "+conf['boundary']['fields']['geometry']+" FROM "+getTableName(conf['boundary']['schema'], conf['boundary']['table'])+" WHERE "+where_statement_boundary+")))"
-    boundary_buffer_statement = "SELECT ST_SetSRID(ST_Buffer(("+boundary_statement+"),"+ str(distance)+"),3035)" if distance is not None else None
-
-    
-    theme_schema = conf['data']['themes'][theme]['schema']
-    update_schema = conf['data']['themes'][theme]['u_schema']
+    if xmin is not None and xmax is not None and ymin is not None and ymax is not None :
+        where_statement_data += (" AND " if where_statement_data else "") + "ST_intersects("+conf['data']['common_fields']['geometry']+", ST_MakeEnvelope("+xmin+", "+ymin+", "+xmax+", "+ymax+", 3035))"
     
     if not tables:
         tables = conf['data']['themes'][theme]['tables']
@@ -74,25 +58,19 @@ def run(
     for tb in tables:
         wTableName = create_table_.createWorkingTable(conf, mcd, theme, tb, suffix)
         wIdsTableName = create_table_.createWorkingIdsTable(conf, mcd, theme, tb, suffix)
-        sourceSchema = update_schema if fromUp else theme_schema
-        if fromUp :
-            tb += conf['data']['update']['suffix']
+        sourceSchema = conf['data']['themes'][theme]['schema']
+
         tableName = getTableName(sourceSchema, tb)
 
-        #on recupère tous les noms de champs de la table
-        # q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name NOT LIKE '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+sourceSchema+"'") if sourceSchema else ""
-        # print(u'query: {}'.format(q[:500]), flush=True)
-        # try:
-        #     cursor.execute(q)
-        # except psycopg2.Error as e:
-        #     print(e)
-        #     raise
-        # fields = cursor.fetchone()[0]
-
-        fields = create_table_.getTableFields(mcd, theme, tb, False)
-        fieldsTab = fields.split(",")
-        fieldsTab = [x for x in fieldsTab if "gcms" not in x]
-        fields = ",".join(fieldsTab)
+        # on recupère tous les noms de champs de la table
+        q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name NOT LIKE '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+sourceSchema+"'") if sourceSchema else ""
+        print(u'query: {}'.format(q[:500]), flush=True)
+        try:
+            cursor.execute(q)
+        except psycopg2.Error as e:
+            print(e)
+            raise
+        fields = cursor.fetchone()[0]
 
         ids = None
         if not reset :
@@ -113,17 +91,8 @@ def run(
         if reset : query += "DELETE FROM "+wTableName+";"
         query += "INSERT INTO "+wTableName+" ("+fields+") SELECT "+fields+" FROM "+tableName
 
-        if fromUp :
-            #a confirmer qu il n y a pas de colonne gcms_detruit dans tables _up (ou qu on ne prend pas ce champs en compte)
-            query += " WHERE "+where_statement_data
-        else:
-            query += " WHERE ((" + where_statement_data + ") AND NOT gcms_detruit ) "
+        query += " WHERE ((" + where_statement_data + ") AND NOT gcms_detruit ) "
         
-        if boundary_buffer_statement is not None :
-            query += " AND ST_Intersects("+conf['data']['common_fields']['geometry']+",("+boundary_buffer_statement+"))"
-        
-        if 'where' in conf['border_extract'] and conf['border_extract']['where']:
-            query += " AND "+conf['border_extract']['where']
         if not reset and ids is not None:
             query += " AND "+conf['data']['common_fields']['id']+" NOT IN ('"+ids+"')"
 

@@ -3,34 +3,31 @@ import sys
 import getopt
 from datetime import datetime
 import utils
-import border_extract_
+import extract_
 
 def run(argv):
-
-    boundary_types = ["international","maritime","land_maritime","coastline","inland_water"]
 
     arg_conf = ""
     arg_theme = ""
     arg_tables = []
-    arg_dist = None
-    arg_bcc = None
-    arg_bt = None
     arg_suffix = ""
-    arg_from_up = False
+    arg_xmin = None
+    arg_xmax = None
+    arg_ymin = None
+    arg_ymax = None
     arg_noreset = False
     arg_verbose = False
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:d:b:B:s:aunv", [
+        opts, args = getopt.getopt(argv[1:], "c:T:t:s:x:X:y:Y:nv", [
             "conf=", 
             "theme=", 
             "table=", 
-            "distance=", 
-            "border_country=", 
-            "boundary_type=",
             "suffix="
-            "in_up_area",
-            "from_up",
+            "xmin=",
+            "xmax=",
+            "ymin=",
+            "ymax=,"
             "noreset", 
             "verbose"
         ])
@@ -45,18 +42,16 @@ def run(argv):
             arg_theme = arg
         elif opt in ("-t", "--table"):
             arg_tables.append(arg)
-        elif opt in ("-d", "--distance"):
-            arg_dist = arg
-        elif opt in ("-b", "--border_country"):
-            arg_bcc = arg
-            if arg_bcc == "false":
-                arg_bcc = False
-        elif opt in ("-B", "--boundary_type"):
-            arg_bt = arg
         elif opt in ("-s", "--suffix"):
             arg_suffix = arg
-        elif opt in ("-u", "--from_up"):
-            arg_from_up = True
+        elif opt in ("-x", "--xmin"):
+            arg_xmin = arg
+        elif opt in ("-X", "--xmax"):
+            arg_xmax = arg
+        elif opt in ("-y", "--ymin"):
+            arg_ymin = arg
+        elif opt in ("-Y", "--ymax"):
+            arg_ymax = arg
         elif opt in ("-n", "--noreset"):
             arg_noreset = True
         elif opt in ("-v", "--verbose"):
@@ -65,22 +60,27 @@ def run(argv):
     print('conf:', arg_conf)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
-    print('distance:', arg_dist)
-    print('border country:', arg_bcc)
-    print('boundary type:', arg_bt)
     print('suffix:', arg_suffix)
-    print('from_up:', arg_from_up)
+    print('xmin:', arg_xmin)
+    print('xmax:', arg_xmax)
+    print('ymin:', arg_ymin)
+    print('ymax:', arg_ymax)
     print('codes:', args)
     print('reset:', (not arg_noreset))
     print('verbose:', arg_verbose)
 
-    if arg_bt is not None and arg_bt not in boundary_types:
-        print("The B (boundary_type) parameter must be chosen among the following values: " + ",".join(boundary_types))
-        sys.exit(1)
+    if arg_xmin is not None or arg_xmax is not None or arg_ymin is not None or arg_ymax is not None:
+        if arg_xmin is None or arg_xmax is None or arg_ymin is None or arg_ymax is None:
+            print("missing bouding box coordinate(s)")
+            sys.exit(1)
 
-    if arg_dist is None:
-        print("Mandatory parameter --distance (-d) is missing")
-        sys.exit(1)
+    if arg_xmin is not None and arg_xmax is not None:
+        if arg_xmin >= arg_xmax:
+            print("xmin is not strictly less than xmax")
+
+    if arg_ymin is not None and arg_ymax is not None:
+            if arg_ymin >= arg_ymax:
+                print("ymin is not strictly less than ymax")
 
     #conf
     if not os.path.isfile(arg_conf):
@@ -113,17 +113,17 @@ def run(argv):
         countryCodes = sorted(args)
         arg_suffix = "_" + "_".join(countryCodes) + "_" + arg_suffix
         
-        border_extract_.run(
+        extract_.run(
             conf,
             mcd,
             arg_theme,
             arg_tables,
-            arg_dist,
             args,
-            arg_bcc,
-            arg_bt,
             arg_suffix,
-            arg_from_up,
+            arg_xmin,
+            arg_xmax,
+            arg_ymin,
+            arg_ymax,
             (not arg_noreset),
             arg_verbose
         )

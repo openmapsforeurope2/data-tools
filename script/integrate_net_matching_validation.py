@@ -11,14 +11,16 @@ def run(argv):
     arg_theme = ""
     arg_tables = []
     arg_db_name = None
+    arg_suffix = ""
     arg_verbose = False
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:d:v", [
+        opts, args = getopt.getopt(argv[1:], "c:T:t:d:s:v", [
             "conf=",
             "theme=",
             "table=",
             "dbname=",
+            "suffix=",
             "verbose"
         ])
     except getopt.GetoptError as err:
@@ -34,6 +36,8 @@ def run(argv):
             arg_tables.append(arg)
         elif opt in ("-d", "--dbname"):
             arg_db_name = arg
+        elif opt in ("-s", "--suffix"):
+            arg_suffix = arg
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
@@ -41,6 +45,7 @@ def run(argv):
     print('theme:', arg_theme)
     print('tables:', arg_tables)
     print('db name:', arg_db_name)
+    print('suffix:', arg_suffix)
     print('country codes:', args)
     print('verbose:', arg_verbose)
 
@@ -88,7 +93,7 @@ def run(argv):
             arg_tables,
             args,
             "net_matching_validation",
-            None,
+            arg_suffix,
             False,
             False,
             arg_verbose

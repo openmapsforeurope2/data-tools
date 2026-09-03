@@ -2,7 +2,6 @@ import os
 import sys
 import getopt
 from datetime import datetime
-import shutil
 import utils
 import integrate_
 

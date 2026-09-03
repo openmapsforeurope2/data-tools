@@ -182,7 +182,7 @@ def _getGeometryFields(mcd, theme, tableName):
             geometryNames.append(fieldName)
     return geometryNames
 
-def getOrderedFields(fields, fieldsToCreate):  
+def getOrderedFields(fields, fieldsToCreate, withSqlType = True):  
     nbFields = len(fields)
     orderedFields= [u""] * nbFields
     for fieldTarget, fieldProps in fields.items():
@@ -190,28 +190,28 @@ def getOrderedFields(fields, fieldsToCreate):
 
     for field in orderedFields:
         if 'sql_type' in fields[field]:
-            fieldsToCreate += ("," if fieldsToCreate else "") + field + " " + fields[field]['sql_type']
+            fieldsToCreate += ("," if fieldsToCreate else "") + field + ("" if not withSqlType else (" " + fields[field]['sql_type']))
 
     return fieldsToCreate
 
-def getFields(fields, fieldsToCreate):
+def getFields(fields, fieldsToCreate, withSqlType = True):
     for field in fields:
         if 'sql_type' in fields[field]:
-            fieldsToCreate += ("," if fieldsToCreate else "") + field + " " + fields[field]['sql_type']
+            fieldsToCreate += ("," if fieldsToCreate else "") + field + ("" if not withSqlType else (" " + fields[field]['sql_type']))
 
     return fieldsToCreate
 
-def getTableFields(mcd, theme, tableName):
+def getTableFields(mcd, theme, tableName, withSqlType = True):
     fieldsToCreate = ""
-    fieldsToCreate = getFields(mcd['common']['id_field'], fieldsToCreate)
-    fieldsToCreate = getOrderedFields(mcd['common']['fields'], fieldsToCreate)
-    fieldsToCreate = getOrderedFields(mcd['themes'][theme]['tables'][tableName]['fields'], fieldsToCreate)
-    fieldsToCreate = getOrderedFields(mcd['common']['working_fields'], fieldsToCreate)
+    fieldsToCreate = getFields(mcd['common']['id_field'], fieldsToCreate, withSqlType)
+    fieldsToCreate = getOrderedFields(mcd['common']['fields'], fieldsToCreate, withSqlType)
+    fieldsToCreate = getOrderedFields(mcd['themes'][theme]['tables'][tableName]['fields'], fieldsToCreate, withSqlType)
+    fieldsToCreate = getOrderedFields(mcd['common']['working_fields'], fieldsToCreate, withSqlType)
     return fieldsToCreate
 
-def getWorkingTableFields(mcd, theme, tableName):
-    fieldsToCreate = getTableFields(mcd, theme, tableName)
-    fieldsToCreate = getOrderedFields(mcd['work']['working_fields'], fieldsToCreate)
+def getWorkingTableFields(mcd, theme, tableName, withSqlType = True):
+    fieldsToCreate = getTableFields(mcd, theme, tableName, withSqlType)
+    fieldsToCreate = getOrderedFields(mcd['work']['working_fields'], fieldsToCreate, withSqlType)
     return fieldsToCreate
 
 def getWorkingIdsTableFields(mcd, theme, tableName):
