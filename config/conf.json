@@ -38,6 +38,7 @@
             "schema": "public",
             "table": "reconciliations",
             "fields": {
+                "num_rec": "numrec",
                 "ordre_fin_evol": "ordrefinevol"
             }
         },
@@ -63,7 +64,7 @@
         "themes": {
             "tn": {
                 "schema": "tn",
-                "h_schema": "",
+                "h_schema": "tn",
                 "w_schema": "",
                 "u_schema": "",
                 "r_schema": "",
@@ -87,7 +88,7 @@
             },
             "au": {
                 "schema": "au",
-                "h_schema": "",
+                "h_schema": "au",
                 "w_schema": "",
                 "u_schema": "",
                 "r_schema": "public",
@@ -107,7 +108,7 @@
             },
             "ib": {
                 "schema": "ib",
-                "h_schema": "",
+                "h_schema": "ib",
                 "w_schema": "",
                 "u_schema": "",
                 "r_schema": "public",
@@ -120,7 +121,7 @@
             },
             "hy": {
                 "schema": "hy",
-                "h_schema": "",
+                "h_schema": "hy",
                 "w_schema": "",
                 "u_schema": "",
                 "r_schema": "public",

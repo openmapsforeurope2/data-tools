@@ -80,7 +80,7 @@ def run(argv):
             arg_tables,
             args,
             None,
-            arg_suffix,
+            "_"+arg_suffix,
             False,
             False,
             arg_verbose

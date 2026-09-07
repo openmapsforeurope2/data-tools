@@ -100,7 +100,7 @@ def run(argv):
             mcd,
             arg_theme,
             arg_tables,
-            arg_suffix,
+            "_"+arg_suffix,
             args,
             None,
             "net_matching_validation",

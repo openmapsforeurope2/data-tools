@@ -107,8 +107,6 @@ def run(
     if not tables:
         tables = conf['data']['themes'][theme]['tables']
 
-    suffix = "_" + country + "_" + suffix
-
     #--
     extract_data(conf, mcd, theme, tables, country, borders, inDispute, all, suffix, verbose)
 

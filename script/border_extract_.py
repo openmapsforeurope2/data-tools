@@ -11,7 +11,7 @@ def run(
     mcd,
     theme,
     tables,
-    distance,
+    radius,
     countryCodes,
     borderCountryCode,
     boundaryType,
@@ -27,7 +27,7 @@ def run(
     conf (objet) : configuration
     theme (str) : thème à extraire
     tables (array) : tables à extraire (si le tableau est vide ce sont toutes les tables du thème qui seront extraites vers leur tables de travail respectives)
-    distance (int) : distance d'extraction dans le cas d'une extraction autour de la frontière
+    radius (int) : rayon d'extraction dans le cas d'une extraction autour de la frontière
     countryCodes (array) : codes des pays à extraire
     borderCountryCode (str) : code du pays frontalier (permet de préciser la frontière servant de référence à l'extraction dans le cas ou ce pays ne fait pas partie des données à extraire)
     boundaryType (str) : type de frontières autour desquels extraire les donnèes. Doit être parmi les valeurs : "international","maritime","land_maritime","coastline","inland_water"
@@ -62,7 +62,7 @@ def run(
     where_statement_boundary += (" AND " if where_statement_boundary else "") + " NOT gcms_detruit"
     
     boundary_statement = "ST_Union(ARRAY((SELECT "+conf['boundary']['fields']['geometry']+" FROM "+getTableName(conf['boundary']['schema'], conf['boundary']['table'])+" WHERE "+where_statement_boundary+")))"
-    boundary_buffer_statement = "SELECT ST_SetSRID(ST_Buffer(("+boundary_statement+"),"+ str(distance)+"),3035)" if distance is not None else None
+    boundary_buffer_statement = "SELECT ST_SetSRID(ST_Buffer(("+boundary_statement+"),"+ str(radius)+"),3035)" if radius is not None else None
 
     
     theme_schema = conf['data']['themes'][theme]['schema']

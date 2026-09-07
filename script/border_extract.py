@@ -12,7 +12,8 @@ def run(argv):
     arg_conf = ""
     arg_theme = ""
     arg_tables = []
-    arg_dist = None
+    arg_db_name = None
+    arg_radius = None
     arg_bcc = None
     arg_bt = None
     arg_suffix = ""
@@ -21,11 +22,12 @@ def run(argv):
     arg_verbose = False
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:d:b:B:s:aunv", [
+        opts, args = getopt.getopt(argv[1:], "c:T:t:d:r:b:B:s:aunv", [
             "conf=", 
             "theme=", 
-            "table=", 
-            "distance=", 
+            "table=",
+            "dbname=",
+            "radius=", 
             "border_country=", 
             "boundary_type=",
             "suffix="
@@ -45,8 +47,10 @@ def run(argv):
             arg_theme = arg
         elif opt in ("-t", "--table"):
             arg_tables.append(arg)
-        elif opt in ("-d", "--distance"):
-            arg_dist = arg
+        elif opt in ("-d", "--dbname"):
+            arg_db_name = arg
+        elif opt in ("-r", "--radius"):
+            arg_radius = arg
         elif opt in ("-b", "--border_country"):
             arg_bcc = arg
             if arg_bcc == "false":
@@ -65,7 +69,8 @@ def run(argv):
     print('conf:', arg_conf)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
-    print('distance:', arg_dist)
+    print('db name:', arg_db_name)
+    print('radius:', arg_radius)
     print('border country:', arg_bcc)
     print('boundary type:', arg_bt)
     print('suffix:', arg_suffix)
@@ -78,8 +83,8 @@ def run(argv):
         print("The B (boundary_type) parameter must be chosen among the following values: " + ",".join(boundary_types))
         sys.exit(1)
 
-    if arg_dist is None:
-        print("Mandatory parameter --distance (-d) is missing")
+    if arg_radius is None:
+        print("Mandatory parameter --radius (-r) is missing")
         sys.exit(1)
 
     #conf
@@ -104,25 +109,26 @@ def run(argv):
     else:
         db_conf = utils.getConf(conf["db_conf_file"])
 
+    if arg_db_name is not None:
+        db_conf["db"]["name"] = arg_db_name
+
     #merge confs
     conf.update(db_conf)
 
     print("[START EXTRACTION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        countryCodes = sorted(args)
-        arg_suffix = "_" + "_".join(countryCodes) + "_" + arg_suffix
-        
+
         border_extract_.run(
             conf,
             mcd,
             arg_theme,
             arg_tables,
-            arg_dist,
+            arg_radius,
             args,
             arg_bcc,
             arg_bt,
-            arg_suffix,
+            "_"+arg_suffix,
             arg_from_up,
             (not arg_noreset),
             arg_verbose

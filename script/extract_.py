@@ -45,9 +45,10 @@ def run(
     print("EXTRACTING...", flush=True)
 
     where_statement_data = ""
-    for country in  countryCodes:
-        where_statement_data += (" OR " if where_statement_data else "") + conf['data']['common_fields']['country'] + " LIKE '%"+country+"%'"
-    where_statement_data = "("+where_statement_data+")"
+    if countryCodes:
+        for country in  countryCodes:
+            where_statement_data += (" OR " if where_statement_data else "") + conf['data']['common_fields']['country'] + " LIKE '%"+country+"%'"
+        where_statement_data = "("+where_statement_data+")"
 
     if xmin is not None and xmax is not None and ymin is not None and ymax is not None :
         where_statement_data += (" AND " if where_statement_data else "") + "ST_intersects("+conf['data']['common_fields']['geometry']+", ST_MakeEnvelope("+xmin+", "+ymin+", "+xmax+", "+ymax+", 3035))"

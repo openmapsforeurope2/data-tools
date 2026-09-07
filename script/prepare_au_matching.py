@@ -112,7 +112,7 @@ def run(argv):
             mcd,
             theme,
             tables,
-            arg_suffix,
+            "_"+arg_suffix,
             args,
             arg_borders,
             "au_matching",

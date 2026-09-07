@@ -95,7 +95,7 @@ def run(argv):
             mcd,
             arg_theme,
             arg_tables,
-            arg_suffix,
+            "_"+arg_suffix,
             args,
             None,
             "area_matching",

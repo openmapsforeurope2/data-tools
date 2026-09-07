@@ -93,7 +93,7 @@ def run(argv):
             arg_tables,
             args,
             "net_matching_validation",
-            arg_suffix,
+            "_"+arg_suffix,
             False,
             False,
             arg_verbose

@@ -5,7 +5,7 @@ def run(
     mcd,
     theme,
     tables,
-    distance,
+    radius,
     country,
     borders,
     inDispute,
@@ -27,7 +27,7 @@ def run(
     if inDispute:
         boundaryType = 'international'
         border = False
-        border_extract_.run(conf, mcd, theme, tables, distance, [country], border, boundaryType, suffix, fromUp, reset, verbose)
+        border_extract_.run(conf, mcd, theme, tables, radius, [country], border, boundaryType, suffix, fromUp, reset, verbose)
         reset = False
 
     boundaryType = None
@@ -37,5 +37,5 @@ def run(
         borders = orderedBorders
 
     for border in borders:
-        border_extract_.run(conf, mcd, theme, tables, distance, [country], border, boundaryType, suffix, fromUp, reset, verbose)
+        border_extract_.run(conf, mcd, theme, tables, radius, [country], border, boundaryType, suffix, fromUp, reset, verbose)
         reset = False

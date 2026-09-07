@@ -87,7 +87,7 @@ def run(argv):
             table,
             args,
             operation,
-            arg_suffix,
+            "_"+arg_suffix,
             False,
             False,
             arg_verbose

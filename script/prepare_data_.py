@@ -98,11 +98,10 @@ def run(
     
     if operation == "net_matching_validation":
         validation_prefix = "_".join(countryCodes) + "_"
-        validation_suffix = "_" + suffix
+        validation_suffix = suffix
         source_suffix = "_" + "_".join(countryCodes) + "_" + suffix
         prepare_net_matching_validation(conf, mcd, theme, tables, source_suffix, validation_prefix, validation_suffix)
     else:
-        suffix = "_" + "_".join(countryCodes) + "_" + suffix
         extract_data(conf, mcd, theme, tables, suffix, countryCodes, neighbors, operation, verbose)
 
 

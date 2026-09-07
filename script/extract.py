@@ -10,6 +10,7 @@ def run(argv):
     arg_conf = ""
     arg_theme = ""
     arg_tables = []
+    arg_db_name = None
     arg_suffix = ""
     arg_xmin = None
     arg_xmax = None
@@ -19,10 +20,11 @@ def run(argv):
     arg_verbose = False
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:s:x:X:y:Y:nv", [
+        opts, args = getopt.getopt(argv[1:], "c:T:t:d:s:x:X:y:Y:nv", [
             "conf=", 
             "theme=", 
-            "table=", 
+            "table=",
+            "dbname=",
             "suffix="
             "xmin=",
             "xmax=",
@@ -42,6 +44,8 @@ def run(argv):
             arg_theme = arg
         elif opt in ("-t", "--table"):
             arg_tables.append(arg)
+        elif opt in ("-d", "--dbname"):
+            arg_db_name = arg
         elif opt in ("-s", "--suffix"):
             arg_suffix = arg
         elif opt in ("-x", "--xmin"):
@@ -104,14 +108,15 @@ def run(argv):
     else:
         db_conf = utils.getConf(conf["db_conf_file"])
 
+    if arg_db_name is not None:
+        db_conf["db"]["name"] = arg_db_name
+
     #merge confs
     conf.update(db_conf)
 
     print("[START EXTRACTION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        countryCodes = sorted(args)
-        arg_suffix = "_" + "_".join(countryCodes) + "_" + arg_suffix
         
         extract_.run(
             conf,
@@ -119,7 +124,7 @@ def run(argv):
             arg_theme,
             arg_tables,
             args,
-            arg_suffix,
+            "_"+arg_suffix,
             arg_xmin,
             arg_xmax,
             arg_ymin,

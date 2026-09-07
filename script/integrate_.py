@@ -312,18 +312,17 @@ def integrate_operation(
         
         if operation == "net_matching_validation":
             validation_prefix = "_".join(sorted(countryCodes)) + "_"
-            validation_suffix = "_" + suffix
+            validation_suffix = suffix
             wIdsTableName = getTableName(validation_schema, validation_prefix + tb) + validation_suffix + conf['data']['validation']['suffix']['init']
             wTableName = getTableName(validation_schema, validation_prefix + tb) + validation_suffix + conf['data']['validation']['suffix']['correct']
         else:
             prefix = ""
-            suffix = "_" + "_".join(sorted(countryCodes)) + "_" + suffix
-            if operation in "net_point_matching":
+            if operation is None:
+                prefix = ""
+            elif operation in "net_point_matching":
                 prefix = conf['data']['operation']['net_matching']['themes'][theme]['tables'][tb]['final_step']
             elif operation in ["area_matching"]:
                 prefix = conf['data']['operation'][operation]['themes'][theme]['tables'][tb]['final_step']
-            elif operation is None:
-                prefix = ""
             else :
                 # cas : au_merging, au_matching, cleaning
                 prefix = conf['data']['operation'][operation]['final_step']

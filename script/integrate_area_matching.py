@@ -21,7 +21,6 @@ def run(argv):
             "theme=",
             "table=",
             "dbname=",
-            "dbname",
             "suffix=",
             "verbose"
         ])
@@ -38,8 +37,6 @@ def run(argv):
             arg_tables.append(arg)
         elif opt in ("-d", "--dbname"):
             arg_db_name = arg
-        elif opt in ("-d", "--dbname"):
-            arg_db_name = arg
         elif opt in ("-s", "--suffix"):
             arg_suffix = arg
         elif opt in ("-v", "--verbose"):
@@ -48,7 +45,6 @@ def run(argv):
     print('conf:', arg_conf)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
-    print('db name:', arg_db_name)
     print('db name:', arg_db_name)
     print('suffix:', arg_suffix)
     print('country codes:', args)
@@ -92,7 +88,7 @@ def run(argv):
             arg_tables,
             args,
             "area_matching",
-            arg_suffix,
+            "_"+arg_suffix,
             False,
             False,
             arg_verbose
