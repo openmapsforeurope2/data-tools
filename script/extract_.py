@@ -97,7 +97,8 @@ def run(
         if not reset and ids is not None:
             query += " AND "+conf['data']['common_fields']['id']+" NOT IN ('"+ids+"')"
 
-        print(u'query: {}'.format(query[:500]), flush=True)
+        # print(u'query: {}'.format(query[:500]), flush=True)
+        print(query)
         try:
             cursor.execute(query)
         except psycopg2.Error as e:

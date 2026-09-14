@@ -566,6 +566,51 @@
         },
         "ib": {
             "tables": {
+                "in_dispute_area": {
+                    "fields": {
+                        "geom": {
+                            "sql_type": "geometry(MultiPolygon,${srid})",
+                            "index": "gist",
+                            "rank": 1
+                        },
+                        "national_code": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 2
+                        },
+                        "shn": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 3
+                        },
+                        "name": {
+                            "sql_type": "jsonb DEFAULT '{}'::json",
+                            "rank": 4
+                        },
+                        "label": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 5
+                        },
+                        "national_level_code": {
+                            "sql_type": "character varying(255) DEFAULT '-32768'",
+                            "rank": 6
+                        },
+                        "link_to_residence_of_authority": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 7
+                        },
+                        "land_cover_type": {
+                            "sql_type": "character varying(255) DEFAULT 'void_unk'",
+                            "rank": 8
+                        },
+                        "valid_from":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 9
+                        },
+                        "valid_to":{
+                            "sql_type": "timestamp without time zone",
+                            "rank": 10
+                        }                   
+                    }
+                },
                 "international_boundary_line": {
                     "fields": {
                         "geom": {

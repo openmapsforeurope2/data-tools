@@ -47,7 +47,6 @@ def run(argv):
     print('tables:', arg_tables)
     print('db name:', arg_db_name)
     print('suffix:', arg_suffix)
-    print('country codes:', args)
     print('verbose:', arg_verbose)
 
     #conf
@@ -78,7 +77,6 @@ def run(argv):
             conf,
             arg_theme,
             arg_tables,
-            args,
             None,
             "_"+arg_suffix,
             False,

@@ -93,13 +93,11 @@ def run(
     operation (str) : indique la nature de l'operation à réaliser
     verbose (bool) : mode verbeux
     """
-
-    countryCodes = sorted(countryCodes)
     
     if operation == "net_matching_validation":
-        validation_prefix = "_".join(countryCodes) + "_"
+        validation_prefix = ""
         validation_suffix = suffix
-        source_suffix = "_" + "_".join(countryCodes) + "_" + suffix
+        source_suffix = suffix
         prepare_net_matching_validation(conf, mcd, theme, tables, source_suffix, validation_prefix, validation_suffix)
     else:
         extract_data(conf, mcd, theme, tables, suffix, countryCodes, neighbors, operation, verbose)

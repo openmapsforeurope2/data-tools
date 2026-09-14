@@ -46,13 +46,7 @@ def run(argv):
     print('tables:', arg_tables)
     print('db name:', arg_db_name)
     print('suffix:', arg_suffix)
-    print('country codes:', args)
     print('verbose:', arg_verbose)
-
-    #country
-    if len(args) != 2:
-        print("Two and only two country must be specified in arguments")
-        sys.exit(1)
 
     #conf
     if not os.path.isfile(arg_conf):
@@ -91,7 +85,6 @@ def run(argv):
             conf,
             arg_theme,
             arg_tables,
-            args,
             "net_matching_validation",
             "_"+arg_suffix,
             False,

@@ -42,16 +42,11 @@ def run(argv):
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
-    if len(args) != 2 :
-        print("deux et seulement deux codes pays doivent être renseignés en arguments")
-        sys.exit(1)
-
     print('conf:', arg_conf)
     print('theme:', arg_theme)
     print('tables:', arg_tables)
     print('db name:', arg_db_name)
     print('suffix:', arg_suffix)
-    print('country codes:', args)
     print('verbose:', arg_verbose)
 
     #conf
@@ -91,7 +86,6 @@ def run(argv):
             conf,
             arg_theme,
             arg_tables,
-            args,
             "net_point_matching",
             "_"+arg_suffix,
             False,

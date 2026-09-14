@@ -46,7 +46,7 @@ def run(argv):
     print('verbose:', arg_verbose)
 
     #country
-    if len(args) != 1:
+    if arg_level is None and len(args) != 1:
         print("One and only one country must be specified in arguments")
         sys.exit(1)
 
@@ -74,19 +74,15 @@ def run(argv):
     print("[START INTEGRATE AU MATCHING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
-        lowest_level = str(conf['data']['operation']['au_matching']['lowest_level'][args[0]])
-        arg_level = lowest_level if arg_level is None else arg_level
+        if arg_level is None :
+            arg_level = str(conf['data']['operation']['au_matching']['lowest_level'][args[0]])
         table = [ conf['data']['operation']['au_matching']['table_name_prefix'] + arg_level ]
-
-        # a revoir si besoin de faire du matching sur un niveau autre que lowest_level
-        operation = "au_matching" if arg_level == lowest_level else "au_merging"
 
         integrate_.integrate_operation(
             conf,
             'au',
             table,
-            args,
-            operation,
+            'au_matching',
             "_"+arg_suffix,
             False,
             False,

@@ -269,7 +269,6 @@ def integrate_operation(
     conf,
     theme,
     tables,
-    countryCodes,
     operation,
     suffix,
     toUp,
@@ -311,7 +310,7 @@ def integrate_operation(
         wTableName = ""
         
         if operation == "net_matching_validation":
-            validation_prefix = "_".join(sorted(countryCodes)) + "_"
+            validation_prefix = ""
             validation_suffix = suffix
             wIdsTableName = getTableName(validation_schema, validation_prefix + tb) + validation_suffix + conf['data']['validation']['suffix']['init']
             wTableName = getTableName(validation_schema, validation_prefix + tb) + validation_suffix + conf['data']['validation']['suffix']['correct']

@@ -116,6 +116,6 @@ def run(
     #--
     toUp = False
     noHistory = False
-    integrate_.integrate_operation(conf, theme, tables, [country], "cleaning", suffix, toUp, noHistory, verbose)
+    integrate_.integrate_operation(conf, theme, tables, "cleaning", suffix, toUp, noHistory, verbose)
 
 

@@ -54,7 +54,7 @@
             "area_suffix": "_up_area"
         },
         "validation": {
-            "user": "ome2",
+            "user": "postgres",
             "suffix": {
                 "init": "_init",
                 "ref": "_ref",
@@ -116,7 +116,8 @@
                 "tables": [
                     "international_boundary_line",
                     "international_boundary_node",
-                    "landmask"
+                    "landmask",
+                    "in_dispute_area"
                 ]
             },
             "hy": {
@@ -208,6 +209,7 @@
                 "final_step": "630"
             },
             "au_merging": {
+                "table_name_prefix": "administrative_unit_area_",
                 "final_step": ""
             },
             "area_matching": {
