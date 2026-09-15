@@ -4,6 +4,7 @@ import getopt
 from datetime import datetime
 import utils
 import border_extract_
+import border_extract_with_neighbors_
 
 def run(argv):
 
@@ -14,9 +15,10 @@ def run(argv):
     arg_tables = []
     arg_db_name = None
     arg_radius = None
-    arg_bcc = None
+    arg_bcc = []
     arg_bt = None
     arg_suffix = ""
+    arg_extract_all_countries = False
     arg_from_up = False
     arg_noreset = False
     arg_verbose = False
@@ -31,7 +33,7 @@ def run(argv):
             "border_country=", 
             "boundary_type=",
             "suffix="
-            "in_up_area",
+            "extract_all_countries",
             "from_up",
             "noreset", 
             "verbose"
@@ -52,13 +54,15 @@ def run(argv):
         elif opt in ("-r", "--radius"):
             arg_radius = arg
         elif opt in ("-b", "--border_country"):
-            arg_bcc = arg
+            arg_bcc.append(arg)
             if arg_bcc == "false":
                 arg_bcc = False
         elif opt in ("-B", "--boundary_type"):
             arg_bt = arg
         elif opt in ("-s", "--suffix"):
             arg_suffix = arg
+        elif opt in ("-a", "--extract_all_countries"):
+            arg_extract_all_countries = True
         elif opt in ("-u", "--from_up"):
             arg_from_up = True
         elif opt in ("-n", "--noreset"):
@@ -74,6 +78,7 @@ def run(argv):
     print('border country:', arg_bcc)
     print('boundary type:', arg_bt)
     print('suffix:', arg_suffix)
+    print('arg_extract_all_countries:', arg_extract_all_countries)
     print('from_up:', arg_from_up)
     print('codes:', args)
     print('reset:', (not arg_noreset))
@@ -85,6 +90,18 @@ def run(argv):
 
     if arg_radius is None:
         print("Mandatory parameter --radius (-r) is missing")
+        sys.exit(1)
+
+    if len(args) > 2 :
+        print("No more than 2 countries are allowed in args")
+        sys.exit(1)
+
+    if len(args) == 0 :
+        print("At least 1 country must be specified in arg")
+        sys.exit(1)
+
+    if len(args) == 2 and len(arg_bcc) > 0 :
+        print("No boundary (-b) should be specified with 2 countries in args")
         sys.exit(1)
 
     #conf
@@ -118,21 +135,38 @@ def run(argv):
     print("[START EXTRACTION] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
+        if len(args) == 1:
+            border_extract_with_neighbors_.run(
+                conf,
+                mcd,
+                arg_theme,
+                arg_tables,
+                arg_radius,
+                args[0],
+                arg_bcc,
+                True, #indispute
+                len(arg_bcc) == 0,
+                "_"+arg_suffix,
+                arg_extract_all_countries,
+                arg_verbose
+            )
 
-        border_extract_.run(
-            conf,
-            mcd,
-            arg_theme,
-            arg_tables,
-            arg_radius,
-            args,
-            arg_bcc,
-            arg_bt,
-            "_"+arg_suffix,
-            arg_from_up,
-            (not arg_noreset),
-            arg_verbose
-        )
+        if len(args) == 2:
+            border_extract_.run(
+                conf,
+                mcd,
+                arg_theme,
+                arg_tables,
+                arg_radius,
+                args,
+                None,
+                arg_bt,
+                "_"+arg_suffix,
+                arg_extract_all_countries,
+                arg_from_up,
+                (not arg_noreset),
+                arg_verbose
+            )
 
     except Exception as e:
         print(e)

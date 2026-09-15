@@ -162,7 +162,7 @@
                     "fr": ["ad", "mc", "lu", "it", "es", "ch", "de", "be"],
                     "fi": ["no", "ru", "se"],
                     "li": ["at", "ch"],
-                    "lu": ["fr", "be", "lu"],
+                    "lu": ["fr", "be"],
                     "nl": ["be", "de"]
                 }
             },

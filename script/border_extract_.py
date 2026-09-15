@@ -16,6 +16,7 @@ def run(
     borderCountryCode,
     boundaryType,
     suffix,
+    extract_all_countries,
     fromUp,
     reset,
     verbose
@@ -47,11 +48,11 @@ def run(
 
     where_statement_boundary = ""
     where_statement_data = ""
-    for country in  countryCodes:
+    for country in countryCodes:
         where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['data']['common_fields']['country'] + (" = '"+country+"'" if borderCountryCode == False else " LIKE '%"+country+"%'")
         if country != "#":
             where_statement_data += (" OR " if where_statement_data else "") + conf['data']['common_fields']['country'] + (" = '"+country+"'" if borderCountryCode == False else " LIKE '%"+country+"%'")
-    where_statement_data = "("+where_statement_data+")"
+    where_statement_data = "("+where_statement_data+")" if not extract_all_countries else ""
 
     if borderCountryCode :
         where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['data']['common_fields']['country'] + " LIKE '%"+borderCountryCode+"%'"
@@ -59,7 +60,12 @@ def run(
     if boundaryType == "international":
         where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['boundary']['fields']['type'] + " = '" + conf['boundary']['boundary_type_values']['international'] + "'"
 
-    where_statement_boundary += (" AND " if where_statement_boundary else "") + " NOT gcms_detruit"
+    where_statement_boundary += (" AND " if where_statement_boundary else "") + "NOT gcms_detruit"
+
+    print("************************************************")
+    print(where_statement_data)
+    print(where_statement_boundary)
+    print("************************************************")
     
     boundary_statement = "ST_Union(ARRAY((SELECT "+conf['boundary']['fields']['geometry']+" FROM "+getTableName(conf['boundary']['schema'], conf['boundary']['table'])+" WHERE "+where_statement_boundary+")))"
     boundary_buffer_statement = "SELECT ST_SetSRID(ST_Buffer(("+boundary_statement+"),"+ str(radius)+"),3035)" if radius is not None else None
@@ -113,21 +119,26 @@ def run(
         if reset : query += "DELETE FROM "+wTableName+";"
         query += "INSERT INTO "+wTableName+" ("+fields+") SELECT "+fields+" FROM "+tableName
 
+        where_statement_query = ""
         if fromUp :
             #a confirmer qu il n y a pas de colonne gcms_detruit dans tables _up (ou qu on ne prend pas ce champs en compte)
-            query += " WHERE "+where_statement_data
+            where_statement_query = where_statement_data
         else:
-            query += " WHERE ((" + where_statement_data + ") AND NOT gcms_detruit ) "
+            where_statement_query = ((where_statement_data + " AND ") if where_statement_data else "") + "NOT gcms_detruit"
         
         if boundary_buffer_statement is not None :
-            query += " AND ST_Intersects("+conf['data']['common_fields']['geometry']+",("+boundary_buffer_statement+"))"
+            where_statement_query += (" AND " if where_statement_query else "") + "ST_Intersects("+conf['data']['common_fields']['geometry']+",("+boundary_buffer_statement+"))"
         
         if 'where' in conf['border_extract'] and conf['border_extract']['where']:
-            query += " AND "+conf['border_extract']['where']
+            where_statement_query += (" AND " if where_statement_query else "") + conf['border_extract']['where']
         if not reset and ids is not None:
-            query += " AND "+conf['data']['common_fields']['id']+" NOT IN ('"+ids+"')"
+            where_statement_query += (" AND " if where_statement_query else "") + conf['data']['common_fields']['id']+" NOT IN ('"+ids+"')"
 
-        print(u'query: {}'.format(query[:500]), flush=True)
+        if where_statement_query:
+            query += " WHERE " + where_statement_query
+
+        # print(u'query: {}'.format(query[:500]), flush=True)
+        print(query)
         try:
             cursor.execute(query)
         except psycopg2.Error as e:
