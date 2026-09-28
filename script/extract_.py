@@ -92,13 +92,14 @@ def run(
         if reset : query += "DELETE FROM "+wTableName+";"
         query += "INSERT INTO "+wTableName+" ("+fields+") SELECT "+fields+" FROM "+tableName
 
-        query += " WHERE ((" + where_statement_data + ") AND NOT gcms_detruit ) "
+        where_statement_data = (("(" + where_statement_data + ") AND ") if where_statement_data else "") + " NOT gcms_detruit"
+
+        query += (" WHERE " + where_statement_data) if where_statement_data else ""
         
         if not reset and ids is not None:
             query += " AND "+conf['data']['common_fields']['id']+" NOT IN ('"+ids+"')"
 
-        # print(u'query: {}'.format(query[:500]), flush=True)
-        print(query)
+        print(u'query: {}'.format(query[:500]), flush=True)
         try:
             cursor.execute(query)
         except psycopg2.Error as e:

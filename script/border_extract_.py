@@ -61,11 +61,6 @@ def run(
         where_statement_boundary += (" AND " if where_statement_boundary else "") + conf['boundary']['fields']['type'] + " = '" + conf['boundary']['boundary_type_values']['international'] + "'"
 
     where_statement_boundary += (" AND " if where_statement_boundary else "") + "NOT gcms_detruit"
-
-    print("************************************************")
-    print(where_statement_data)
-    print(where_statement_boundary)
-    print("************************************************")
     
     boundary_statement = "ST_Union(ARRAY((SELECT "+conf['boundary']['fields']['geometry']+" FROM "+getTableName(conf['boundary']['schema'], conf['boundary']['table'])+" WHERE "+where_statement_boundary+")))"
     boundary_buffer_statement = "SELECT ST_SetSRID(ST_Buffer(("+boundary_statement+"),"+ str(radius)+"),3035)" if radius is not None else None
@@ -137,8 +132,7 @@ def run(
         if where_statement_query:
             query += " WHERE " + where_statement_query
 
-        # print(u'query: {}'.format(query[:500]), flush=True)
-        print(query)
+        print(u'query: {}'.format(query[:500]), flush=True)
         try:
             cursor.execute(query)
         except psycopg2.Error as e:

@@ -136,8 +136,7 @@ def prepare_net_matching_validation(
         q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetCorrectTableName, False, conf['data']['validation']['user'] )
         q += getInitTableStatement( mcd, theme, tableName, sourceFinalTableName, targetRefTableName, False )
 
-        # print(u'query: {}'.format(q[:500]), flush=True)
-        print(u'query: {}'.format(q), flush=True)
+        print(u'query: {}'.format(q[:500]), flush=True)
         try:
             cursor.execute(q)
         except Exception as e:
