@@ -11,19 +11,6 @@ L'élaboration de la chaîne de production a nécessité le développement d'un 
 
 Cette application regroupe l'ensemble des fonctionnalités du projet OME2 qui consistent à éxecuter des scripts SQL.
 
-Les outils proposés sont les suivants :
-
-- create_table : génére et lance les scripts de création de l'ensemble des tables nécessaires au fonctionnement du projet OME2.
-- border_extract : sert à l'extraction des objets proches d'une frontière d'une table source vers un table cible.
-- integrate : ré-intégre dans la table source les données extraites et traitées dans la table de travail.
-- revert : annule les modifications correspondant au 'step' indiqué en paramêtre. Toutes les modifications liées aux 'steps' postérieurs sont annulées également.
-- copy_table : copie les tables localisées dans un schéma vers le schéma public.
-- clean : supprime les données hors de leur pays (à partir d'un seuil d'éloignement). Ce nettoyage constitue la première étape des processus de mise en cohérence des données aux frontières. Cette fonction inclut les étapes d'extraction, de nettoyage et d'intégration.
-- integrate_from_validation : met à jour les tables de production en y intégrant les modifications depuis les tables de validation (table initiale et table des données traitées)
-- prepare_data : prépare les données nécessaires au processus de raccordement ou de validation du raccordement.
-
-On trouve également dans ce projet les [scripts SQL](https://github.com/openmapsforeurope2/data-tools/tree/main/sql/db_init) destinés à la mise en place des méchanismes interne de la base OME2 (gestion de l'historique, de la résolution, des identifiants...)
-
 
 ## Configuration
 
@@ -46,36 +33,87 @@ Paramètres
 * c [mandatory] : configuration file
 * T [mandatory] : theme (only one theme can be specified)
 * t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T
-* d [mandatory] : buffer radius
+* r [mandatory] : buffer radius
+* s [mandatory] : suffix applied for working table naming.
+* a [optional] : extract all objects and not only the neighbouring country objets
+* B [optional] : boundary type (must be in : "international","maritime","land_maritime","coastline","inland_water")
+* d [optional] : database name
 * b [optional] : neighbouring country code
 * n [optional] : option which enables not to delete data already present in the work table
 * arguments : codes of country/countries to extract (one or two)
+
+Le coût du plus gros pays c'est quand on fait plusieurs imports successifs: il faut commencer par les plus petits et finir par les plus gros
 
 <br>
 
 Exemple d'extraction des données d'un pays sur l'ensemble de ses frontières :
 ~~~
-python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -d 4000 nl '#'
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -s 20260928 -r 4000 nl '#'
 ~~~
 
-Exemple d'extraction des données de deux pays frontaliers:
+Exemple d'extraction des données de deux pays frontaliers :
 ~~~
-python3 script/border_extract.py -c path/to/conf.json -T hy -t watercourse_link -d 1000 be fr
+python3 script/border_extract.py -c path/to/conf.json -T hy -t watercourse_link -s 20260928 -r 1000 be fr
+~~~
+
+Exemple d'extraction de toutes les données autour de la frontière be#fr (toutes les requêtes sont équivalentes) :
+~~~
+python3 script/border_extract.py -c path/to/conf.json -T hy -t watercourse_link -s 20260928 -r 1000 -a be fr
+python3 script/border_extract.py -c path/to/conf.json -T hy -t watercourse_link -s 20260928 -r 1000 -a -b be fr
+python3 script/border_extract.py -c path/to/conf.json -T hy -t watercourse_link -s 20260928 -r 1000 -a -b fr be
+~~~
+
+Exemple d'extraction des données 'be' autour de la frontière be#fr :
+~~~
+python3 script/border_extract.py -c path/to/conf.json -T hy -t watercourse_link -r 1000 -b fr be
 ~~~
 
 Exemple d'extraction de l'ensemble des données d'un pays et des données des pays limitrophes frontière par frontière:
 ~~~
-python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b false -B international -d 3000 fr
-python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b ad -d 3000 -n fr
-python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b mc -d 3000 -n fr
-python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b lu -d 3000 -n fr
-python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b it -d 3000 -n fr
-python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b es -d 3000 -n fr
-python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b ch -d 3000 -n fr
-python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b de -d 3000 -n fr
-python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -b be -d 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -s 20260928 -b false -B international -r 3000 fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -s 20260928 -b ad -r 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -s 20260928 -b mc -r 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -s 20260928 -b lu -r 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -s 20260928 -b it -r 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -s 20260928 -b es -r 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -s 20260928 -b ch -r 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -s 20260928 -b de -r 3000 -n fr
+python3 script/border_extract.py -c path/to/conf.json -T tn -t road_link -s 20260928 -b be -r 3000 -n fr
 ~~~
 > _Note : la première ligne permet d'extraire les données autour des frontières internationales qui ont un code pays simple. Cela correspond aux frontières non reconnues ('in dispute')._
+
+
+### extract
+
+Paramètres
+* c [mandatory] : configuration file
+* T [mandatory] : theme (only one theme can be specified)
+* t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T
+* s [mandatory] : suffix applied for working table naming.
+* d [optional] : database name
+* x [optional] : x min extracting box coordinate
+* X [optional] : x max extracting box coordinate
+* y [optional] : y min extracting box coordinate
+* Y [optional] : y max extracting box coordinate
+* n [optional] : option which enables not to delete data already present in the work table
+* arguments [optional] : codes of country/countries to extract (if no code specified all objects are extracted)
+
+<br>
+
+Exemple d'extraction des données be, fr et lu dans une box :
+~~~
+python3 script/extract.py -c path/to/conf.json -T tn -t railway_link -s 20260903 -x 4015897 -X 4021467 -y 2941476 -Y 2949763 fr lu be
+~~~
+
+Exemple d'extraction des données be, fr et lu :
+~~~
+python3 script/extract.py -c path/to/conf.json -T tn -t railway_link -s 20260903 fr lu be
+~~~
+
+Exemple d'extraction de toutes les données dans une box :
+~~~
+python3 script/extract.py -c path/to/conf.json -T tn -t railway_link -s 20260903 -x 4015897 -X 4021467 -y 2941476 -Y 2949763
+~~~
 
 
 ### integrate
@@ -84,12 +122,14 @@ Paramètres
 * c [mandatory] : configuration file
 * T [mandatory] : theme (only one theme can be specified)
 * t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T
+* d [optional] : database name
+* s [mandatory] : suffix applied for working table naming.
 
 <br>
 
 Exemples d'appel:
 ~~~
-python3 script/integrate.py -c path/to/conf.json -T tn -t road_link
+python3 script/integrate.py -c path/to/conf.json -T tn -t road_link -s 20260928
 ~~~
 
 
@@ -99,13 +139,16 @@ Paramètres
 * c [mandatory] : configuration file
 * T [mandatory] : theme (only one theme can be specified)
 * t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T
-* s [mandatory] : step number
+* n [mandatory] : numrec
+* d [optional] : database name
+* h [optional] : specify if the database is historized
+* o [optional] : revert only the specified numrec (-n)
 
 <br>
 
 Exemples d'appel:
 ~~~
-python3 script/reverte.py -c path/to/conf.json -T au -t administrative_unit_area_3 -s 30
+python3 script/reverte.py -c path/to/conf.json -T au -t administrative_unit_area_3 -n 3065461
 ~~~
 
 
@@ -117,6 +160,7 @@ Paramètres
 * c [mandatory] : configuration file
 * T [mandatory] : theme (only one theme can be specified)
 * t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T
+* d [optional] : database name
 
 <br>
 
@@ -140,18 +184,20 @@ Paramètres
 * b [optional] : country code of a border country (several codes can be specified by adding that option as many times as necessary). If this parameter is defined the cleaning will be processed only on the specified border(s).
 * i [optional] : if specified the cleaning is processed around in dispute borders.
 * a [optional] : parameter ti process the cleaning around all borders of the specified country/countries (c.f. arguments). If specified all defined -b parameters will be ignored.
+* d [optional] : database name
+* s [mandatory] : suffix applied for working table naming.
 * arguments : codes of country/countries to clean
 
 <br>
 
 Exemple de nettoyage de données françaises autour des frontières avec le luxembourg et la belgique.
 ~~~
-python3 script/clean.py -c path/to/conf.json -b lu -b be -T tn -t road_link fr
+python3 script/clean.py -c path/to/conf.json -b lu -b be -T tn -t road_link -s 20260928 fr
 ~~~
 
 Exemple de nettoyage de données françaises autour de l'ensemble des frontières.
 ~~~
-python3 script/clean.py -c path/to/conf.json -a -T tn -t road_link fr
+python3 script/clean.py -c path/to/conf.json -a -T tn -t road_link -s 20260928 fr
 ~~~
 
 ### copy_table
@@ -160,6 +206,8 @@ Cette fonction permet de copier la table schema.table dans public.schema_table.
 
 Paramètres
 * c [mandatory] : configuration file
+* d [optional] : database name
+* n [optional] : specify if the database is not historized
 * arguments : table(s) to copy
 
 <br>
@@ -169,40 +217,139 @@ Exemples d'appel:
 python3 script/copy_table.py -c path/to/conf.json au.administrative_unit_area_1 ib.international_boundary_line
 ~~~
 
-### integrate_from_validation
+### prepare_area_matching
 
 Paramètres
 * c [mandatory] : configuration file
 * T [mandatory] : theme (only one theme can be specified)
 * t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T.
-* arguments : codes of the two matched countries to integrate
-
-
-Exemple de mise à jour des tables de production de l'ensemble du thème hydrographie à l'issu du processus de raccordement des données autrichiennes (at) et tchécoslovaques (cz) :
-~~~
-python3 script/integrate_from_validation.py -c path/to/conf.json -T hy at cz
-~~~
-
-### prepare_data
-
-Paramètres
-* c [mandatory] : configuration file
-* T [mandatory] : theme (only one theme can be specified)
-* t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T.
-* s [mandatory] : suffix applied for working table naming. Parameter to specify only in case of preparation for matching (c.f. -m option).
-* n [optional] : parameter to specify to prepara data for net_matching
-* a [optional] : parameter to specify to prepara data for au_matching
-* w [optional] : parameter to specify to prepara data for validation
+* s [mandatory] : suffix applied for working table naming.
+* d [optional] : database name
 * arguments : codes of two border countries
 
-Exemple de preparation des données pour le processus de raccordement :
+Exemple de preparation des données :
 ~~~
-python3 script/prepare_data.py -c path/to/conf.json -n -T tn -t road_link -s 20250904 be fr
+python3 script/prepare_area_matching.py -c path/to/conf.json -n -T hy -t glacier_snowfield -s 20250904 ch fr
 ~~~
 
-Exemple de preparation des données pour le processus de validation :
+### prepare_au_matching
+
+Paramètres
+* c [mandatory] : configuration file
+* b [optional] : country code of a border country (several codes can be specified by adding that option as many times as necessary). If this parameter is defined the matching will be processed only on the specified border(s).
+* s [mandatory] : suffix applied for working table naming.
+* d [optional] : database name
+* l [optional] : administrative level to match. Country lowest level if not specified.
+* arguments : country code (only one allowed)
+
+Exemple de preparation des données :
 ~~~
-python3 script/prepare_data.py -c path/to/conf.json -w -T tn -t road_link -s 20250904 be fr
+python3 script/prepare_au_matching.py -c path/to/conf.json -l 3 -s 20250904 -b fr be
+~~~
+
+### prepare_net_matching_validation
+
+Paramètres
+* c [mandatory] : configuration file
+* T [mandatory] : theme (only one theme can be specified)
+* t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T.
+* s [mandatory] : suffix applied for working table naming.
+* d [optional] : database name
+
+Exemple de preparation des données :
+~~~
+python3 script/prepare_net_matching_validation.py -c path/to/conf.json -T tn -t road_link -s 20250904
+~~~
+
+### prepare_net_matching
+
+Paramètres
+* c [mandatory] : configuration file
+* T [mandatory] : theme (only one theme can be specified)
+* t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T.
+* s [mandatory] : suffix applied for working table naming.
+* d [optional] : database name
+* arguments : codes of two border countries
+
+Exemple de preparation des données :
+~~~
+python3 script/prepare_net_matching.py -c path/to/conf.json -T tn -t road_link -s 20250904 be fr
+~~~
+
+
+### integrate_area_matching
+
+Paramètres
+* c [mandatory] : configuration file
+* T [mandatory] : theme (only one theme can be specified)
+* t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T.
+* s [mandatory] : suffix applied for working table naming.
+* d [optional] : database name
+
+Exemple de preparation des données :
+~~~
+python3 script/integrate_area_matching.py -c path/to/conf.json -T hy -t glacier_snowfield -s 20250904
+~~~
+
+
+### integrate_au_matching
+
+Paramètres
+* c [mandatory] : configuration file
+* l [optional] : administrative level to integrate. Country lowest level if not specified.
+* s [mandatory] : suffix applied for working table naming.
+* d [optional] : database name
+* arguments : country code (only one allowed if no level specified)
+
+Exemple de preparation des données :
+~~~
+python3 script/integrate_au_matching.py -c path/to/conf.json -s 20250904 be
+python3 script/integrate_au_matching.py -c path/to/conf.json -l 4 -s 20250904
+~~~
+
+
+### integrate_au_merging
+
+Paramètres
+* c [mandatory] : configuration file
+* l [optional] : administrative level to integrate. Country lowest level if not specified.
+* s [mandatory] : suffix applied for working table naming.
+* d [optional] : database name
+* arguments [optional] : country code (if no level specified)
+
+Exemple de preparation des données :
+~~~
+python3 script/integrate_au_merging.py -c path/to/conf.json -l 3 -s 20250904
+~~~
+
+
+### integrate_net_matching_validation
+
+Paramètres
+* c [mandatory] : configuration file
+* T [mandatory] : theme (only one theme can be specified)
+* t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T.
+* s [mandatory] : suffix applied for working table naming.
+* d [optional] : database name
+
+Exemple de preparation des données :
+~~~
+python3 script/integrate_net_matching_validation.py -c path/to/conf.json -T tn -t road_link -s 20250904
+~~~
+
+
+### integrate_net_point_matching
+
+Paramètres
+* c [mandatory] : configuration file
+* T [mandatory] : theme (only one theme can be specified)
+* t [optional] : table (several tables can be specified by adding that option as many times as necessary). Tables must belong to theme T.
+* s [mandatory] : suffix applied for working table naming.
+* d [optional] : database name
+
+Exemple de preparation des données :
+~~~
+python3 script/integrate_net_point_matching.py -c path/to/conf.json -T hy -t hydro_node -s 20250904
 ~~~
 
 
