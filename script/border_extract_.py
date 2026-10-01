@@ -76,9 +76,6 @@ def run(
         wTableName = create_table_.createWorkingTable(conf, mcd, theme, tb, suffix)
         wIdsTableName = create_table_.createWorkingIdsTable(conf, mcd, theme, tb, suffix)
         sourceSchema = update_schema if fromUp else theme_schema
-        if fromUp :
-            tb += conf['data']['update']['suffix']
-        tableName = getTableName(sourceSchema, tb)
 
         #on recupère tous les noms de champs de la table
         # q = "SELECT string_agg(column_name,',') FROM information_schema.columns WHERE column_name NOT LIKE '%gcms%' and table_name = '"+tb+"' "+ ("AND table_schema = '"+sourceSchema+"'") if sourceSchema else ""
@@ -91,9 +88,13 @@ def run(
         # fields = cursor.fetchone()[0]
 
         fields = create_table_.getTableFields(mcd, theme, tb, False)
+
         fieldsTab = fields.split(",")
         fieldsTab = [x for x in fieldsTab if "gcms" not in x]
         fields = ",".join(fieldsTab)
+
+        tableSourceName = tb + conf['data']['update']['suffix'] if fromUp else ""
+        tableSourceName = getTableName(sourceSchema, tableSourceName)
 
         ids = None
         if not reset :
@@ -112,7 +113,7 @@ def run(
 
         query = ""
         if reset : query += "DELETE FROM "+wTableName+";"
-        query += "INSERT INTO "+wTableName+" ("+fields+") SELECT "+fields+" FROM "+tableName
+        query += "INSERT INTO "+wTableName+" ("+fields+") SELECT "+fields+" FROM "+tableSourceName
 
         where_statement_query = ""
         if fromUp :

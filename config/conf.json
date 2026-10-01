@@ -66,7 +66,7 @@
                 "schema": "tn",
                 "h_schema": "tn",
                 "w_schema": "",
-                "u_schema": "",
+                "u_schema": "tn",
                 "r_schema": "",
                 "v_schema": "validation",
                 "tables": [
@@ -90,7 +90,7 @@
                 "schema": "au",
                 "h_schema": "au",
                 "w_schema": "",
-                "u_schema": "",
+                "u_schema": "au",
                 "r_schema": "public",
                 "v_schema": "validation",
                 "tables": [
@@ -110,7 +110,7 @@
                 "schema": "ib",
                 "h_schema": "ib",
                 "w_schema": "",
-                "u_schema": "",
+                "u_schema": "ib",
                 "r_schema": "public",
                 "v_schema": "validation",
                 "tables": [
@@ -124,7 +124,7 @@
                 "schema": "hy",
                 "h_schema": "hy",
                 "w_schema": "",
-                "u_schema": "",
+                "u_schema": "hy",
                 "r_schema": "public",
                 "v_schema": "validation",
                 "tables": [
