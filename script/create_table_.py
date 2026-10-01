@@ -107,7 +107,7 @@ def createWorkingTable(conf, mcd, theme, tableName, suffix, reset = True):
 
     fullTableName = getWorkingTablename(conf, theme, tableName, suffix)
 
-    if not reset and tableExists(conn, fullTableName)
+    if not reset and tableExists(conn, fullTableName):
         print("CREATION ABORTED : TABLE EXISTS", flush=True)
         return fullTableName
 
@@ -140,7 +140,7 @@ def createWorkingIdsTable(conf, mcd, theme, tableName, suffix, reset = True):
 
     fullTableName = getWorkingIdsTablename(conf, theme, tableName, suffix)
 
-    if not reset and tableExists(conn, fullTableName)
+    if not reset and tableExists(conn, fullTableName):
         print("CREATION ABORTED : TABLE EXISTS", flush=True)
         return fullTableName
     
