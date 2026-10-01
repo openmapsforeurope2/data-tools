@@ -74,7 +74,28 @@ def getWorkingTablename(conf, theme, tableName, suffix):
 def getWorkingIdsTablename(conf, theme, tableName, suffix):
     return getTableName(conf['data']['themes'][theme]['w_schema'], tableName)+conf['data']['working']['ids_suffix']+suffix
 
-def createWorkingTable(conf, mcd, theme, tableName, suffix):
+def tableExists(conn, fullTableName):
+    parts = fullTableName.split('.', 1)
+
+    if len(parts) == 1:
+        schema = "public"
+        table = parts[0]
+    else:
+        schema, table = parts
+
+    with conn.cursor() as cur:
+        cur.execute("""
+            SELECT EXISTS (
+                SELECT 1
+                FROM information_schema.tables
+                WHERE table_schema = %s
+                  AND table_name = %s
+            );
+        """, (schema, table))
+
+        return cur.fetchone()[0]
+    
+def createWorkingTable(conf, mcd, theme, tableName, suffix, reset = True):
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
                                 host = conf['db']['host'],
@@ -85,6 +106,11 @@ def createWorkingTable(conf, mcd, theme, tableName, suffix):
     print("CREATING WORKING TABLE...", flush=True)
 
     fullTableName = getWorkingTablename(conf, theme, tableName, suffix)
+
+    if not reset and tableExists(conn, fullTableName)
+        print("CREATION ABORTED : TABLE EXISTS", flush=True)
+        return fullTableName
+
     query_w = getCreateWorkingTableStatement(conf, mcd, theme, tableName, suffix)
     query_w += getCreateWorkingIndexesStatement(conf, mcd, theme, tableName, suffix)
     query_w += getCreateWorkingTrigger(conf, mcd, theme, tableName, suffix)
@@ -102,7 +128,7 @@ def createWorkingTable(conf, mcd, theme, tableName, suffix):
 
     return fullTableName
 
-def createWorkingIdsTable(conf, mcd, theme, tableName, suffix):
+def createWorkingIdsTable(conf, mcd, theme, tableName, suffix, reset = True):
     conn = psycopg2.connect(    user = conf['db']['user'],
                                 password = conf['db']['pwd'],
                                 host = conf['db']['host'],
@@ -113,6 +139,11 @@ def createWorkingIdsTable(conf, mcd, theme, tableName, suffix):
     print("CREATING WORKING IDS TABLE...", flush=True)
 
     fullTableName = getWorkingIdsTablename(conf, theme, tableName, suffix)
+
+    if not reset and tableExists(conn, fullTableName)
+        print("CREATION ABORTED : TABLE EXISTS", flush=True)
+        return fullTableName
+    
     query_ids = getCreateWorkingIdsTableStatement(conf, mcd, theme, tableName, suffix)
     query_ids += getCreateWorkingIdsIndexesStatement(conf, mcd, theme, tableName, suffix)
 

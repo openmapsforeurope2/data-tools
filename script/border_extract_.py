@@ -73,8 +73,8 @@ def run(
         tables = conf['data']['themes'][theme]['tables']
         
     for tb in tables:
-        wTableName = create_table_.createWorkingTable(conf, mcd, theme, tb, suffix)
-        wIdsTableName = create_table_.createWorkingIdsTable(conf, mcd, theme, tb, suffix)
+        wTableName = create_table_.createWorkingTable(conf, mcd, theme, tb, suffix, reset)
+        wIdsTableName = create_table_.createWorkingIdsTable(conf, mcd, theme, tb, suffix, reset)
         sourceSchema = update_schema if fromUp else theme_schema
 
         #on recupère tous les noms de champs de la table
