@@ -79,7 +79,7 @@ def run(argv):
     print('boundary type:', arg_bt)
     print('suffix:', arg_suffix)
     print('arg_extract_all_countries:', arg_extract_all_countries)
-    print('from_up:', arg_from_up)
+    print('from up:', arg_from_up)
     print('codes:', args)
     print('reset:', (not arg_noreset))
     print('verbose:', arg_verbose)
@@ -148,6 +148,7 @@ def run(argv):
                 len(arg_bcc) == 0,
                 "_"+arg_suffix,
                 arg_extract_all_countries,
+                arg_from_up,
                 arg_verbose
             )
 

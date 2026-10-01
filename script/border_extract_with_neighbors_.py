@@ -12,9 +12,9 @@ def run(
     all,
     suffix,
     extract_all_countries,
+    fromUp,
     verbose
 ):    
-    fromUp = False
     reset = True
 
     if all :

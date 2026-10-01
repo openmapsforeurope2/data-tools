@@ -183,20 +183,23 @@ def extract_data(
     if operation in ["net_matching", "area_matching"] :
         borderCountryCode = None
         boundaryType = None
+        extract_all_countries = False
         fromUp = False
         reset = True
         distance = get_extraction_distance(conf, operation, countryCodes, theme)
 
-        border_extract_.run(conf, mcd, theme, tables, distance, countryCodes, borderCountryCode, boundaryType, suffix, fromUp, reset, verbose)
+        border_extract_.run(conf, mcd, theme, tables, distance, countryCodes, borderCountryCode, boundaryType, suffix, extract_all_countries, fromUp, reset, verbose)
 
     elif operation == "au_matching" :
         inDispute = None
-        all = True if len(neighbors) == 0 else False
+        extract_all_countries = False
+        fromUp = False
+        allBorders = True if len(neighbors) == 0 else False
         distance = get_extraction_distance(conf, operation, countryCodes)
         if len(countryCodes) != 1:
             raise Exception('One and only one country allowed for operation: '+operation)
 
-        border_extract_with_neighbors_.run(conf, mcd, theme, tables, distance, countryCodes[0], neighbors, inDispute, all, suffix, verbose)
+        border_extract_with_neighbors_.run(conf, mcd, theme, tables, distance, countryCodes[0], neighbors, inDispute, allBorders, suffix, extract_all_countries, fromUp, verbose)
 
     elif operation == "net_matching_validation" :
         return

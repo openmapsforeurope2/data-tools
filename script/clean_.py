@@ -70,13 +70,16 @@ def extract_data(
     inDispute,
     all,
     suffix,
+    fromUp,
     verbose
 ):    
     distance = conf['data']['operation']['cleaning']['themes'][theme]['extraction_distance']['default']
     if country in conf['data']['operation']['cleaning']['themes'][theme]['extraction_distance']:
         distance = conf['data']['operation']['cleaning']['themes'][theme]['extraction_distance'][country]
 
-    border_extract_with_neighbors_.run(conf, mcd, theme, tables, distance, country, borders, inDispute, all, suffix, verbose)
+    extract_all_country = False
+    border_extract_with_neighbors_.run(conf, mcd, theme, tables, distance, country, borders, inDispute, all, suffix, extract_all_country, fromUp, verbose)
+
 
 def run(
     conf,
@@ -88,6 +91,7 @@ def run(
     inDispute, 
     all,
     suffix,
+    fromUp,
     verbose
 ):
     """
@@ -108,13 +112,13 @@ def run(
         tables = conf['data']['themes'][theme]['tables']
 
     #--
-    extract_data(conf, mcd, theme, tables, country, borders, inDispute, all, suffix, verbose)
+    extract_data(conf, mcd, theme, tables, country, borders, inDispute, all, suffix, fromUp, verbose)
 
     #-- 
     clean(conf, theme, tables, country, suffix, verbose)
 
     #--
-    toUp = False
+    toUp = fromUp
     noHistory = False
     integrate_.integrate_operation(conf, theme, tables, "cleaning", suffix, toUp, noHistory, verbose)
 

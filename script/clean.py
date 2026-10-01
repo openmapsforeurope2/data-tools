@@ -16,11 +16,12 @@ def run(argv):
     arg_in_dispute = False
     arg_suffix = ""
     arg_all = False
+    arg_from_up = False
     arg_verbose = False
     args = ""
     
     try:
-        opts, args = getopt.getopt(argv[1:], "c:T:t:d:b:s:iav", [
+        opts, args = getopt.getopt(argv[1:], "c:T:t:d:b:s:iauv", [
             "conf=",
             "theme=",
             "table=",
@@ -29,6 +30,7 @@ def run(argv):
             "suffix=",
             "in_dispute",
             "all",
+            "from_up"
             "verbose"
         ])
     except getopt.GetoptError as err:
@@ -52,6 +54,8 @@ def run(argv):
             arg_in_dispute = True
         elif opt in ("-a", "--all"):
             arg_all = True
+        elif opt in ("-u", "--from_up"):
+            arg_from_up = True
         elif opt in ("-v", "--verbose"):
             arg_verbose = True
 
@@ -71,6 +75,7 @@ def run(argv):
     print('suffix:', arg_suffix)
     print('in dispute:', arg_in_dispute)
     print('all:', arg_all)
+    print('from up:', arg_from_up)
     print('verbose:', arg_verbose)
     print('country code:', args)
 
@@ -119,7 +124,8 @@ def run(argv):
             arg_borders, 
             arg_in_dispute, 
             arg_all, 
-            "_"+arg_suffix, 
+            "_"+arg_suffix,
+            arg_from_up,
             arg_verbose
         )
     except Exception as e:
@@ -127,7 +133,6 @@ def run(argv):
         sys.exit(1)
     
     print("[END CLEANING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
-
 
 if __name__ == "__main__":
     run(sys.argv)
