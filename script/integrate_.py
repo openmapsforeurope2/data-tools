@@ -138,20 +138,6 @@ def integrate_table_(conf, cursor, currentNumrec, theme, table, wTableName, wIds
 
                 # objet modifie
                 elif not array_equal(w_objects[sub_ids[i]], o_objects[sub_ids[i]]):
-                    #DEBUG
-                    w = w_objects[sub_ids[i]]
-                    o = o_objects[sub_ids[i]]
-                    print("Différences :")
-
-                    for attr in vars(w):
-                        w_value = getattr(w, attr)
-                        o_value = getattr(o, attr)
-
-                        if w_value != o_value:
-                            print(f"  {attr}:")
-                            print(f"    w = {w_value}")
-                            print(f"    o = {o_value}")
-
                     count_m += 1
                     modified.append(sub_ids_[i])
                     if noHistory:
