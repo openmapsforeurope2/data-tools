@@ -151,7 +151,6 @@ def integrate_table_(conf, cursor, currentNumrec, theme, table, wTableName, wIds
                             print(f"  {attr}:")
                             print(f"    w = {w_value}")
                             print(f"    o = {o_value}")
-                    return
 
                     count_m += 1
                     modified.append(sub_ids_[i])
