@@ -68,6 +68,9 @@ def createTableAndIndexes(conf, mcd, theme, tables):
     cursor.close()
     conn.close()
 
+def getUpdateTablename(conf, theme, tableName):
+    return getTableName(conf['data']['themes'][theme]['u_schema'], tableName)+conf['data']['update']['suffix']
+
 def getWorkingTablename(conf, theme, tableName, suffix):
     return getTableName(conf['data']['themes'][theme]['w_schema'], tableName)+conf['data']['working']['suffix']+suffix
 

@@ -93,7 +93,7 @@ def run(
         fieldsTab = [x for x in fieldsTab if "gcms" not in x]
         fields = ",".join(fieldsTab)
 
-        tableSourceName = tb + conf['data']['update']['suffix'] if fromUp else ""
+        tableSourceName = tb + (conf['data']['update']['suffix'] if fromUp else "")
         tableSourceName = getTableName(sourceSchema, tableSourceName)
 
         ids = None

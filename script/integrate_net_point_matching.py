@@ -70,7 +70,7 @@ def run(argv):
     #merge confs
     conf.update(db_conf)
 
-    print("[START INTEGRATE AREA MATCHING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("[START INTEGRATE NET POINT MATCHING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
     try:
         if not arg_tables:
@@ -97,7 +97,7 @@ def run(argv):
         print(e)
         sys.exit(1)
 
-    print("[END INTEGRATE AREA MATCHING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
+    print("[END INTEGRATE NET POINT MATCHING] "+datetime.now().strftime("%Y-%m-%d %H:%M:%S"))
 
 
 if __name__ == "__main__":

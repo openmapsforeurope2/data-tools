@@ -115,7 +115,7 @@ def run(
     extract_data(conf, mcd, theme, tables, country, borders, inDispute, all, suffix, fromUp, verbose)
 
     #-- 
-    clean(conf, theme, tables, country, suffix, verbose)
+    clean(conf, theme, tables, [country], suffix, verbose)
 
     #--
     toUp = fromUp
